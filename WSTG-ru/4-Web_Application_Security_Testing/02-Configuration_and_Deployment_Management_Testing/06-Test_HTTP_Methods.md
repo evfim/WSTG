@@ -7,80 +7,80 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test HTTP Methods
+# Тестирование методов HTTP
 
 |ID          |
 |------------|
 |WSTG-CONF-06|
 
-## Summary
+## Обзор
 
-HTTP offers a number of methods (or verbs) that can be used to perform actions on the web server. While GET and POST are by far the most common methods that are used to access information provided by a web server, there are a variety of other methods that may also be supported, and can sometimes be exploited by attackers.
+HTTP предлагает ряд методов (или глаголов), которые можно использовать для выполнения действий на web-сервере. Хотя на сегодняшний день GET и POST являются наиболее распространёнными методами для доступа к информации, предоставляемой web-сервером, существует множество других, которые также могут поддерживаться и иногда использоваться злоумышленниками.
 
-[RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231) defines the main valid HTTP request methods (or verbs), although additional methods have been added in other RFCs, such as [RFC 5789](https://datatracker.ietf.org/doc/html/rfc5789). Several of these verbs have bee re-used for different purposes in [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) applications, listed in the table below.
+[RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231) определяет основные допустимые методы HTTP-запросов (или глаголы), хотя в других RFC были добавлены дополнительные методы, например, в [RFC 5789](https://datatracker.ietf.org/doc/html/rfc5789). Некоторые из этих глаголов были переиспользованы с разным назначением в приложениях [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) перечисленных в таблице ниже.
 
-| Method | Original Purpose | RESTful Purpose |
+| Метод | Первоначальное назначение | Назначение в RESTful |
 |--------|------------------|-----------------|
-| [`GET`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.1) | Request a file. | Request an object.|
-| [`HEAD`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.2) | Request a file, but only return the HTTP headers. | |
-| [`POST`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.3) | Submit data. | |
-| [`PUT`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.4) | Upload a file. | Create an object. |
-| [`DELETE`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.5) | Delete a file | Delete an object. |
-| [`CONNECT`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.6) | Establish a connection to another system. | |
-| [`OPTIONS`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.7) | List supported HTTP methods. | Perform a [CORS Preflight](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) request.
-| [`TRACE`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.8) | Echo the HTTP request for debug purposes. | |
-| [`PATCH`](https://datatracker.ietf.org/doc/html/rfc5789#section-2) |  | Modify an object. |
+| [`GET`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.1) | Запросить файл | Запросить объект|
+| [`HEAD`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.2) | Запросить файл, но вернуть только HTTP-заголовки | |
+| [`POST`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.3) | Передать данные | |
+| [`PUT`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.4) | Загрузить файл | Создать объект |
+| [`DELETE`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.5) | Удалить файл | Удалить объект |
+| [`CONNECT`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.6) | Установить соединение с другой системой | |
+| [`OPTIONS`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.7) | Перечислить поддерживаемые HTTP-методы | Выполнить запрос [CORS Preflight](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request).
+| [`TRACE`](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.8) | Повторите HTTP-запрос с целью отладки | |
+| [`PATCH`](https://datatracker.ietf.org/doc/html/rfc5789#section-2) |  | Изменить объект |
 
-## Test Objectives
+## Задачи тестирования
 
-- Enumerate supported HTTP methods.
-- Test for access control bypass.
-- Test HTTP method overriding techniques.
+- Определить поддерживаемые HTTP-методы.
+- Протестировать обход контроля доступа.
+- Протестировать способы переопределения HTTP-методов.
 
-## How to Test
+## Как тестировать
 
-### Discover the Supported Methods
+### Определить поддерживаемые методы
 
-To perform this test, the tester needs some way to identify which HTTP methods are supported by the web server that is being examined. The simplest way to do this is to make an `OPTIONS` request to the server:
+Для выполнения этого теста необходимо определить, какие методы HTTP поддерживаются проверяемым web-сервером. Самый простой способ — отправить запрос `OPTIONS` на сервер:
 
 ```http
 OPTIONS / HTTP/1.1
 Host: example.org
 ```
 
-The server should then response with a list of supported methods:
+На что сервер должен ответить перечнем поддерживаемых методов:
 
 ```http
 HTTP/1.1 200 OK
 Allow: OPTIONS, GET, HEAD, POST
 ```
 
-However, some servers may not respond to `OPTIONS` requests, or may return inaccurate information. Additionally, servers may support different methods for different paths - so just because a method is not supported for the root `/` directory, this doesn't necessarily mean that it won't be supported elsewhere.
+Однако некоторые серверы могут не отвечать на запросы `OPTIONS` или возвращать неверную информацию. Кроме того, серверы могут поддерживать разные методы для разных путей, так что если метод не поддерживается для корневого каталога `/`, это не обязательно означает, что он не будет поддерживаться где-либо ещё.
 
-An more reliable way to test for supported methods is to simply make a request with that method type, and examine the server response. If the method is not permitted, the server should return a `405 Method Not Allowed` status.
+Более надёжный способ проверки поддерживаемых методов — просто сделать запрос с этим типом метода и изучить ответ сервера. Если метод не разрешён, сервер должен вернуть статус `405 Method Not Allowed`.
 
-Note that some servers treat unknown methods as equivalent to `GET`, so they may respond to arbitrary methods, such as the request shown below. This can occasionally be useful to evade a web application firewall, or any other filtering that blocks specific methods.
+Обратите внимание, что некоторые серверы считают все неизвестные им методы за `GET`, поэтому могут отвечать на произвольные методы, такие как запрос, показанный ниже. Иногда это может быть полезно для обхода WAF или другой фильтрации, блокирующей определённые методы.
 
 ```http
 FOO / HTTP/1.1
 Host: example.org
 ```
 
-Requests with arbitrary methods can also be made using curl with the `-X` option:
+Запросы произвольными методами также можно выполнять с помощью curl с параметром `-X`:
 
 ```bash
 curl -X FOO https://example.org
 ```
 
-There are also a variety of automated tools that can attempt to determine supported methods, such as the [`http-methods`](https://nmap.org/nsedoc/scripts/http-methods.html) Nmap script. However, these tools may not test for dangerous methods (i.e, methods that may cause changes such as `PUT` or `DELETE`), or may unintentionally cause changes to the web server if these methods are supported. As such, they should be used with care.
+Существует также множество автоматизированных инструментов, которые могут пытаться определить поддерживаемые методы, таких как NSE-скрипт Nmap [`http-methods`](https://nmap.org/nsedoc/scripts/http-methods.html). Однако эти инструменты могут не проверять опасные методы (т. е. методы, которые могут вызывать изменения, такие как `PUT` или `DELETE`), или могут непреднамеренно вызывать изменения на web-сервере, если эти методы поддерживаются. Поэтому их следует применять с осторожностью.
 
-### PUT and DELETE
+### PUT и DELETE
 
-The `PUT` and `DELETE` methods can have different effects, depending on whether they are being interpreted by the web server or by the application running on it.
+Методы `PUT` и `DELETE` могут приводить к разным результатам, в зависимости от того, интерпретируются ли они web-сервером или запущенным на нём приложением.
 
-#### Legacy Web Servers
+#### Устаревшие web-серверы
 
-Some legacy web servers allowed the use of the `PUT` method to create files on the server. For example, if the server is configured to allow this, the request below would create a file on the server called `test.html` with the contents `<script>alert(1)</script>`.
+Некоторые ныне устаревшие web-серверы позволяли использовать метод `PUT` для создания файлов на сервере. Например, если это разрешено настройками, то приведённый ниже запрос создаст на сервере файл с именем `test.html` и содержимым `<script>alert(1)</script>`.
 
 ```http
 PUT /test.html HTTP/1.1
@@ -90,30 +90,30 @@ Content-Length: 25
 <script>alert(1)</script>
 ```
 
-Similar requests can also be made with cURL:
+Подобные запросы также можно сделать с помощью cURL.:
 
 ```bash
 curl https://example.org --upload-file test.html
 ```
 
-This allows an attacker to upload arbitrary files to the webserver, which could potentially result in a full system compromise if they are allowed to upload executable code such as PHP files. However, this configuration is extremely rare, and is unlikely to be seen on any modern systems.
+Это позволяет злоумышленнику загружать произвольные файлы на web-сервер, что потенциально может привести к полной компрометации системы, если разрешено загружать исполняемый код, например, файлы PHP. Однако такая конфигурация встречается крайне редко и вряд ли будет обнаружена в современных системах.
 
-Similarly, the `DELETE` method can be used to delete files from the webserver. Note that this is a **destructive action**, so care should be taken when testing this method.
+Аналогичным образом, метод `DELETE` можно использовать для удаления файлов с web-сервера. Обратите внимание, что это **разрушительное воздействие**, поэтому если собираетесь его использовать, соблюдайте осторожность.
 
 ```http
 DELETE /test.html HTTP/1.1
 Host: example.org
 ```
 
-Or with cURL:
+Или с cURL:
 
 ```bash
 curl http://example.org/test.html -X DELETE
 ```
 
-#### RESTful APIs
+#### RESTful API
 
-By contrast, the `PUT` and `DELETE` methods are commonly used by modern RESTful applications to create and delete objects. For example, the API request below could be used to create a user called "foo" with a role of "user":
+Напротив, методы `PUT` and `DELETE` часто используются современными RESTful-приложениями для создания и удаления объектов. Например, приведённый ниже API-запрос может быть использован для создания пользователя с именем foo с ролью user:
 
 ```http
 PUT /api/users/foo HTTP/1.1
@@ -125,22 +125,22 @@ Content-Length: 34
 }
 ```
 
-A similar request with the DELETE method could be used to delete an object.
+Аналогичный запрос с методом `DELETE` можно использовать для удаления объекта.
 
 ```http
 DELETE /api/users/foo HTTP/1.1
 Host: example.org
 ```
 
-Although it may be reported by automated scanning tools, the presence of these methods on a RESTful API **is not a security issue**. However, this functionality may have other vulnerabilities (such as weak access control), and should be thoroughly tested.
+Хотя инструменты автоматического сканирования и могут предупреждать об этом, но наличие этих методов в RESTful API **не является проблемой безопасности**. Однако эта функциональность может иметь другие уязвимости (например, слабый контроль доступа) и должна быть тщательно протестирована.
 
 ### TRACE
 
-The `TRACE` method (or Microsoft's equivalent `TRACK` method) causes the server to echo back the contents of the request. This lead to a vulnerability called Cross-Site Tracing (XST) being published in [2003](https://www.cgisecurity.com/whitehat-mirror/WH-WhitePaper_XST_ebook.pdf) (PDF), which could be used to access cookies that had the `HttpOnly` flag set. The `TRACE` method has been blocked in all browsers and plugins for many years, and as such this issue is no longer exploitable. However, it may still be flagged by automated scanning tools, and the `TRACE` method being enabled on a web server suggests that is has not been properly hardened.
+Метод `TRACE` (или его эквивалент от Microsoft — `TRACK`) заставляет сервер возвращать содержимое запроса. Это привело к публикации в 2003 году ([PDF](https://www.cgisecurity.com/whitehat-mirror/WH-WhitePaper_XST_ebook.pdf)) уязвимости под названием Cross-Site Tracing (XST), которую можно было использовать для доступа к файлам cookie с установленным флагом `HttpOnly`. Метод `TRACE` уже многие годы как заблокирован во всех браузерах и плагинах, и поэтому его больше нельзя эксплуатировать. Тем не менее, он всё ещё может быть отмечен автоматическими инструментами сканирования, а метод `TRACE` включенный на web-сервере, предполагает, что защита сервера должным образом не укреплена.
 
 ### CONNECT
 
-The `CONNECT` method causes the web server to open a TCP connection to another system, and then to pass traffic from the client through to that system. This could allow an attacker to proxy traffic through the server, in order to hide their source address, access internal systems or access services that are bound to localhost. An example of a `CONNECT` request is shown below:
+Метод `CONNECT` заставляет web-сервер открывать TCP-соединение с другой системой, а затем передавать трафик от клиента в эту систему. Это может позволить злоумышленнику проксировать трафик через сервер, чтобы скрыть свой исходный адрес, получить доступ к внутренним системам или получить доступ к службам, привязанным к локальному хосту. Пример запроса `CONNECT` показан ниже:
 
 ```http
 CONNECT 192.168.0.1:443 HTTP/1.1
@@ -149,9 +149,9 @@ Host: example.org
 
 ### PATCH
 
-The `PATCH` method is defined in [RFC 5789](https://datatracker.ietf.org/doc/html/rfc5789), and is used to provide instructions for how an object should be modified. The RFC itself does not define what format these instructions should be in, but various methods are defined in other standards, such as the [RFC 6902 - JavaScript Object Notation (JSON) Patch](https://datatracker.ietf.org/doc/html/rfc6902).
+Метод `PATCH` определён в [RFC 5789](https://datatracker.ietf.org/doc/html/rfc5789), и используется для предоставления инструкций по изменению объекта. Сам RFC не определяет, в каком формате должны быть эти инструкции, но различные методы определены в других стандартах, например, в [RFC 6902 - JavaScript Object Notation (JSON) PATCH](https://datatracker.ietf.org/doc/html/rfc6902).
 
-For example, if we have an user called "foo" with the following properties:
+Например, если у нас есть пользователь с именем foo со следующими атрибутами:
 
 ```json
 {
@@ -160,7 +160,7 @@ For example, if we have an user called "foo" with the following properties:
 }
 ```
 
-The following JSON PATCH request could be used to change the role of this user "admin", without modifying the email address:
+Для изменения роли этого пользователя на admin, не изменяя email, можно использовать такой запрос JSON PATCH:
 
 ```http
 PATCH /api/users/foo HTTP/1.1
@@ -169,7 +169,7 @@ Host: example.org
 { "op": "replace", "path": "/role", "value": "admin" }
 ```
 
-Although the RFC states that it should include instructions for how the object should be modified, the `PATCH` method is commonly (mis)used to include the changed content instead, as shown below. Much like the previous request, this would change the "role" value to "admin" without modifying the rest of the object. This is in contrast to the `PUT` method, which would overwrite the entire object (and thus result in an object with no "email" attribute).
+Хотя в RFC указано, что запрос должен включать инструкции о том, как должен изменяться весь объект, метод `PATCH` вместо этого обычно (зло-) употребляется для включения только изменённого содержимого, как показано ниже. Как и в предыдущем запросе, это приведёт к изменению значения role на admin без изменения остальной части объекта. В этом его отличие от метода `PUT` который перезаписывает весь объект (что оставило бы его без атрибута email).
 
 ```http
 PATCH /api/users/foo HTTP/1.1
@@ -180,11 +180,11 @@ Host: example.org
 }
 ```
 
-As with the `PUT` method, this functionality may have access control weaknesses or other vulnerabilities. Additionally, applications may not perform the same level of input validation when modifying an object as they do when creating one. This could potentially allow malicious values to be injected (such as in a stored cross-site scripting attack), or could allow broken or invalid objects that may result in business logic related issues.
+Как и в случае с методом `PUT`, эта функциональность может иметь слабые места в контроле доступа или другие уязвимости. Кроме того, приложения при изменении объекта могут не обеспечивать тот же уровень контроля входных данных, что и при его создании. Это потенциально может привести к инъекции вредоносных значений (например, при атаке с использованием хранимых межсайтовых скриптов) или может привести к повреждению или недопустимым объектам, что может стать причиной проблем, связанных с бизнес-логикой.
 
-### Testing for Access Control Bypass
+### Тестирование обхода контроля доступа
 
-If a page on the application redirects users to a login page with a `302` code when they attempt and access it directly, it may be possible to bypass this by making a request with a different HTTP method, such as `HEAD`, `POST` or even a made up method such as `FOO`. If the web application responds with a `HTTP/1.1 200 OK` rather than the expected `HTTP/1.1 302 Found` then it may be possible to bypass the authentication or authorization. The example below shows how a `HEAD` request may result in a page setting administrative cookies, rather than redirecting the user to a login page:
+Если страница приложения при попытке получить доступ к ней напрямую перенаправляет пользователей на страницу входа с кодом `302`, можно обойти это, выполнив запрос с другим методом HTTP, например `HEAD`, `POST` или даже выдуманным методом, например, `FOO`. Если web-приложение отвечает `HTTP/1.1 200 OK`, вместо ожидаемого `HTTP/1.1 302 Found` возможно, получится обойти аутентификацию или авторизацию. В приведённом ниже примере показано, как запрос `HEAD` может привести к тому, что страница установит cookie для сессии администратора, а не перенаправит пользователя на страницу входа в систему:
 
 ```http
 HEAD /admin/ HTTP/1.1
@@ -197,14 +197,14 @@ HTTP/1.1 200 OK
 Set-Cookie: adminSessionCookie=[...];
 ```
 
-Alternatively, it may be possible to make direct requests to pages that cause actions, such as:
+В качестве альтернативы можно делать прямые запросы к страницам, которые вызывают действия, например:
 
 ```http
 HEAD /admin/createUser.php?username=foo&password=bar&role=admin HTTP/1.1
 Host: example.org
 ```
 
-Or:
+Или:
 
 ```http
 FOO /admin/createUser.php
@@ -214,17 +214,17 @@ Content-Length: 36
 username=foo&password=bar&role=admin
 ```
 
-### Testing for HTTP Method Overriding
+### Тестирование переопределения HTTP-метода
 
-Some web frameworks provide a way to override the actual HTTP method in the request by emulating the missing HTTP verbs passing some custom header in the requests. The main purpose of this is to circumvent a middleware application (such as a proxy or web application firewall) which blocks specific methods. The following alternative HTTP headers could potentially be used:
+Некоторые web-фреймворки предоставляют способ переопределить фактический HTTP-метод в запросе, эмулируя отсутствующие HTTP-глаголы, передачей пользовательского заголовка в запросах. Основная цель этого — обойти приложение промежуточного слоя (например, прокси-сервер или WAF), которое блокирует те или иные методы. Потенциально могут быть использованы следующие альтернативные HTTP-заголовки:
 
 - `X-HTTP-Method`
 - `X-HTTP-Method-Override`
 - `X-Method-Override`
 
-In order to test this, in the scenarios where restricted verbs such as `PUT` or `DELETE` return a `405 Method not allowed`, replay the same request with the addition of the alternative headers for HTTP method overriding, and observe how the system responds. The application should respond with a different status code (*e.g.* `200 OK`) in cases where method overriding is supported.
+Чтобы проверить это, в сценариях, где запрещённые глаголы, такие как `PUT` или `DELETE` выдают `405 Method not allowed`, повторите тот же запрос, добавив альтернативный заголовок для переопределения HTTP-метода и понаблюдайте за реакцией системы. Если переопределение методов поддерживается, то приложение должно отвечать другим кодом состояния (*например*, `200 OK`).
 
-The web server in the following example does not allow the `DELETE` method and blocks it:
+В следующем примере web-сервер не разрешает метод `DELETE` и блокирует его:
 
 ```http
 DELETE /resource.html HTTP/1.1
@@ -236,7 +236,7 @@ HTTP/1.1 405 Method Not Allowed
 [...]
 ```
 
-After adding the `X-HTTP-Method` header, the server responds to the request with a 200:
+После добавления заголовка `X-HTTP-Method`, сервер отвечает на запрос кодом 200:
 
 ```http
 GET /resource.html HTTP/1.1
@@ -249,21 +249,21 @@ HTTP/1.1 200 OK
 [...]
 ```
 
-## Remediation
+## Как исправить
 
-- Ensure that only the required methods are allowed, and that the allowed methods are properly configured.
-- Ensure that no workarounds are implemented to bypass security measures implemented by user-agents, frameworks, or web servers.
+- Убедитесь, что разрешены только требуемые методы и что разрешённые методы корректно настроены.
+- Убедитесь в неработоспособности путей для обхода мер защиты, реализованных пользовательскими агентами, фреймворками или web-серверами..
 
-## Tools
+## Инструменты
 
 - [Ncat](https://nmap.org/ncat/)
 - [cURL](https://curl.haxx.se/)
 - [Nmap http-methods NSE script](https://nmap.org/nsedoc/scripts/http-methods.html)
 
-## References
+## Ссылки
 
-- [RFC 7231 - Hypertext Transfer Protocol (HTTP/1.1)](https://datatracker.ietf.org/doc/html/rfc7231)
-- [RFC 5789 - PATCH Method for HTTP](https://datatracker.ietf.org/doc/html/rfc5789)
-- [HTACCESS: BILBAO Method Exposed](https://web.archive.org/web/20160616172703/http://www.kernelpanik.org/docs/kernelpanik/bme.eng.pdf)
-- [Fortify - Misused HTTP Method Override](https://vulncat.fortify.com/en/detail?id=desc.dynamic.xtended_preview.often_misused_http_method_override)
-- [Mozilla Developer Network - Safe HTTP Methods](https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP)
+- [RFC 7231 - Протокол передачи гипертекста (HTTP/1.1)](https://datatracker.ietf.org/doc/html/rfc7231)
+- [RFC 5789 - Метод PATCH для HTTP](https://datatracker.ietf.org/doc/html/rfc5789)
+- [HTACCESS: Разоблачение метода BILBAO](https://web.archive.org/web/20160616172703/http://www.kernelpanik.org/docs/kernelpanik/bme.eng.pdf)
+- [Fortify - Злоупотребление переопределением HTTP-методов](https://vulncat.fortify.com/en/detail?id=desc.dynamic.xtended_preview.often_misused_http_method_override)
+- [Mozilla Developer Network - Безопасные методы HTTP](https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP)

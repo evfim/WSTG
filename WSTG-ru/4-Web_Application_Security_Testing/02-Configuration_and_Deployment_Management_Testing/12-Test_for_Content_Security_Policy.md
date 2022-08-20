@@ -7,72 +7,72 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Content Security Policy
+# Тестирование Content Security Policy
 
 |ID          |
 |------------|
 |WSTG-CONF-12|
 
-## Summary
+## Обзор
 
-Content Security Policy (CSP) is a declarative allow-list policy enforced through `Content-Security-Policy` response header or equivalent `<meta>` element. It allows developers to restrict the sources from which resources such as JavaScript, CSS, images, files etc. are loaded. CSP is an effective defense in depth technique to mitigate the risk of vulnerabilities such as Cross Site Scripting (XSS) and Clickjacking.
+Политика защиты контента (англ.: Content Security Policy, CSP) — декларативная политика, определяющая список разрешённых источников и реализуемая с помощью заголовка ответа `Content-Security-Policy` или эквивалентного элемента `<meta>`. Она позволяет разработчикам ограничивать источники, из которых загружаются такие ресурсы, как JavaScript, CSS, изображения, файлы и т. д. CSP — эффективная технология эшелонированной защиты для снижения риска таких уязвимостей, как межсайтовый скриптинг (XSS) и перехват клика (англ.: Clickjacking).
 
-Content Security Policy supports directives which allow granular control to the flow of policies. (See [References](#references) for further details.)
+Content Security Policy поддерживает директивы, которые позволяют детально контролировать поток политик. (См. [Ссылки](#ссылки) для дополнительной информации.)
 
-## Test Objectives
+## Задача тестирования
 
-- Review the Content-Security-Policy header or meta element to identify misconfigurations.
+- Проанализируйте наличие заголовка `Content-Security-Policy` или одноимённого элемента `<meta>`, чтобы определить некорректные конфигурации.
 
-## How to Test
+## Как тестировать
 
-To test for misconfigurations in CSPs, look for insecure configurations by examining the `Content-Security-Policy` HTTP response header or CSP `meta` element in a proxy tool:
+Чтобы протестировать наличие некорректных конфигураций в CSP, найдите их, изучая заголовки HTTP-ответа `Content-Security-Policy` или элемент `meta` в инструменте прокси:
 
-- `unsafe-inline` directive enables inline scripts or styles making the applications susceptible to XSS attacks.
-- `unsafe-eval` directive allows `eval()` to be used in the application.
-- `unsafe-hashes` directive allows use of inline scripts/styles, assuming they match the specified hashes.
-- Resources such as scripts can be allowed to be loaded from any origin by the use wildcard (`*`) source.
-    - Also consider wildcards based on partial matches, such as: `https://*` or `*.cdn.com`.
-    - Consider whether allow listed sources provide JSONP endpoints which might be used to bypass CSP or same-origin-policy.
-- Framing can be enabled for all origins by the use of wildcard (`*`) source for `frame-ancestors` directive.
-- Business critical applications should require to use a strict policy.
+- директива `unsafe-inline` разрешает встроенные скрипты или стили, делающие приложения уязвимыми для XSS-атак.
+- директива `unsafe-eval` разрешает использовать `eval()` в приложении.
+- директива `unsafe-hashes` разрешает использовать встроенные скрипты/стили при условии, что они соответствуют указанным хэшам.
+- Ресурсы, например, скрипты, могут быть разрешены для загрузки из любого источника с помощью подстановочного знака (`*`).
+    - Также изучите подстановки на основе неполных совпадений, например: `https://*` или `*.cdn.com`.
+    - Подумайте, предоставляют ли перечисленные разрешённые источники точки входа для JSONP, которые могут быть использованы для обхода CSP или политики same-origin.
+- Фреймы могут быть разрешены для всех источников с помощью подстановочного знака (`*`) для источника в директиве `frame-ancestors`
+- Критически важные бизнес-приложения должны требовать использования строгой политики.
 
-## Remediation
+## Как исправить
 
-Configure a strong content security policy which reduces the attack surface of the application. Developers can verify the strength of content security policy using online tools such as [Google CSP Evaluator](https://csp-evaluator.withgoogle.com/).
+Настройте строгую политику безопасности контента, которая уменьшает поверхность атаки приложения. Разработчики могут проверить надёжность политики защиты контента с помощью онлайн-инструментов, например, [Google CSP Evaluator](https://csp-evaluator.withgoogle.com/).
 
-### Strict Policy
+### Строгая политика
 
-A strict policy is a policy which provides protection against classical stored, reflected, and some of the DOM XSS attacks and should be the optimal goal of any team trying to implement CSP.
+Строгой (англ.: strict) называется политика, которая обеспечивает защиту от классических хранимых, отражённых и некоторых DOM XSS-атак. Она должна быть оптимальной целью любой команды, пытающейся внедрить CSP.
 
-Google went ahead and set up a guide to adopt a strict CSP based on nonces. Based on a presentation at [LocoMocoSec](https://speakerdeck.com/lweichselbaum/csp-a-successful-mess-between-hardening-and-mitigation?slide=55), the following two policies can be used to apply a strict policy:
+Google пошёл дальше и создал руководство по внедрению строгой CSP на основе одноразовых случайных значений (CSP nonce). По материалам презентации на [LocoMocoSec](https://speakerdeck.com/lweichselbaum/csp-a-successful-mess-between-hardening-and-mitigation?slide=55) для применения строгой политики можно использовать следующие два варианта:
 
-Moderate Strict Policy:
+Умеренно строгая политика:
 
 ```HTTP
 script-src 'nonce-r4nd0m' 'strict-dynamic';
 object-src 'none'; base-uri 'none';
 ```
 
-Locked down Strict Policy:
+Блокирующая строгая политика:
 
 ```HTTP
 script-src 'nonce-r4nd0m';
 object-src 'none'; base-uri 'none';
 ```
 
-## Tools
+## Инструменты
 
 - [Google CSP Evaluator](https://csp-evaluator.withgoogle.com/)
-- [CSP Auditor - Burp Suite Extension](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
-- [CSP Generator Chrome](https://chrome.google.com/webstore/detail/content-security-policy-c/ahlnecfloencbkpfnpljbojmjkfgnmdc) / [Firefox](https://addons.mozilla.org/en-US/firefox/addon/csp-generator/)
+- [CSP Auditor — расширение для Burp Suite](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
+- [CSP Generator для Chrome](https://chrome.google.com/webstore/detail/content-security-policy-c/ahlnecfloencbkpfnpljbojmjkfgnmdc) / [для Firefox](https://addons.mozilla.org/en-US/firefox/addon/csp-generator/)
 
-## References
+## Ссылки
 
-- [OWASP Content Security Policy Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
+- [Памятка OWASP по Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
 - [Mozilla Developer Network: Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 - [CSP Level 3 W3C](https://www.w3.org/TR/CSP3/)
 - [CSP with Google](https://csp.withgoogle.com/docs/index.html)
 - [Content-Security-Policy](https://content-security-policy.com/)
 - [Google CSP Evaluator](https://csp-evaluator.withgoogle.com/)
-- [CSP A Successful Mess Between Hardening And Mitigation](https://speakerdeck.com/lweichselbaum/csp-a-successful-mess-between-hardening-and-mitigation)
-- [The unsafe-hashes Source List Keyword](https://content-security-policy.com/unsafe-hashes/)
+- [CSP — гремучая смесь из укрепления защиты и смягчения последствий](https://speakerdeck.com/lweichselbaum/csp-a-successful-mess-between-hardening-and-mitigation)
+- [Список источников в директиве unsafe-hashes](https://content-security-policy.com/unsafe-hashes/)

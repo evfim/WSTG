@@ -61,51 +61,51 @@ tags: WSTG
 
 ### 4.1 [Сбор информации](4-Web_Application_Security_Testing/01-Information_Gathering/README.md)
 
-#### 4.1.1 [Разведка в поисковых системах и обнаружение утечек информации](4-Web_Application_Security_Testing/01-Information_Gathering/01-Conduct_Search_Engine_Discovery_Reconnaissance_for_Information_Leakage.md)
+#### 4.1.1 [Разведка в поисковых системах](4-Web_Application_Security_Testing/01-Information_Gathering/01-Conduct_Search_Engine_Discovery_Reconnaissance_for_Information_Leakage.md)
 
 #### 4.1.2 [Определение web-сервера](4-Web_Application_Security_Testing/01-Information_Gathering/02-Fingerprint_Web_Server.md)
 
-#### 4.1.3 [Review Webserver Metafiles for Information Leakage](4-Web_Application_Security_Testing/01-Information_Gathering/03-Review_Webserver_Metafiles_for_Information_Leakage.md)
+#### 4.1.3 [Анализ метафайлов web-сервера](4-Web_Application_Security_Testing/01-Information_Gathering/03-Review_Webserver_Metafiles_for_Information_Leakage.md)
 
-#### 4.1.4 [Enumerate Applications on Webserver](4-Web_Application_Security_Testing/01-Information_Gathering/04-Enumerate_Applications_on_Webserver.md)
+#### 4.1.4 [Инвентаризация приложений на web-сервере](4-Web_Application_Security_Testing/01-Information_Gathering/04-Enumerate_Applications_on_Webserver.md)
 
-#### 4.1.5 [Review Webpage Content for Information Leakage](4-Web_Application_Security_Testing/01-Information_Gathering/05-Review_Webpage_Content_for_Information_Leakage.md)
+#### 4.1.5 [Анализ контента web-страницы](4-Web_Application_Security_Testing/01-Information_Gathering/05-Review_Webpage_Content_for_Information_Leakage.md)
 
-#### 4.1.6 [Identify Application Entry Points](4-Web_Application_Security_Testing/01-Information_Gathering/06-Identify_Application_Entry_Points.md)
+#### 4.1.6 [Определение точек входа в приложение](4-Web_Application_Security_Testing/01-Information_Gathering/06-Identify_Application_Entry_Points.md)
 
-#### 4.1.7 [Map Execution Paths Through Application](4-Web_Application_Security_Testing/01-Information_Gathering/07-Map_Execution_Paths_Through_Application.md)
+#### 4.1.7 [Пути выполнения приложения](4-Web_Application_Security_Testing/01-Information_Gathering/07-Map_Execution_Paths_Through_Application.md)
 
-#### 4.1.8 [Fingerprint Web Application Framework](4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework.md)
+#### 4.1.8 [Определение фреймворка web-приложения](4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework.md)
 
-#### 4.1.9 [Fingerprint Web Application](4-Web_Application_Security_Testing/01-Information_Gathering/09-Fingerprint_Web_Application.md)
+#### 4.1.9 [Определение web-приложения](4-Web_Application_Security_Testing/01-Information_Gathering/09-Fingerprint_Web_Application.md)
 
-#### 4.1.10 [Map Application Architecture](4-Web_Application_Security_Testing/01-Information_Gathering/10-Map_Application_Architecture.md)
+#### 4.1.10 [Архитектура приложения](4-Web_Application_Security_Testing/01-Information_Gathering/10-Map_Application_Architecture.md)
 
 ### 4.2 [Тестирование управления конфигурациями и развёртыванием](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/README.md)
 
-#### 4.2.1 [Test Network Infrastructure Configuration](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/01-Test_Network_Infrastructure_Configuration.md)
+#### 4.2.1 [Анализ конфигурации сетевой инфраструктуры](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/01-Test_Network_Infrastructure_Configuration.md)
 
-#### 4.2.2 [Test Application Platform Configuration](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/02-Test_Application_Platform_Configuration.md)
+#### 4.2.2 [Тестирование конфигурации платформы приложения](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/02-Test_Application_Platform_Configuration.md)
 
-#### 4.2.3 [Test File Extensions Handling for Sensitive Information](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/03-Test_File_Extensions_Handling_for_Sensitive_Information.md)
+#### 4.2.3 [Тестирование обработки расширений файлов](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/03-Test_File_Extensions_Handling_for_Sensitive_Information.md)
 
-#### 4.2.4 [Review Old Backup and Unreferenced Files for Sensitive Information](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/04-Review_Old_Backup_and_Unreferenced_Files_for_Sensitive_Information.md)
+#### 4.2.4 [Анализ старых резервных копий и файлов без ссылок](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/04-Review_Old_Backup_and_Unreferenced_Files_for_Sensitive_Information.md)
 
-#### 4.2.5 [Enumerate Infrastructure and Application Admin Interfaces](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/05-Enumerate_Infrastructure_and_Application_Admin_Interfaces.md)
+#### 4.2.5 [Инвентаризация интерфейсов администрирования](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/05-Enumerate_Infrastructure_and_Application_Admin_Interfaces.md)
 
-#### 4.2.6 [Test HTTP Methods](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods.md)
+#### 4.2.6 [Тестирование методов HTTP](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods.md)
 
-#### 4.2.7 [Test HTTP Strict Transport Security](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security.md)
+#### 4.2.7 [Тестирование HTTP Strict Transport Security](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security.md)
 
-#### 4.2.8 [Test RIA Cross Domain Policy](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/08-Test_RIA_Cross_Domain_Policy.md)
+#### 4.2.8 [Тестирование междоменной политики для RIA](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/08-Test_RIA_Cross_Domain_Policy.md)
 
-#### 4.2.9 [Test File Permission](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/09-Test_File_Permission.md)
+#### 4.2.9 [Тестирование разрешений на доступ к файлам](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/09-Test_File_Permission.md)
 
-#### 4.2.10 [Test for Subdomain Takeover](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/10-Test_for_Subdomain_Takeover.md)
+#### 4.2.10 [Тестирование на захват поддомена](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/10-Test_for_Subdomain_Takeover.md)
 
-#### 4.2.11 [Test Cloud Storage](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/11-Test_Cloud_Storage.md)
+#### 4.2.11 [Тестирование облачного хранилища](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/11-Test_Cloud_Storage.md)
 
-#### 4.2.12 [Test for Content Security Policy](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/12-Test_for_Content_Security_Policy.md)
+#### 4.2.12 [Тестирование Content Security Policy](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/12-Test_for_Content_Security_Policy.md)
 
 ### 4.3 [Тестирование управления идентификацией](4-Web_Application_Security_Testing/03-Identity_Management_Testing/README.md)
 

@@ -7,37 +7,37 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test RIA Cross Domain Policy
+# Тестирование междоменной политики для RIA
 
 |ID          |
 |------------|
 |WSTG-CONF-08|
 
-## Summary
+## Обзор
 
-Rich Internet Applications (RIA) have adopted Adobe's crossdomain.xml policy files to allow for controlled cross domain access to data and service consumption using technologies such as Oracle Java, Silverlight, and Adobe Flash. Therefore, a domain can grant remote access to its services from a different domain. However, often the policy files that describe the access restrictions are poorly configured. Poor configuration of the policy files enables Cross-site Request Forgery attacks, and may allow third parties to access sensitive data meant for the user.
+Насыщенные интернет-приложения (англ.: [Rich Internet Applications](https://ru.wikipedia.org/wiki/%D0%9D%D0%B0%D1%81%D1%8B%D1%89%D0%B5%D0%BD%D0%BD%D0%BE%D0%B5_%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%BD%D0%B5%D1%82-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5), RIA) — технологии, почти не используемые современными браузерами; их реинкарнация — [PWA](https://ru.wikipedia.org/wiki/%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D0%B2%D0%BD%D0%BE%D0%B5_%D0%B2%D0%B5%D0%B1-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5)). Чтобы обеспечить контролируемый междоменный доступ к данным и сервисам, работающим на таких технологиях, как Oracle Java, MS Silverlight и Adobe Flash, в RIA используются файлы политики Adobe crossdomain.xml. Следовательно, домен может предоставить удалённый доступ к своим службам из другого домена. Однако часто файлы политик, описывающие ограничения доступа, не настроены. Неправильная конфигурация этих политик делает возможными атаки с подделкой межсайтовых запросов и может позволить третьим лицам получить доступ к конфиденциальным данным, предназначенным для пользователя.
 
-### What are cross-domain policy files?
+### Что такое файлы междоменной политики?
 
-A cross-domain policy file specifies the permissions that a web client such as Java, Adobe Flash, Adobe Reader, etc. use to access data across different domains. For Silverlight, Microsoft adopted a subset of the Adobe's crossdomain.xml, and additionally created it's own cross-domain policy file: clientaccesspolicy.xml.
+Файл междоменной политики определяет разрешения, которые web-клиент, такой как Java, Adobe Flash, Adobe Reader и т.д., использует для доступа к данным в разных доменах. Для Silverlight Microsoft использовала подмножество Adobe crossdomain.xml и дополнительно создала собственный файл междоменной политики: clientaccesspolicy.xml.
 
-Whenever a web client detects that a resource has to be requested from other domain, it will first look for a policy file in the target domain to determine if performing cross-domain requests, including headers, and socket-based connections are allowed.
+Всякий раз, когда web-клиент обнаруживает, что ресурс должен быть запрошен из другого домена, он сначала ищет файл политики в целевом домене, чтобы определить, разрешено ли выполнение междоменных запросов, включая заголовки, и соединения на основе сокетов.
 
-Master policy files are located at the domain's root. A client may be instructed to load a different policy file but it will always check the master policy file first to ensure that the master policy file permits the requested policy file.
+Главный (master) файл политики расположен в корне домена. Клиенту может быть указано загрузить другой файл политики, но он всегда сначала проверяет главный, чтобы убедиться, что он разрешает запрошенный файл политики.
 
-#### Crossdomain.xml vs. Clientaccesspolicy.xml
+#### Сравнение Crossdomain.xml и Clientaccesspolicy.xml
 
-Most RIA applications support crossdomain.xml. However in the case of Silverlight, it will only work if the crossdomain.xml specifies that access is allowed from any domain. For more granular control with Silverlight, clientaccesspolicy.xml must be used.
+Большинство приложений RIA поддерживают crossdomain.xml. Однако в случае с Silverlight это будет работать только в том случае, если в файле crossdomain.xml указано, что доступ разрешён из любого домена. Для более точной настройки в Silverlight необходимо использовать clientaccesspolicy.xml.
 
-Policy files grant several types of permissions:
+Файлы политики предоставляют несколько типов разрешений:
 
-- Accepted policy files (Master policy files can disable or restrict specific policy files)
-- Sockets permissions
-- Header permissions
-- HTTP/HTTPS access permissions
-- Allowing access based on cryptographic credentials
+- Принятые файлы политики (главные файлы политики могут отключать или ограничивать другие файлы политики)
+- Разрешения для сокетов
+- Разрешения для заголовков
+- Разрешения на доступ по HTTP/HTTPS
+- Разрешение доступа с использованием криптографических учётных данных
 
-An example of an overly permissive policy file:
+Пример файла политики с явно избыточными разрешениями:
 
 ```xml
 <?xml version="1.0"?>
@@ -50,32 +50,32 @@ An example of an overly permissive policy file:
 </cross-domain-policy>
 ```
 
-### How can cross domain policy files can be abused?
+### Как можно злоупотреблять файлами междоменной политики?
 
-- Overly permissive cross-domain policies.
-- Generating server responses that may be treated as cross-domain policy files.
-- Using file upload functionality to upload files that may be treated as cross-domain policy files.
+- Чрезмерно разрешительные междоменные политики.
+- Формирование ответов сервера, которые могут интерпретироваться как файлы междоменной политики.
+- Использование функции загрузки файлов для загрузки файлов, которые могут интерпретироваться как файлы междоменной политики.
 
-### Impact of Abusing Cross-Domain Access
+### Последствия от злоупотребления междоменным доступом
 
-- Defeat CSRF protections.
-- Read data restricted or otherwise protected by cross-origin policies.
+- Обход защиты от CSRF.
+- Ограничения на чтение данных или иная защита в cross-origin-политиках.
 
-## Test Objectives
+## Задача тестирования
 
-- Review and validate the policy files.
+- Проанализировать и подтвердить настройки в файлах политик.
 
-## How to Test
+## Как тестировать
 
-### Testing for RIA Policy Files Weakness
+### Тестирование на наличие недостатков в файлах политики RIA
 
-To test for RIA policy file weakness the tester should try to retrieve the policy files crossdomain.xml and clientaccesspolicy.xml from the application's root, and from every folder found.
+Чтобы проверить наличие недостатков в файлах политики RIA, тестировщик должен попытаться получить файлы политики crossdomain.xml и clientaccesspolicy.xml из корня приложения и из каждой найденной папки.
 
-For example, if the application's URL is `http://www.owasp.org`, the tester should try to download the files `http://www.owasp.org/crossdomain.xml` and `http://www.owasp.org/clientaccesspolicy.xml`.
+Например, если URL приложения `http://www.owasp.org`, тестировщик должен попытаться загрузить файлы `http://www.owasp.org/crossdomain.xml` и `http://www.owasp.org/clientaccesspolicy.xml`.
 
-After retrieving all the policy files, the permissions allowed should be be checked under the least privilege principle. Requests should only come from the domains, ports, or protocols that are necessary. Overly permissive policies should be avoided. Policies with `*` in them should be closely examined.
+После извлечения всех файлов политики все предоставленные разрешения должны быть проверены на соответствие принципу наименьших привилегий. Запросы должны поступать только от тех доменов, портов или протоколов, которые необходимы. Следует избегать чрезмерно разрешительной политики. Политики со `*` должны быть изучены с особым пристрастием.
 
-#### Example
+#### Пример
 
 ```xml
 <cross-domain-policy>
@@ -83,25 +83,23 @@ After retrieving all the policy files, the permissions allowed should be be chec
 </cross-domain-policy>
 ```
 
-##### Result Expected
+##### Ожидаемый результат
 
-- A list of policy files found.
-- A list of weak settings in the policies.
+- Список найденных файлов политики.
+- Перечень недостатков в политиках.
 
-## Tools
+## Инструменты
 
 - Nikto
 - OWASP Zed Attack Proxy Project
 - W3af
 
-## References
+## Ссылки
 
-- Adobe: ["Cross-domain policy file specification"](http://www.adobe.com/devnet/articles/crossdomain_policy_file_spec.html)
-- Adobe: ["Cross-domain policy file usage recommendations for Flash Player"](http://www.adobe.com/devnet/flashplayer/articles/cross_domain_policy.html)
-- Oracle: ["Cross-Domain XML Support"](http://www.oracle.com/technetwork/java/javase/plugin2-142482.html#CROSSDOMAINXML)
-- MSDN: ["Making a Service Available Across Domain Boundaries"](http://msdn.microsoft.com/en-us/library/cc197955(v=vs.95).aspx)
-- MSDN: ["Network Security Access Restrictions in Silverlight"](http://msdn.microsoft.com/en-us/library/cc645032(v=vs.95).aspx)
-- Stefan Esser: ["Poking new holes with Flash Crossdomain Policy Files"](http://www.hardened-php.net/library/poking_new_holes_with_flash_crossdomain_policy_files.html)
-- Jeremiah Grossman: ["Crossdomain.xml Invites Cross-site Mayhem"](http://jeremiahgrossman.blogspot.com/2008/05/crossdomainxml-invites-cross-site.html)
-- Google Doctype: ["Introduction to Flash security"](http://code.google.com/p/doctype-mirror/wiki/ArticleFlashSecurity)
-- UCSD: [Analyzing the Crossdomain Policies of Flash Applications](http://cseweb.ucsd.edu/~hovav/dist/crossdomain.pdf)
+- Adobe: [Спецификация файла междоменной политики](https://www.adobe.com/devnet-docs/acrobatetk/tools/AppSec/CrossDomain_PolicyFile_Specification.pdf)
+- Adobe: [Рекомендации по использованию файлов междоменной политики](https://www.adobe.com/devnet-docs/acrobatetk/tools/AppSec/xdomain.html)
+- Oracle: [Поддержка Cross-Domain XML](http://www.oracle.com/technetwork/java/javase/plugin2-142482.html#CROSSDOMAINXML)
+- MSDN: [Обеспечение доступности сервиса за пределами домена](http://msdn.microsoft.com/en-us/library/cc197955(v=vs.95).aspx)
+- MSDN: [Ограничения доступа в сетевой безопасности Silverlight](http://msdn.microsoft.com/en-us/library/cc645032(v=vs.95).aspx)
+- Google Doctype: [Краткий обзор модели безопасности Flash](http://code.google.com/p/doctype-mirror/wiki/ArticleFlashSecurity)
+- UCSD: [Анализ междоменных политик Flash-приложений](http://cseweb.ucsd.edu/~hovav/dist/crossdomain.pdf)
