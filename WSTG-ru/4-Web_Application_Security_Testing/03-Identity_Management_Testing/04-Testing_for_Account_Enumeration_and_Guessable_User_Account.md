@@ -7,140 +7,140 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Account Enumeration and Guessable User Account
+# Перебор и угадывание учётных записей пользователей
 
 |ID          |
 |------------|
 |WSTG-IDNT-04|
 
-## Summary
+## Обзор
 
-The scope of this test is to verify if it is possible to collect a set of valid usernames by interacting with the authentication mechanism of the application. This test will be useful for brute force testing, in which the tester verifies if, given a valid username, it is possible to find the corresponding password.
+Цель этого теста — подтвердить, возможно ли собрать набор действующих учётных записей, взаимодействуя с механизмом аутентификации приложения. Этот тест будет полезен для тестирования перебором, в котором проверяется, можно ли подобрать соответствующий пароль с учётом имеющегося имени пользователя.
 
-Often, web applications reveal when a username exists on system, either as a consequence of mis-configuration or as a design decision. For example, sometimes, when we submit wrong credentials, we receive a message that states that either the username is present on the system or the provided password is wrong. The information obtained can be used by an attacker to gain a list of users on system. This information can be used to attack the web application, for example, through a brute force or default username and password attack.
+Часто web-приложения выдают существование имени пользователя в результате некорректной настройки или архитектурного решения. Например, иногда, когда мы вводим неправильные учётные данные, мы получаем сообщение, в котором говорится, что либо такое имя пользователя присутствует в системе, либо, что предоставленный пароль неверен. Полученная информация может быть использована злоумышленником для получения списка пользователей в системе. Эта информация может быть использована для атаки на web-приложение, например, с помощью перебора или атаки с использованием имени пользователя и пароля по умолчанию.
 
-The tester should interact with the authentication mechanism of the application to understand if sending particular requests causes the application to answer in different manners. This issue exists because the information released from web application or web server when the user provide a valid username is different than when they use an invalid one.
+Тестировщик должен взаимодействовать с механизмом аутентификации приложения, чтобы оценить, приводит ли отправка тех или иных запросов к тому, что приложение отвечает по-разному. Эта проблема существует из-за того, что информация, передаваемая web-приложением или web-сервером, после ввода действительного имени пользователя, отличается от таковой, если ввести недопустимое имя пользователя.
 
-In some cases, a message is received that reveals if the provided credentials are wrong because an invalid username or an invalid password was used. Sometimes, testers can enumerate the existing users by sending a username and an empty password.
+В некоторых случаях выдаётся сообщение, в котором указывается, что предоставленные учётные данные неверны, поскольку было использовано неверное имя пользователя или неверный пароль. Иногда тестировщики могут перебрать существующих пользователей, передавая имя пользователя и пустой пароль.
 
-## Test Objectives
+## Задачи тестирования
 
-- Review processes that pertain to user identification (*e.g.* registration, login, etc.).
-- Enumerate users where possible through response analysis.
+- Проанализировать процессы, относящиеся к идентификации пользователя (*например*, регистрация пользователя, вход в систему и т.д.).
+- Где это возможно, найти учётные записи пользователей, анализируя ответы.
 
-## How to Test
+## Как тестировать
 
-In black-box testing, the tester knows nothing about the specific application, username, application logic, error messages on log in page, or password recovery facilities. If the application is vulnerable, the tester receives a response message that reveals, directly or indirectly, some information useful for enumerating users.
+При тестировании методом «чёрного ящика» тестировщик ничего не знает о конкретном приложении, имени пользователя, логике приложения, сообщениях об ошибках на странице входа или средствах восстановления пароля. Если приложение уязвимо, тестировщик получает ответное сообщение, прямо или косвенно раскрывающее некоторую информацию, полезную для инвентаризации учётных записей пользователей.
 
-### HTTP Response Message
+### Сообщения в HTTP-ответах
 
-#### Testing for Valid Credentials
+#### Тестирование действительных учётных данных
 
-Record the server answer when you submit a valid user ID and valid password.
+Запишите ответ сервера при отправке действительного идентификатора пользователя и действительного пароля.
 
-> Using a web proxy, notice the information retrieved from this successful authentication (HTTP 200 Response, length of the response).
+> Используя web-прокси, обратите внимание на информацию, полученную в результате этой успешной аутентификации (ответ HTTP 200, длина ответа).
 
-#### Testing for Valid User with Wrong Password
+#### Тестирование действительного пользователя с неправильным паролем
 
-Now, the tester should try to insert a valid user ID and a wrong password and record the error message generated by the application.
+Теперь тестировщик должен попытаться ввести действительный идентификатор пользователя и неправильный пароль и записать сообщение об ошибке, выданное приложением.
 
-> The browser should display a message similar to the following one:
+> Браузер должен отобразить сообщение, похожее на:
 >
 > ![Authentication Failed](images/AuthenticationFailed.png)\
-> *Figure 4.3.4-1: Authentication Failed*
+> *Рисунок 4.3.4-1: Ошибка аутентификации*
 >
-> Unlike any message that reveals the existence of the user like the following:
+> А не сообщения, которое раскрывает наличие пользователя, вроде:
 >
 > `Login for User foo: invalid password`
 >
-> Using a web proxy, notice the information retrieved from this unsuccessful authentication attempt (HTTP 200 Response, length of the response).
+> Используя web-прокси, обратите внимание на информацию, полученную в результате этой неудачной попытки аутентификации (ответ HTTP 200, длина ответа).
 
-#### Testing for a Nonexistent Username
+#### Тестирование несуществующего имени пользователя
 
-Now, the tester should try to insert an invalid user ID and a wrong password and record the server answer (the tester should be confident that the username is not valid in the application). Record the error message and the server answer.
+Теперь тестировщик должен попытаться ввести недопустимый идентификатор пользователя и неправильный пароль и записать ответ сервера (тестировщик должен быть уверен, что такое имя пользователя отсутствует в приложении). Запишите сообщение об ошибке и ответ сервера.
 
-> If the tester enters a nonexistent user ID, they can receive a message similar to:
+> Если тестировщик вводит несуществующий идентификатор пользователя, он может получить сообщение, вроде:
 >
 > ![This User is Not Active](images/Userisnotactive.png)\
-> *Figure 4.3.4-3: This User is Not Active*
+> *Рисунок 4.3.4-3: Этот пользователь не активен*
 >
-> or a message like the following one:
+> или такое:
 >
 > `Login failed for User foo: invalid Account`
 >
-> Generally the application should respond with the same error message and length to the different incorrect requests. If the responses are not the same, the tester should investigate and find out the key that creates a difference between the two responses. For example:
+> Вообще, на разные некорректные запросы приложение должно отвечать сообщением об ошибке с одним и тем же текстом и длиной. Если ответы не совпадают, тестировщик должен это исследовать и найти то, что создаёт разницу между ответами. Например:
 >
-> 1. Client request: Valid user/wrong password
-> 2. Server response: The password is not correct
-> 3. Client request: Wrong user/wrong password
-> 4. Server response: User not recognized
+> 1. Запрос клиента: Действительный пользователь/неправильный пароль
+> 2. Ответ сервера: Пароль неверный
+> 3. Запрос клиента: Неверный пользователь/неверный пароль
+> 4. Ответ сервера: Пользователь не распознан
 >
-> The above responses let the client understand that for the first request they have a valid username. So they can interact with the application requesting a set of possible user IDs and observing the answer.
+> Приведённые выше ответы позволяют клиенту понять, что для первого запроса у него есть действительное имя пользователя. Таким образом, он может взаимодействовать с приложением, запрашивая набор возможных идентификаторов пользователей и наблюдая за ответом.
 >
-> Looking at the second server response, the tester understand in the same way that they don't hold a valid username. So they can interact in the same manner and create a list of valid user ID looking at the server answers.
+> Глядя на второй ответ сервера, тестировщик точно так же понимает, что у него нет действительного имени пользователя. Таким образом, он может взаимодействовать таким же образом и создавать список действительных идентификаторов пользователей, просматривая ответы сервера.
 
-### Other Ways to Enumerate Users
+### Другие способы перебора учётных записей
 
-Testers can enumerate users in several ways, such as:
+Тестировщики могут находить пользователей несколькими способами, например:
 
-#### Analyzing the Error Code Received on Login Pages
+#### Анализ кода ошибки, полученного на страницах входа
 
-Some web application release a specific error code or message that we can analyze.
+Некоторые web-приложения выдают определённый код ошибки или сообщение, которое мы можем проанализировать.
 
-#### Analyzing URLs and URLs Re-directions
+#### Анализ URL-адресов и перенаправлений
 
-For example:
+Например:
 
 - `http://www.foo.com/err.jsp?User=baduser&Error=0`
 - `http://www.foo.com/err.jsp?User=gooduser&Error=2`
 
-As is seen above, when a tester provides a user ID and password to the web application, they see a message indication that an error has occurred in the URL. In the first case they have provided a bad user ID and bad password. In the second, a good user ID and a bad password, so they can identify a valid user ID.
+Как показано выше, когда тестировщик вводит идентификатор пользователя и пароль в web-приложение, он видит сообщение, указывающее на то, что в URL произошла ошибка. В первом случае он ввёл неверный идентификатор пользователя и неверный пароль. Во втором — действительный идентификатор пользователя и неправильный пароль, чтобы выявить действителен ли идентификатор пользователя.
 
-#### URI Probing
+#### Зондирование URI
 
-Sometimes a web server responds differently if it receives a request for an existing directory or not. For instance in some portals every user is associated with a directory. If testers try to access an existing directory they could receive a web server error.
+Иногда web-сервер по-разному реагирует на запросы в зависимости от того, существует или нет каталог. Например, на некоторых порталах каждый пользователь связан с каталогом. Если тестировщик попытается получить доступ к существующему каталогу, он может получить сообщение об ошибке web-сервера.
 
-Some of the common errors received from web servers are:
+Некоторые из распространенных кодов ошибок, получаемых от web-серверов:
 
-- 403 Forbidden error code
-- 404 Not found error code
+- 403 Forbidden
+- 404 Not found
 
-Example:
+Пример:
 
-- `http://www.foo.com/account1` - we receive from web server: 403 Forbidden
-- `http://www.foo.com/account2` - we receive from web server: 404 file Not Found
+- `http://www.foo.com/account1` — от web-сервера приходит 403 Forbidden
+- `http://www.foo.com/account2` — приходит 404 file Not Found
 
-In the first case the user exists, but the tester cannot view the web page, in second case instead the user "account2" does not exist. By collecting this information testers can enumerate the users.
+В первом случае пользователь существует, но тестировщик не может просмотреть web-страницу, а во втором случае пользователя account2 нет. Собирая эту информацию тестировщики могут проинвентаризировать учётные записи.
 
-#### Analyzing Web Page Titles
+#### Анализ заголовков web-страниц
 
-Testers can receive useful information on Title of web page, where they can obtain a specific error code or messages that reveal if the problems are with the username or password.
+Тестировщики могут извлечь полезную информацию из заголовке web-страницы, где они могут увидеть конкретный код ошибки или сообщения, которые показывают, связаны ли проблемы с именем пользователя или паролем.
 
-For instance, if a user cannot authenticate to an application and receives a web page whose title is similar to:
+Например, если пользователь не может пройти аутентификацию в приложении он получает web-страницу с заголовком, вроде:
 
-- `Invalid user`
-- `Invalid authentication`
+- `Invalid user` (Недопустимый пользователь)
+- `Invalid authentication` (Ошибка аутентификации)
 
-#### Analyzing a Message Received from a Recovery Facility
+#### Анализ сообщения, полученного при восстановлении
 
-When we use a recovery facility (i.e. a forgotten password function) a vulnerable application might return a message that reveals if a username exists or not.
+Когда мы используем средство восстановления (т.е. функцию забытого пароля), уязвимое приложение может выдавать сообщение, которое указывает, существует имя пользователя или нет.
 
-For example, messages similar to the following:
+Например, сообщения, подобные таким:
 
-- `Invalid username: email address is not valid or the specified user was not found.`
-- `Valid username: Your password has been successfully sent to the email address you registered with.`
+- Неверное имя пользователя: `адрес электронной почты недействителен или указанный пользователь не найден.`
+- Действительное имя пользователя: `Ваш пароль был успешно отправлен на адрес электронной почты, который Вы указали при регистрации.`
 
-#### Friendly 404 Error Message
+#### Дружелюбное сообщение об ошибке 404
 
-When we request a user within the directory that does not exist, we don't always receive 404 error code. Instead, we may receive "200 ok" with an image, in this case we can assume that when we receive the specific image the user does not exist. This logic can be applied to other web server response; the trick is a good analysis of web server and web application messages.
+Когда мы запрашиваем пользователя в несуществующем каталоге, мы не всегда получаем код ошибки 404. Вместо этого мы можем получить `200 OK` в виде изображения, в этом случае мы можем предположить, что когда мы получаем такое изображение, пользователя не существует. Эта логика может применяться и к другим ответам web-сервера; нюанс заключается в тщательном анализе сообщений web-сервера и web-приложения.
 
-#### Analyzing Response Times
+#### Анализ времени отклика
 
-As well as looking at the content of the responses, the time that the response take should also be considered. Particularly where the request causes an interaction with an external service (such as sending a forgotten password email), this can add several hundred milliseconds to the response, which can be used to determine whether the requested user is valid.
+Помимо анализа содержания ответов, следует также учитывать время, затрачиваемое на их получение. В частности, когда запрос вызывает взаимодействие с внешним сервисом (например, отправка электронного письма с забытым паролем), это может добавить к ответу несколько сотен миллисекунд, что можно использовать для определения того, является ли запрошенный пользователь действительным.
 
-### Guessing Users
+### Угадывание пользователей
 
-In some cases the user IDs are created with specific policies of administrator or company. For example we can view a user with a user ID created in sequential order:
+В некоторых случаях идентификаторы пользователей создаются в соответствии с определёнными политиками администратора или компании. Например, мы можем обнаружить пользователей с идентификаторами, формирующимися последовательно:
 
 ```text
 CN000100
@@ -148,43 +148,46 @@ CN000101
 ...
 ```
 
-Sometimes the usernames are created with a REALM alias and then a sequential numbers:
+Иногда имена пользователей создаются с псевдонимом REALM и порядковыми номерами:
 
-- R1001 – user 001 for REALM1
-- R2001 – user 001 for REALM2
+- R1001 – пользователь 001 для REALM1
+- R2001 – пользователь 001 для REALM2
 
-In the above sample we can create simple shell scripts that compose user IDs and submit a request with tool like wget to automate a web query to discern valid user IDs. To create a script we can also use Perl and curl.
+В приведённом выше примере можно написать простые shell-скрипты, которые будут составлять идентификаторы пользователей и отправлять запросы с помощью такого инструмента, как wget с целью автоматизации web-запросов на выяснение действительных идентификаторов пользователей. Для написания скрипта также можно использовать Perl или curl.
 
-Other possibilities are: - user IDs associated with credit card numbers, or in general numbers with a pattern. - user IDs associated with real names, e.g. if Freddie Mercury has a user ID of "fmercury", then you might guess Roger Taylor to have the user ID of "rtaylor".
+Другими возможностями являются:
 
-Again, we can guess a username from the information received from an LDAP query or from Google information gathering, for example, from a specific domain. Google can help to find domain users through specific queries or through a simple shell script or tool.
+- идентификаторы пользователей, связанные с номерами кредитных карт, или в общем случае номера с шаблоном;
+- идентификаторы пользователей, связанные с реальными именами, например: если у Фредди Меркьюри идентификатор пользователя fmercury, то можно предположить, что у Роджера Тейлора идентификатор пользователя rtaylor.
 
-> By enumerating user accounts, you risk locking out accounts after a predefined number of failed probes (based on application policy). Also, sometimes, your IP address can be banned by dynamic rules on the application firewall or Intrusion Prevention System.
+Опять же, мы можем угадать имя пользователя по информации, полученной из запроса LDAP или, запрашивая информацию в Google, например, из определённого домена. Google может помочь найти пользователей домена с помощью специальных запросов или с помощью простого shell-скрипта или инструмента.
 
-### Gray-Box Testing
+> Перебирая учётные записи пользователей, вы рискуете заблокировать их после определённого количества неудачных попыток (в соответствии с правилами приложения). Кроме того, иногда ваш IP-адрес может быть заблокирован динамическими правилами WAF или системы предотвращения вторжений (IPS).
 
-#### Testing for Authentication Error Messages
+### Тестирование методом серого ящика
 
-Verify that the application answers in the same manner for every client request that produces a failed authentication. For this issue the black-box testing and gray-box testing have the same concept based on the analysis of messages or error codes received from web application.
+#### Тестирование сообщений об ошибках аутентификации
 
-> The application should answer in the same manner for every failed attempt of authentication.
+Убедитесь, что на каждый запрос клиента, который приводит к ошибке аутентификации, приложение отвечает одинаково. Для этой проблемы тестирование методами чёрного и серого ящика использует один и тот же подход, основанный на анализе сообщений или кодов ошибок, полученных от web-приложения.
+
+> Приложение должно отвечать одинаковым образом на каждую неудачную попытку аутентификации.
 >
-> For Example: *Credentials submitted are not valid*
+> Например: *Предоставленные учётные данные недействительны*
 
-## Remediation
+## Как исправить
 
-Ensure the application returns consistent generic error messages in response to invalid account name, password or other user credentials entered during the log in process.
+Убедитесь, что приложение выдаёт логически правильные, но неконкретные сообщения об ошибках в ответ на неверное имя учётной записи, пароль или другие учётные данные пользователя, введённые в процессе входа в систему.
 
-Ensure default system accounts and test accounts are deleted prior to releasing the system into production (or exposing it to an untrusted network).
+Перед запуском системы в эксплуатацию (или её подключением к недоверенной сети) убедитесь, что удалены все тестовые и системные учётные записи по умолчанию.
 
-## Tools
+## Инструменты
 
 - [OWASP Zed Attack Proxy (ZAP)](https://www.zaproxy.org)
 - [curl](https://curl.haxx.se/)
 - [PERL](https://www.perl.org)
 
-## References
+## Ссылки
 
-- [Username Enumeration Vulnerabilities](https://www.gnucitizen.org/blog/username-enumeration-vulnerabilities/)
-- [Prevent WordPress Username Enumeration](https://www.jinsonvarghese.com/prevent-wordpress-username-enumeration/)
-- [Marco Mella, Sun Java Access & Identity Manager Users enumeration](https://www.exploit-db.com/exploits/32762)
+- [Уязвимости перебора учётных записей](https://www.gnucitizen.org/blog/username-enumeration-vulnerabilities/)
+- [Предотвращение перебора учётных записей пользователей в WordPress](https://www.jinsonvarghese.com/prevent-wordpress-username-enumeration/)
+- [Marco Mella, Перебор учётных записей в Sun Java System Access Manager](https://www.exploit-db.com/exploits/32762)

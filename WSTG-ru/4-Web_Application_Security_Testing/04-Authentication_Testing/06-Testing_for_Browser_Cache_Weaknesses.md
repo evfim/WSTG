@@ -7,49 +7,49 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Browser Cache Weaknesses
+# Тестирование на уязвимости кэша браузера
 
 |ID          |
 |------------|
 |WSTG-ATHN-06|
 
-## Summary
+## Обзор
 
-In this phase the tester checks that the application correctly instructs the browser to not retain sensitive data.
+На этом этапе тестировщик проверяет, правильно ли приложение инструктирует браузер не сохранять конфиденциальные данные.
 
-Browsers can store information for purposes of caching and history. Caching is used to improve performance, so that previously displayed information doesn't need to be downloaded again. History mechanisms are used for user convenience, so the user can see exactly what they saw at the time when the resource was retrieved. If sensitive information is displayed to the user (such as their address, credit card details, Social Security Number, or username), then this information could be stored for purposes of caching or history, and therefore retrievable through examining the browser's cache or by simply pressing the browser's **Back** button.
+Браузеры могут хранить информацию с целью её кэширования и сбора истории. Кэширование используется для повышения производительности, чтобы ранее отображаемую информацию не нужно было загружать снова. Механизмы истории используются для удобства пользователя, поэтому пользователь может видеть именно то, что он видел в момент извлечения ресурса. Если пользователю отображается конфиденциальная информация (например, его адрес, данные кредитной карты, индивидуального лицевого счёта или имя пользователя), то эта информация может быть сохранена в целях кэширования или сбора истории и, следовательно, может быть получена путём изучения кэша или просто нажатием кнопки **Назад** в браузере.
 
-## Test Objectives
+## Задачи тестирования
 
-- Review if the application stores sensitive information on the client-side.
-- Review if access can occur without authorization.
+- Проанализировать, не хранит ли приложение конфиденциальную информацию на стороне клиента.
+- Проверить, возможен ли доступ к ней без авторизации.
 
-## How to Test
+## Как тестировать
 
-### Browser History
+### История браузера
 
-Technically, the **Back** button is a history and not a cache (see [Caching in HTTP: History Lists](https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.13)). The cache and the history are two different entities. However, they share the same weakness of presenting previously displayed sensitive information.
+Технически кнопка **Назад** — это история, а не кэш (см. [Caching in HTTP: History Lists](https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.13)). Кэш и история — две разные сущности. Тем не менее, они имеют один и тот же недостаток при выводе отображённой ранее конфиденциальной информации.
 
-The first and simplest test consists of entering sensitive information into the application and logging out. Then the tester clicks the **Back** button of the browser to check whether previously displayed sensitive information can be accessed whilst unauthenticated.
+Первый и самый простой тест состоит из ввода конфиденциальной информации в приложение и выхода из системы. Затем тестировщик нажимает кнопку **Назад** в браузере, чтобы проверить, можно ли получить доступ к ранее отображаемой конфиденциальной информации без аутентификации.
 
-If by pressing the **Back** button the tester can access previous pages but not access new ones, then it is not an authentication issue, but a browser history issue. If these pages contain sensitive data, it means that the application did not forbid the browser from storing it.
+Если, нажав кнопку **Назад**, тестировщик может получить доступ к предыдущим страницам, но не к новым, то это не проблема с аутентификацией, а проблема с историей браузера. Если эти страницы содержат конфиденциальные данные, это означает, что приложение не запрещало браузеру хранить их.
 
-Authentication does not necessarily need to be involved in the testing. For example, when a user enters their email address in order to sign up to a newsletter, this information could be retrievable if not properly handled.
+При тестировании не обязательно должна быть задействована аутентификация. Например, когда пользователь вводит свой адрес электронной почты, чтобы подписаться на рассылку новостей, его можно извлечь, если не обрабатывать должным образом.
 
-The **Back** button can be stopped from showing sensitive data. This can be done by:
+Можно запретить показывать конфиденциальные данные по кнопке **Назад**. Это можно сделать:
 
-- Delivering the page over HTTPS.
-- Setting `Cache-Control: must-revalidate`
+- доставляя страницу по протоколу HTTPS;
+- установив `Cache-Control: must-revalidate`
 
-### Browser Cache
+### Кэш браузера
 
-Here testers check that the application does not leak any sensitive data into the browser cache. In order to do that, they can use a proxy (such as OWASP ZAP) and search through the server responses that belong to the session, checking that for every page that contains sensitive information the server instructed the browser not to cache any data. Such a directive can be issued in the HTTP response headers with the following directives:
+Здесь тестировщики проверяют, что приложение не пропускает чувствительные данные в кеш браузера. Для этого они могут использовать прокси (например, OWASP ZAP) и искать ответы сервера, относящиеся к сеансу, проверяя, что для каждой страницы, содержащей конфиденциальную информацию, сервер дал указание браузеру не кэшировать какие-либо данные. Такое указание может быть выдано в заголовках ответа HTTP со следующими директивами:
 
 - `Cache-Control: no-cache, no-store`
 - `Expires: 0`
 - `Pragma: no-cache`
 
-These directives are generally robust, although additional flags may be necessary for the `Cache-Control` header in order to better prevent persistently linked files on the file system. These include:
+Эти директивы, как правило, надёжны, хотя для заголовка `Cache-Control` могут потребоваться дополнительные флаги, чтобы предотвратить постоянные ссылки на файлы в файловой системе. К ним относятся:
 
 - `Cache-Control: must-revalidate, max-age=0, s-maxage=0`
 
@@ -58,15 +58,15 @@ HTTP/1.1:
 Cache-Control: no-cache
 ```
 
-```html
+```http
 HTTP/1.0:
 Pragma: no-cache
 Expires: "past date or illegal value (e.g., 0)"
 ```
 
-For instance, if testers are testing an e-commerce application, they should look for all pages that contain a credit card number or some other financial information, and check that all those pages enforce the `no-cache` directive. If they find pages that contain critical information but that fail to instruct the browser not to cache their content, they know that sensitive information will be stored on the disk, and they can double-check this simply by looking for the page in the browser cache.
+Например, при тестировании приложения для электронной коммерции, необходимо найти все страницы, содержащие номера банковских карт или какую-либо другую финансовую информацию, и проверить, что на всех этих страницах применяется директива `no-cache`. Если найдутся страницы, содержащие чувствительную информацию, но не указывающие браузеру не кэшировать их содержимое, знайте, что конфиденциальная информация будет сохранена на диске, и в этом можно убедиться, просто отыскав страницу в кэше браузера.
 
-The exact location where that information is stored depends on the client operating system and on the browser that has been used. Here are some examples:
+Точное место хранения этой информации зависит от операционной системы клиента и используемого браузера. Вот некоторые примеры:
 
 - Mozilla Firefox:
     - Unix/Linux: `~/.cache/mozilla/firefox/`
@@ -77,28 +77,28 @@ The exact location where that information is stored depends on the client operat
     - Windows: `C:\Users\<user_name>\AppData\Local\Google\Chrome\User Data\Default\Cache`
     - Unix/Linux: `~/.cache/google-chrome`
 
-#### Reviewing Cached Information
+#### Анализ кэшированной информации
 
-Firefox provides functionality for viewing cached information, which may be to your benefit as a tester. Of course the industry has also produced various extensions, and external apps which you may prefer or need for Chrome, Internet Explorer, or Edge.
+Firefox предоставляет возможность для просмотра кэшированной информации, которая может быть полезна тестировщику. Конечно, существует множество расширений и внешних приложений, которые вы можете предпочесть или которые вам понадобятся для Chrome, Safari или Edge.
 
-Cache details are also available via developer tools in most modern browsers, such as [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Storage_Inspector#Cache_Storage), [Chrome](https://developers.google.com/web/tools/chrome-devtools/storage/cache), and Edge. With Firefox it is also possible to use the URL `about:cache` to check cache details.
+Данные о кеше также доступны через инструменты разработчика в большинстве современных браузеров, таких как [Chrome](https://developers.google.com/web/tools/chrome-devtools/storage/cache), [Edge](https://docs.microsoft.com/microsoft-edge/devtools-guide-chromium/storage/cache), [Safari](https://support.apple.com/guide/safari-developer/welcome/mac) и [Firefox](https://developer.mozilla.org/docs/Tools/Storage_Inspector#Cache_Storage). В Firefox также можно использовать URL `about:cache`, чтобы посмотреть кэш.
 
-#### Check Handling for Mobile Browsers
+#### Проверка обработки кэша в мобильных браузерах
 
-Handling of cache directives may be completely different for mobile browsers. Therefore, testers should start a new browsing session with clean caches and take advantage of features like Chrome's [Device Mode](https://developers.google.com/web/tools/chrome-devtools/device-mode) or Firefox's [Responsive Design Mode](https://developer.mozilla.org/en-US/docs/Tools/Responsive_Design_Mode) to re-test or separately test the concepts outlined above.
+В мобильных браузерах обработка директив кэша может быть совершенно иной. Поэтому тестировщикам следует начинать анализ с новой сессии с чистым кэшем и воспользоваться такими функциями, как Device Mode в [Chrome](https://developer.chrome.com/docs/devtools/device-mode/) или Responsive Design Mode в [Firefox](https://developer.mozilla.org/docs/Tools/Responsive_Design_Mode) или [Safari](https://developer.apple.com/safari/tools/) чтобы протестировать сценарии, описанные выше.
 
-Additionally, personal proxies such as ZAP and Burp Suite allow the tester to specify which `User-Agent` should be sent by their spiders/crawlers. This could be set to match a mobile browser `User-Agent` string and used to see which caching directives are sent by the application being tested.
+Кроме того, персональные прокси, такие как ZAP и Burp Suite, позволяют указывать, какой `User-Agent` должен передаваться их пауками/сканерами. Его можно установить в значение, соответствующее `User-Agent` мобильного браузера, чтобы проанализировать какие директивы кэширования выдаются тестируемым приложением.
 
-### Gray-Box Testing
+### Тестирование методом серого ящика
 
-The methodology for testing is equivalent to the black-box case, as in both scenarios testers have full access to the server response headers and to the HTML code. However, with gray-box testing, the tester may have access to account credentials that will allow them to test sensitive pages that are accessible only to authenticated users.
+Методология тестирования такая же как и в случае с чёрным ящиком, поскольку в обоих сценариях тестировщики имеют полный доступ к заголовкам ответов сервера и к HTML-коду. Однако при тестировании методом серого ящика тестировщик может иметь доступ к учётной записи, которая позволит ему протестировать конфиденциальные страницы, доступные только для прошедших проверку подлинности пользователей.
 
-## Tools
+## Инструменты
 
 - [OWASP Zed Attack Proxy](https://www.zaproxy.org)
 
-## References
+## Ссылки
 
-### Whitepapers
+### Технические руководства
 
-- [Caching in HTTP](https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html)
+- [Кэширование в HTTP](https://datatracker.ietf.org/doc/rfc9111/)

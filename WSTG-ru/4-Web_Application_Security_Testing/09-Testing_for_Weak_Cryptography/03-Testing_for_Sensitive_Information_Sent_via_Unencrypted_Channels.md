@@ -7,7 +7,7 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Sensitive Information Sent via Unencrypted Channels
+# Тестирование на наличие конфиденциальной информации, передаваемой по незашифрованным каналам
 
 |ID          |
 |------------|

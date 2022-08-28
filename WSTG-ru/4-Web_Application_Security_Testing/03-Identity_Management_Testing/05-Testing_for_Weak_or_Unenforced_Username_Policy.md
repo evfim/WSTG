@@ -7,28 +7,28 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Weak or Unenforced Username Policy
+# Тестирование политики в отношении имён пользователей
 
 |ID          |
 |------------|
 |WSTG-IDNT-05|
 
-## Summary
+## Обзор
 
-User account names are often highly structured (e.g. Joe Bloggs account name is jbloggs and Fred Nurks account name is fnurks) and valid account names can easily be guessed.
+Имена учётных записей пользователя часто чётко структурированы (например, имя учётной записи Joe Bloggs — это jbloggs, а учётной записи Fred Nurks — это fnurks), поэтому действительные имена учётных записей легко угадать.
 
-## Test Objectives
+## Задачи тестирования
 
-- Determine whether a consistent account name structure renders the application vulnerable to account enumeration.
-- Determine whether the application's error messages permit account enumeration.
+- Определить, делает ли следования структуре имени учётной записи приложение уязвимым для перебора учётных записей.
+- Определить, разрешён ли перебор учётных записей через сообщения об ошибках.
 
-## How to Test
+## Как тестировать
 
-- Determine the structure of account names.
-- Evaluate the application's response to valid and invalid account names.
-- Use different responses to valid and invalid account names to enumerate valid account names.
-- Use account name dictionaries to enumerate valid account names.
+- Определите структуру имён учётных записей.
+- Оцените реакцию приложения на действительные и недействительные имена учётных записей.
+- Используйте разницу в ответах на действительные и недействительные имена учётных записей для перебора допустимых имён учетных записей.
+- Используйте словари имён учётных записей для перебора допустимых имён.
 
-## Remediation
+## Как исправить
 
-Ensure the application returns consistent generic error messages in response to invalid account name, password or other user credentials entered during the log in process.
+Убедитесь, что приложение в ответ на неверное имя учётной записи, пароль или другие учётные данные пользователя, введённые в процессе входа в систему, выдаёт непротиворечивые, но неконкретные сообщения об ошибках.

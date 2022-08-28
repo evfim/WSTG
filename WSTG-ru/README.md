@@ -109,37 +109,37 @@ tags: WSTG
 
 ### 4.3 [Тестирование управления идентификацией](4-Web_Application_Security_Testing/03-Identity_Management_Testing/README.md)
 
-#### 4.3.1 [Test Role Definitions](4-Web_Application_Security_Testing/03-Identity_Management_Testing/01-Test_Role_Definitions.md)
+#### 4.3.1 [Тестирование определения ролей](4-Web_Application_Security_Testing/03-Identity_Management_Testing/01-Test_Role_Definitions.md)
 
-#### 4.3.2 [Test User Registration Process](4-Web_Application_Security_Testing/03-Identity_Management_Testing/02-Test_User_Registration_Process.md)
+#### 4.3.2 [Тестирование процесса регистрации пользователя](4-Web_Application_Security_Testing/03-Identity_Management_Testing/02-Test_User_Registration_Process.md)
 
-#### 4.3.3 [Test Account Provisioning Process](4-Web_Application_Security_Testing/03-Identity_Management_Testing/03-Test_Account_Provisioning_Process.md)
+#### 4.3.3 [Тестирование процесса создания учётных записей](4-Web_Application_Security_Testing/03-Identity_Management_Testing/03-Test_Account_Provisioning_Process.md)
 
-#### 4.3.4 [Testing for Account Enumeration and Guessable User Account](4-Web_Application_Security_Testing/03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md)
+#### 4.3.4 [Перебор и угадывание учётных записей пользователей](4-Web_Application_Security_Testing/03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md)
 
-#### 4.3.5 [Testing for Weak or Unenforced Username Policy](4-Web_Application_Security_Testing/03-Identity_Management_Testing/05-Testing_for_Weak_or_Unenforced_Username_Policy.md)
+#### 4.3.5 [Тестирование политики в отношении имён пользователей](4-Web_Application_Security_Testing/03-Identity_Management_Testing/05-Testing_for_Weak_or_Unenforced_Username_Policy.md)
 
 ### 4.4 [Тестирование аутентификации](4-Web_Application_Security_Testing/04-Authentication_Testing/README.md)
 
-#### 4.4.1 [Testing for Credentials Transported over an Encrypted Channel](4-Web_Application_Security_Testing/04-Authentication_Testing/01-Testing_for_Credentials_Transported_over_an_Encrypted_Channel.md)
+#### 4.4.1 [Тестирование учётных данных, передаваемых по зашифрованному каналу](4-Web_Application_Security_Testing/04-Authentication_Testing/01-Testing_for_Credentials_Transported_over_an_Encrypted_Channel.md)
 
-#### 4.4.2 [Testing for Default Credentials](4-Web_Application_Security_Testing/04-Authentication_Testing/02-Testing_for_Default_Credentials.md)
+#### 4.4.2 [Тестирование учётных данных по умолчанию](4-Web_Application_Security_Testing/04-Authentication_Testing/02-Testing_for_Default_Credentials.md)
 
-#### 4.4.3 [Testing for Weak Lock Out Mechanism](4-Web_Application_Security_Testing/04-Authentication_Testing/03-Testing_for_Weak_Lock_Out_Mechanism.md)
+#### 4.4.3 [Тестирование механизма блокировки](4-Web_Application_Security_Testing/04-Authentication_Testing/03-Testing_for_Weak_Lock_Out_Mechanism.md)
 
-#### 4.4.4 [Testing for Bypassing Authentication Schema](4-Web_Application_Security_Testing/04-Authentication_Testing/04-Testing_for_Bypassing_Authentication_Schema.md)
+#### 4.4.4 [Тестирование обхода схемы аутентификации](4-Web_Application_Security_Testing/04-Authentication_Testing/04-Testing_for_Bypassing_Authentication_Schema.md)
 
-#### 4.4.5 [Testing for Vulnerable Remember Password](4-Web_Application_Security_Testing/04-Authentication_Testing/05-Testing_for_Vulnerable_Remember_Password.md)
+#### 4.4.5 [Тестирование уязвимого запоминания пароля](4-Web_Application_Security_Testing/04-Authentication_Testing/05-Testing_for_Vulnerable_Remember_Password.md)
 
-#### 4.4.6 [Testing for Browser Cache Weaknesses](4-Web_Application_Security_Testing/04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md)
+#### 4.4.6 [Тестирование на уязвимости кэша браузера](4-Web_Application_Security_Testing/04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md)
 
-#### 4.4.7 [Testing for Weak Password Policy](4-Web_Application_Security_Testing/04-Authentication_Testing/07-Testing_for_Weak_Password_Policy.md)
+#### 4.4.7 [Тестирование парольной политики](4-Web_Application_Security_Testing/04-Authentication_Testing/07-Testing_for_Weak_Password_Policy.md)
 
-#### 4.4.8 [Testing for Weak Security Question Answer](4-Web_Application_Security_Testing/04-Authentication_Testing/08-Testing_for_Weak_Security_Question_Answer.md)
+#### 4.4.8 [Тестирование ответа на контрольный вопрос](4-Web_Application_Security_Testing/04-Authentication_Testing/08-Testing_for_Weak_Security_Question_Answer.md)
 
-#### 4.4.9 [Testing for Weak Password Change or Reset Functionalities](4-Web_Application_Security_Testing/04-Authentication_Testing/09-Testing_for_Weak_Password_Change_or_Reset_Functionalities.md)
+#### 4.4.9 [Тестирование функций изменения или сброса пароля](4-Web_Application_Security_Testing/04-Authentication_Testing/09-Testing_for_Weak_Password_Change_or_Reset_Functionalities.md)
 
-#### 4.4.10 [Testing for Weaker Authentication in Alternative Channel](4-Web_Application_Security_Testing/04-Authentication_Testing/10-Testing_for_Weaker_Authentication_in_Alternative_Channel.md)
+#### 4.4.10 [Тестирование аутентификации в альтернативных каналах](4-Web_Application_Security_Testing/04-Authentication_Testing/10-Testing_for_Weaker_Authentication_in_Alternative_Channel.md)
 
 ### 4.5 [Тестирование авторизации](4-Web_Application_Security_Testing/05-Authorization_Testing/README.md)
 
@@ -319,14 +319,14 @@ tags: WSTG
 
 ### 5.2 [Naming Schemes](5-Reporting/02-Naming_Schemes.md)
 
-## Appendix A. [Testing Tools Resource](6-Appendix/A-Testing_Tools_Resource.md)
+## Приложение A. [Testing Tools Resource](6-Appendix/A-Testing_Tools_Resource.md)
 
-## Appendix B. [Suggested Reading](6-Appendix/B-Suggested_Reading.md)
+## Приложение B. [Suggested Reading](6-Appendix/B-Suggested_Reading.md)
 
-## Appendix C. [Fuzz Vectors](6-Appendix/C-Fuzz_Vectors.md)
+## Приложение C. [Fuzz Vectors](6-Appendix/C-Fuzz_Vectors.md)
 
-## Appendix D. [Encoded Injection](6-Appendix/D-Encoded_Injection.md)
+## Приложение D. [Encoded Injection](6-Appendix/D-Encoded_Injection.md)
 
-## Appendix E. [History](6-Appendix/E-History.md)
+## Приложение E. [History](6-Appendix/E-History.md)
 
-## Appendix F. [Leveraging Dev Tools](6-Appendix/F-Leveraging_Dev_Tools.md)
+## Приложение F. [Leveraging Dev Tools](6-Appendix/F-Leveraging_Dev_Tools.md)

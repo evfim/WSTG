@@ -7,36 +7,36 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Vulnerable Remember Password
+# Тестирование уязвимого запоминания пароля
 
 |ID          |
 |------------|
 |WSTG-ATHN-05|
 
-## Summary
+## Обзор
 
-Credentials are the most widely used authentication technology. Due to such a wide usage of username-password pairs, users are no longer able to properly handle their credentials across the multitude of used applications.
+Учётные данные являются наиболее широко используемой технологией аутентификации. Из-за широкого распространения пар логин-пароль пользователи уже не справляются с запоминанием своих многочисленных учётных данных во всём многообразии используемых ими приложений.
 
-In order to assist users with their credentials, multiple technologies surfaced:
+Чтобы помочь пользователям с учётными данными, появилось множество технологий:
 
-- Applications provide a *remember me* functionality that allows the user to stay authenticated for long periods of time, without asking the user again for their credentials.
-- Password Managers - including browser password managers - that allow the user to store their credentials in a secure manner and later on inject them in user-forms without any user intervention.
+- Приложения предоставляют функцию «запомнить меня», которая позволяет им оставаться аутентифицированным в течение длительного периода времени, не запрашивая повторно учётные данные.
+- Менеджеры паролей, в том числе браузерные, которые позволяют безопасно хранить учётные данные, а затем вводить их в формы без вмешательства самого пользователя.
 
-## Test Objectives
+## Задача тестирования
 
-- Validate that the generated session is managed securely and do not put the user's credentials in danger.
+- Убедиться, что сгенерированная сессия безопасна и не подвергает опасности учётные данные пользователя.
 
-## How to Test
+## Как тестировать
 
-As these methods provide a better user experience and allow the user to forget all about their credentials, they increase the attack surface area. Some applications:
+Поскольку эти методы обеспечивают лучший пользовательский опыт и позволяют пользователю полностью забыть о своих учётных данных, они увеличивают поверхность атаки. Некоторые приложения:
 
-- Store the credentials in an encoded fashion in the browser's storage mechanisms, which can be verified by following the [web storage testing scenario](../11-Client-side_Testing/12-Testing_Browser_Storage.md) and going through the [session analysis](../06-Session_Management_Testing/01-Testing_for_Session_Management_Schema.md#session-analysis) scenarios. Credentials shouldn't be stored in any way in the client-side application, and should be substituted by tokens generated server-side.
-- Automatically inject the user's credentials that can be abused by:
-    - [ClickJacking](../11-Client-side_Testing/09-Testing_for_Clickjacking.md) attacks.
-    - [CSRF](../06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md) attacks.
-- Tokens should be analyzed in terms of token-lifetime, where some tokens never expire and put the users in danger if those tokens ever get stolen. Make sure to follow the [session timeout](../06-Session_Management_Testing/07-Testing_Session_Timeout.md) testing scenario.
+- Хранят учётные данные в закодированном виде в хранилищах браузера, в чём можно удостовериться в сценариях [тестирования хранилищ браузера](../11-Client-side_Testing/12-Testing_Browser_Storage.md) и [анализа сессии](../06-Session_Management_Testing/01-Testing_for_Session_Management_Schema.md#session-analysis). Учётные данные никоим образом не должны храниться в клиентском приложении и должны быть заменены токенами, сгенерированными на стороне сервера.
+- Автоматически вводят учётные данные пользователя в формы, чем могут злоупотреблять:
+    - Атаки [перехвата клика (тапа)](../11-Client-side_Testing/09-Testing_for_Clickjacking.md).
+    - Атаки [CSRF](../06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md).
+- Следует анализировать срок действия токенов, поскольку некоторые делают их вечными, чем подвергают опасности пользователей в случае, если такие токены будут украдены. Обязательно протестируйте сценарий [тайм-аута сессии](../06-Session_Management_Testing/07-Testing_Session_Timeout.md).
 
-## Remediation
+## Как исправить
 
-- Follow [session management](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html) good practices.
-- Ensure that no credentials are stored in clear text or are easily retrievable in encoded or encrypted forms in browser storage mechanisms; they should be stored server-side and follow good [password storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) practices.
+- Следуйте [рекомендациям по управлению сессиями](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html).
+- Убедитесь, что учётные данные никогда не хранятся в виде открытого текста и не могут быть легко извлечены в закодированной или зашифрованной форме из механизмов хранения браузера; они должны храниться на стороне сервера и следовать [рекомендациям по хранению паролей](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).

@@ -7,98 +7,98 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Weak Lock Out Mechanism
+# Тестирование механизма блокировки
 
 |ID          |
 |------------|
 |WSTG-ATHN-03|
 
-## Summary
+## Обзор
 
-Account lockout mechanisms are used to mitigate brute force attacks. Some of the attacks that can be defeated by using lockout mechanism:
+Механизмы блокировки учётных записей используются для сдерживания атак методом перебора. Некоторые из атак, с которыми можно бороться с помощью механизма блокировки:
 
-- Login password or username guessing attack.
-- Code guessing on any 2FA functionality or Security Questions.
+- Атака по угадыванию пароля или имени пользователя для входа.
+- Угадывание кода при двухфакторной аутентификации или ответов на «секретные вопросы».
 
-Account lockout mechanisms require a balance between protecting accounts from unauthorized access and protecting users from being denied authorized access. Accounts are typically locked after 3 to 5 unsuccessful attempts and can only be unlocked after a predetermined period of time, via a self-service unlock mechanism, or intervention by an administrator.
+Механизмы блокировки учётных записей требуют баланса между защитой от несанкционированного доступа и защитой от отказа в легитимном доступе. Учётные записи обычно блокируются после 3-5 неудачных попыток и могут быть разблокированы только через определённый период времени с помощью механизма разблокировки самостоятельно или после вмешательства администратора.
 
-Despite it being easy to conduct brute force attacks, the result of a successful attack is dangerous as the attacker will have full access on the user account and with it all the functionality and services they have access to.
+Несмотря на простоту проведения атак методом перебора, результат успешной атаки опасен, поскольку злоумышленник получает полный доступ к учётной записи пользователя, а вместе с ней и ко всем функциям и сервисам, к которым у него есть доступ.
 
-## Test Objectives
+## Задачи тестирования
 
-- Evaluate the account lockout mechanism's ability to mitigate brute force password guessing.
-- Evaluate the unlock mechanism's resistance to unauthorized account unlocking.
+- Оценить способность механизмов блокировки учётных записей противостоять возможности подбора пароля методом перебора.
+- Оценить устойчивость механизма разблокировки к несанкционированной разблокировке учётной записи.
 
-## How to Test
+## Как тестировать
 
-### Lockout Mechanism
+### Механизм блокировки
 
-To test the strength of lockout mechanisms, you will need access to an account that you are willing or can afford to lock. If you have only one account with which you can log on to the web application, perform this test at the end of your test plan to avoid losing testing time by being locked out.
+Чтобы проверить надёжность механизмов блокировки, вам потребуется доступ к учётной записи, которую вы хотите или можете позволить себе заблокировать. Если у вас есть только одна учётная запись, с помощью которой вы можете войти в web-приложение, проведите этот тест в конце тестирования, чтобы избежать потери времени из-за блокировки.
 
-To evaluate the account lockout mechanism's ability to mitigate brute force password guessing, attempt an invalid log in by using the incorrect password a number of times, before using the correct password to verify that the account was locked out. An example test may be as follows:
+Чтобы оценить способность механизма блокировки учётной записи противостоять возможности подбора пароля методом перебора, попробуйте войти, используя неправильный пароль несколько раз, прежде чем использовать правильный для проверки того, что учётная запись была заблокирована. Пример теста может быть следующим:
 
-1. Attempt to log in with an incorrect password 3 times.
-2. Successfully log in with the correct password, thereby showing that the lockout mechanism doesn't trigger after 3 incorrect authentication attempts.
-3. Attempt to log in with an incorrect password 4 times.
-4. Successfully log in with the correct password, thereby showing that the lockout mechanism doesn't trigger after 4 incorrect authentication attempts.
-5. Attempt to log in with an incorrect password 5 times.
-6. Attempt to log in with the correct password. The application returns "Your account is locked out.", thereby confirming that the account is locked out after 5 incorrect authentication attempts.
-7. Attempt to log in with the correct password 5 minutes later. The application returns "Your account is locked out.", thereby showing that the lockout mechanism does not automatically unlock after 5 minutes.
-8. Attempt to log in with the correct password 10 minutes later. The application returns "Your account is locked out.", thereby showing that the lockout mechanism does not automatically unlock after 10 minutes.
-9. Successfully log in with the correct password 15 minutes later, thereby showing that the lockout mechanism automatically unlocks after a 10 to 15 minute period.
+1. Попытайтесь войти в систему с неправильным паролем 3 раза.
+2. Войдите в систему с правильным паролем, тем самым подтвердив, что механизм блокировки не срабатывает после 3 неуспешных попыток аутентификации.
+3. Попытайтесь войти в систему с неправильным паролем 4 раза.
+4. Войдите в систему с правильным паролем, тем самым показывая, что механизм блокировки не срабатывает после 4 неуспешных попыток аутентификации.
+5. Попытайтесь войти в систему с неправильным паролем 5 раз.
+6. Попытайтесь войти в систему с правильным паролем. Приложение выдаёт сообщение «Ваша учётная запись заблокирована», тем самым подтверждая, что учётная запись блокируется после 5 неуспешных попыток аутентификации.
+7. Попробуйте войти в систему с правильным паролем через 5 минут. Приложение выдаёт сообщение «Ваша учётная запись заблокирована», тем самым показывая, что механизм блокировки не разблокируется автоматически через 5 минут.
+8. Попробуйте войти в систему с правильным паролем через 10 минут. Приложение выдаёт сообщение «Ваша учётная запись заблокирована», тем самым показывая, что механизм блокировки не разблокируется автоматически через 10 минут.
+9. Успешно войдите в систему с правильным паролем через 15 минут, показывая, что механизм блокировки автоматически разблокируется после 10-15 -минутного периода.
 
-A CAPTCHA may hinder brute force attacks, but they can come with their own set of weaknesses, and should not replace a lockout mechanism. A CAPTCHA mechanism may be bypassed if implemented incorrectly. CAPTCHA flaws include:
+CAPTCHA может препятствовать атакам методом перебора, но может иметь свои недостатки, поэтому не должна заменять механизм блокировки. Механизм CAPTCHA можно обойти, если он реализован неправильно. Недостатки CAPTCHA включают в себя:
 
-1. Easily defeated challenge, such as arithmetic or limited question set.
-2. CAPTCHA checks for HTTP response code instead of response success.
-3. CAPTCHA server-side logic defaults to a successful solve.
-4. CAPTCHA challenge result is never validated server-side.
-5. CAPTCHA input field or parameter is manually processed, and is improperly validated or escaped.
+1. Легко решаемая задача, арифметическая или ограниченный набор вопросов.
+2. CAPTCHA проверяет наличие кода HTTP-ответа вместо его статуса (успех или неудача).
+3. Логика CAPTCHA на стороне сервера по умолчанию соответствует успешному решению.
+4. Ответ на CAPTCHA не проверяется на стороне сервера.
+5. Поле для ввода или параметр CAPTCHA обрабатываются вручную и подтверждаются неправильно или экранируются.
 
-To evaluate CAPTCHA effectiveness:
+Для оценки эффективности CAPTCHA:
 
-1. Assess CAPTCHA challenges and attempt automating solutions depending on difficulty.
-2. Attempt to submit request without solving CAPTCHA via the normal UI mechanism(s).
-3. Attempt to submit request with intentional CAPTCHA challenge failure.
-4. Attempt to submit request without solving CAPTCHA (assuming some default values may be passed by client-side code, etc) while using a testing proxy (request submitted directly server-side).
-5. Attempt to fuzz CAPTCHA data entry points (if present) with common injection payloads or special characters sequences.
-6. Check if the solution to the CAPTCHA might be the alt-text of the image(s), filename(s), or a value in an associated hidden field.
-7. Attempt to re-submit previously identified known good responses.
-8. Check if clearing cookies causes the CAPTCHA to be bypassed (for example if the CAPTCHA is only shown after a number of failures).
-9. If the CAPTCHA is part of a multi-step process, attempt to simply access or complete a step beyond the CAPTCHA (for example if CAPTCHA is the first step in a login process, try simply submitting the second step [username and password]).
-10. Check for alternative methods that might not have CAPTCHA enforced, such as an API endpoint meant to facilitate mobile app access.
+1. Оцените задания в CAPTCHA и попытайтесь автоматизировать их решение в зависимости от сложности.
+2. Попытайтесь отправить запрос, не решая CAPTCHA через имеющийся интерфейс пользователя.
+3. Попытайтесь отправить запрос с заведомо неправильным ответом на CAPTCHA.
+4. Попытайтесь отправить запрос на сервер с использованием прокси, не решая CAPTCHA (предполагая, что значения по умолчанию можно передать через код на стороне клиента и т.д.).
+5. Попытайтесь пофаззить точки входа данных для CAPTCHA (при наличии) с распространёнными векторами полезной нагрузки для инъекций или последовательностями специальных символов.
+6. Проверьте, может ли быть решением для CAPTCHA альтернативный текст изображения(й), имя файла(ов) или значение в соответствующем скрытом поле.
+7. Попытайтесь повторно передать ранее выявленные правильные ответы.
+8. Проверьте, не приводит ли очистка файлов cookie к обходу CAPTCHA (например, если CAPTCHA отображается только после нескольких неудачных решений).
+9. Если CAPTCHA является частью многоступенчатого процесса, попробуйте просто получить доступ или выполнить шаг, следующий после CAPTCHA (например, если CAPTCHA является первым шагом в процессе входа в систему, попробуйте просто отправить сразу второй шаг [имя пользователя и пароль]).
+10. Проверьте наличие альтернативных методов, в которых может не применяться CAPTCHA, таких как точка входа для API, предназначенная для облегчения доступа к мобильным приложениям.
 
-Repeat this process to every possible functionality that could require a lockout mechanism.
+Повторите этот процесс для всех возможных функций, для которых может потребоваться механизм блокировки.
 
-### Unlock Mechanism
+### Механизм разблокировки
 
-To evaluate the unlock mechanism's resistance to unauthorized account unlocking, initiate the unlock mechanism and look for weaknesses. Typical unlock mechanisms may involve secret questions or an emailed unlock link. The unlock link should be a unique one-time link, to stop an attacker from guessing or replaying the link and performing brute force attacks in batches.
+Чтобы оценить устойчивость механизма к несанкционированной разблокировке учётной записи, запустите этот механизм и найдите в нём изъяны. Типичные механизмы разблокировки могут включать секретные вопросы или отправляемую по электронной почте ссылку для разблокировки. Такая ссылка должна быть уникальной и одноразовой, чтобы злоумышленник не смог угадать или воспроизвести её и провести пакетные атаки методом перебора.
 
-Note that an unlock mechanism should only be used for unlocking accounts. It is not the same as a password recovery mechanism, yet could follow the same security practices.
+Обратите внимание, что механизм разблокировки следует использовать только для разблокировки учётных записей. Это не то же самое, что механизм восстановления пароля, но он может следовать тем же правилам безопасности.
 
-## Remediation
+## Как исправить
 
-Apply account unlock mechanisms depending on the risk level. In order from lowest to highest assurance:
+Применять механизмы разблокировки учётной записи в зависимости от уровня риска. Варианты в порядке увеличения доверия:
 
-1. Time-based lockout and unlock.
-2. Self-service unlock (sends unlock email to registered email address).
-3. Manual administrator unlock.
-4. Manual administrator unlock with positive user identification.
+1. Временная блокировка и разблокировка.
+2. Авторазблокировка (например, отправка электронного письма для разблокировки на зарегистрированный адрес электронной почты).
+3. Ручная разблокировка администратором.
+4. Ручная разблокировка администратором после положительной идентификацией пользователя.
 
-Factors to consider when implementing an account lockout mechanism:
+Факторы, которые следует учитывать при внедрении механизма блокировки учётных записей:
 
-1. What is the risk of brute force password guessing against the application?
-2. Is a CAPTCHA sufficient to mitigate this risk?
-3. Is a client-side lockout mechanism being used (e.g., JavaScript)? (If so, disable the client-side code to test.)
-4. Number of unsuccessful log in attempts before lockout. If the lockout threshold is to low then valid users may be locked out too often. If the lockout threshold is to high then the more attempts an attacker can make to brute force the account before it will be locked. Depending on the application's purpose, a range of 5 to 10 unsuccessful attempts is typical lockout threshold.
-5. How will accounts be unlocked?
-    1. Manually by an administrator: this is the most secure lockout method, but may cause inconvenience to users and take up the administrator's "valuable" time.
-        1. Note that the administrator should also have a recovery method in case his account gets locked.
-        2. This unlock mechanism may lead to a denial-of-service attack if an attacker's goal is to lock the accounts of all users of the web application.
-    2. After a period of time: What is the lockout duration? Is this sufficient for the application being protected? E.g. a 5 to 30 minute lockout duration may be a good compromise between mitigating brute force attacks and inconveniencing valid users.
-    3. Via a self-service mechanism: As stated before, this self-service mechanism must be secure enough to avoid that the attacker can unlock accounts himself.
+1. Каков для приложения риск угадывания пароля методом перебора?
+2. Достаточно ли CAPTCHA для снижения этого риска?
+3. Используется ли механизм блокировки на стороне клиента (например, JavaScript)? (Если это так, отключите код на стороне клиента для тестирования.)
+4. Количество неудачных попыток входа в систему до блокировки. Чем ниже порог блокировки, тем чаще могут быть заблокированы действительные пользователи. Чем выше порог блокировки, тем больше попыток даётся злоумышленнику для взлома учётной записи до её блокирования. В зависимости от цели приложения типичным порогом блокировки является диапазон от 5 до 10 неудачных попыток.
+5. Как происходит разблокировка?
+    1. Вручную администратором. — Наиболее безопасный метод, но он может доставлять неудобства пользователям и отнимать «драгоценное» время у администратора.
+        1. Обратите внимание, что у самого администратора также должен быть способ восстановления на случай блокировки его учётной записи.
+        2. Если целью злоумышленника является блокировка учётных записей всех пользователей web-приложения, то этот механизм разблокировки может привести к атаке типа «отказ в обслуживании».
+    2. По истечении определённого периода времени. — Какова продолжительность блокировки? Достаточно ли её для защиты приложения? Блокировка от 5 до 30 минут может стать неплохим компромиссом между сдерживанием атак методом перебора и причинением неудобств действительным пользователям.
+    3. С помощью механизма самообслуживания. — Как указывалось ранее, механизм авторазблокировки должен быть достаточно безопасным, чтобы злоумышленник не мог самостоятельно разблокировать учётные записи.
 
-## References
+## Ссылки
 
-- See the OWASP article on [Brute Force](https://owasp.org/www-community/attacks/Brute_force_attack) Attacks.
-- [Forgot Password CS](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html).
+- См. статью OWASP по атакам [методом перебора](https://owasp.org/www-community/attacks/Brute_force_attack).
+- [Памятка OWASP по забытым паролям](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html).

@@ -7,191 +7,191 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Weak Password Change or Reset Functionalities
+# Тестирование функций изменения или сброса пароля
 
 |ID          |
 |------------|
 |WSTG-ATHN-09|
 
-## Summary
+## Обзор
 
-For any application that requires the user to authenticate with a password, there must be a mechanism by which the user can regain access to their account if they forget their password. Although this can sometimes be a manual process that involves contacting the owner of the website or a support team, users are frequently allowed to carry out a self-service password reset, and to regain access to their account by providing some other evidence of their identity.
+Для любого приложения, которое требует от пользователя аутентификации с помощью пароля, должен быть механизм, с помощью которого пользователь может восстановить доступ к своей учётной записи, если он забудет свой пароль. Хотя иногда это может быть ручной процесс, который включает в себя обращение к владельцу web-сайта или в службу сопровождения, пользователям часто разрешается выполнять самостоятельный сброс пароля и восстанавливать доступ к своей учётной записи, подтверждая каким-либо другим образом свою личность.
 
-As this functionality provides a direct route to compromise the user's account, it is crucial that it is implemented securely.
+Поскольку эта функция обеспечивает прямой путь к компрометации учётной записи пользователя, крайне важно, чтобы она была реализована безопасно.
 
-## Test Objectives
+## Задача тестирования
 
-- Determine whether the password change and reset functionality allows accounts to be compromised.
+- Определить, позволяют ли функции смены и сброса пароля компрометировать учетные записи.
 
-## How to Test
+## Как тестировать
 
-### Information Gathering
+### Сбор информации
 
-The first step is to gather information about what mechanisms are available to allow the user to reset their password on the application. If there are multiple interfaces on the same site (such as a web interface, mobile application, and API) then these should all be reviewed, in case they provide different functionality.
+Первым шагом является сбор информации о доступных механизмах, позволяющих пользователю сбросить свой пароль в приложении. Если на сайте есть несколько интерфейсов (например, web-, мобильное приложения и API), и они предоставляют разные функции, то все они должны быть проверены.
 
-Once this has been established, determine what information is required in order for a user to initiate a password reset. This can be the username or email address (both of which may be obtained from public information), but it could also be an internally-generated user ID.
+Как только это будет установлено, определите, какая информация требуется для того, чтобы пользователь инициировал сброс пароля. Это может быть имя пользователя или адрес электронной почты (и то и другое можно узнать из общедоступной информации), но это также может быть внутренний идентификатор пользователя.
 
-### General Concerns
+### Общие вопросы
 
-Regardless of the specific methods used to reset passwords, there are a number of common areas that need to be considered:
+Независимо от конкретных методов, используемых для сброса паролей, необходимо учитывать ряд общих вопросов:
 
-- Is the password reset process weaker than the authentication process?
+- Является ли процесс сброса пароля менее строгим, чем процесс аутентификации?
 
-  The password reset process provides an alternative mechanism to access a user's account, and so should be at least as secure as the usual authentication process. However, it can provide an easier way to compromise the account, especially if it uses weaker authentication factors such as security questions.
+  Процесс сброса пароля предоставляет альтернативный механизм доступа к учётной записи пользователя и поэтому должен быть по крайней мере таким же безопасным, как и обычный процесс аутентификации. Однако он может обеспечить более простой способ скомпрометировать учётную запись, особенно если она использует менее стойкие факторы аутентификации, такие как контрольные вопросы.
 
-  Additionally, the password reset process may bypass the requirement to use Multi-Factor Authentication (MFA), which can substantially reduce the security of the application.
+  Кроме того, процесс сброса пароля может обойти требование использования многофакторной аутентификации (MFA), что может существенно снизить защиту приложения.
 
-- Is there rate limiting or other protection against automated attacks?
+- Есть ли ограничение по частоте запросов или другая защита от автоматических атак?
 
-  As with any authentication mechanism, the password reset process should have protection against automated or brute-force attacks. There are a variety of different methods that can be used to achieve this, such as rate limiting or the use of CAPTCHA. These are particularly important on functionality that triggers external actions (such as sending an email or SMS), or when the user is entering a password reset token.
+  Как и в случае с любым механизмом аутентификации, процесс сброса пароля должен иметь защиту от автоматических атак или атак методом перебора. Существует множество различных методов, которые можно использовать для достижения этой цели, таких как ограничение скорости или использование CAPTCHA. Это особенно важно для функций, которые запускают внешние действия (например, отправку электронной почты или SMS), или когда пользователь вводит токен сброса пароля.
 
-  It is also possible to protect against brute-force attacks by locking out the account from the password reset process after a certain number of consecutive attempts. This could also prevent a legitimate user from being able to reset their password and regain access to their account, however.
+  Также можно защититься от атак методом перебора, заблокировав учётную запись в процессе сброса пароля после определённого количества последовательных попыток. Однако это также может помешать законному пользователю сбросить свой пароль и восстановить доступ к своей учётной записи.
 
-- Is it vulnerable to common attacks?
+- Уязвим ли процесс к распространённым атакам?
 
-  As well as the specific areas discussed in this guide, it's also important to check for other common vulnerabilities such as SQL injection or cross-site scripting.
+  Помимо конкретных областей, обсуждаемых в этом руководстве, также важно проверить наличие других распространённых уязвимостей, таких как SQL-инъекции или межсайтовые скрипты.
 
-- Does the reset process allow user enumeration?
+- Разрешает ли процесс сброса перебор пользователей?
 
-  See the [Testing for Account Enumeration](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md) guide for further information.
+  См. раздел [Перебор и угадывание учётных записей пользователей](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md) для получения дополнительной информации.
 
-### Email - New Password Sent
+### Email: отправка нового пароля
 
-In this model, the user is sent a new password via email once they have proved their identity. This is considered less secure for two main reasons:
+В этой модели новый пароль высылается пользователю по электронной почте после подтверждения его личности. Это считается менее безопасным по двум основным причинам:
 
-- The password is sent to the user in an unencrypted form.
-- The password for the account is changed when the request is made, effectively locking the user out of their account until they receive the email. By making repeated requests, it is possible to prevent a user from being able to access their account.
+- Пароль отправляется пользователю в незашифрованном виде.
+- Пароль для учётной записи меняется при отправке запроса, что фактически блокирует доступ пользователя к своей учётной записи до тех пор, пока он не получит электронное письмо. Повторяя запросы, можно запретить пользователю доступ к своей учётной записи.
 
-Where this approach is used, the following areas should be reviewed:
+Там, где используется этот подход, следует рассмотреть следующие вопросы:
 
-- Is the user forced to change the password on initial login?
+- Принуждается ли пользователь менять пароль при первом входе в систему?
 
-  The new password is sent over unencrypted email, and may sit in the user's inbox indefinitely if they don't delete the email. As such, the user should be required to change the password as soon as they log in for the first time.
+  Новый пароль отправляется по электронной почте в незашифрованном виде и может оставаться в папке Входящие неопределённое время, пока пользователь не удалит электронное письмо. Таким образом, он должен поменять пароль, как только войдёт в систему в первый раз.
 
-- Is the password securely generated?
+- Безопасно ли сгенерирован пароль?
 
-  The password should be generated using a Cryptographically Secure Pseudo-Random Number Generator (CSPRNG), and should be sufficiently long to prevent password guessing or brute-force attacks. For a secure user-friendly experience, it should be generated using a secure passphrase-style approach (i.e, combining multiple words), rather than a string of random characters.
+  Пароль должен быть сгенерирован с использованием криптографически стойкого генератора псевдослучайных чисел ([CSPRNG](https://ru.wikipedia.org/wiki/%D0%9A%D1%80%D0%B8%D0%BF%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8_%D1%81%D1%82%D0%BE%D0%B9%D0%BA%D0%B8%D0%B9_%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80_%D0%BF%D1%81%D0%B5%D0%B2%D0%B4%D0%BE%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D1%8B%D1%85_%D1%87%D0%B8%D1%81%D0%B5%D0%BB)) и должен быть достаточно длинным, чтобы предотвратить угадывание пароля или атаки методом перебора. Для безопасного и удобного использования он должен быть сформирован с использованием подхода в стиле безопасной парольной фразы (т.е. словосочетания из нескольких слов), а не одной строки из случайных символов.
 
-- Is the user's existing password sent to them?
+- Отправляется ли пользователю текущий пароль?
 
-  Rather than generating a new password for the user, some applications will send the user their existing password. This is a very insecure approach, as it exposes their current password over unencrypted email. Additionally, if the site is able to recover the existing password, this implies that passwords are either stored using reversible encryption, or (more likely) in unencrypted plain text, both of which represent a serious security weakness.
+  Вместо создания нового пароля для пользователя некоторые приложения отправляют его существующий пароль. Это очень небезопасный подход, поскольку он передаёт текущий пароль по незашифрованной электронной почте. Кроме того, если сайт может восстановить существующий пароль, это означает, что пароли либо хранятся с использованием обратимого шифрования, либо (что более вероятно) в виде незашифрованного открытого текста, что представляет собой серьёзную уязвимость в системе безопасности.
 
-- Are the emails sent from a domain with anti-spoofing protection?
+- Электронные письма отправляются с домена с защитой от спуфинга?
 
-  The domain should implement SPF, DKIM, and DMARC to prevent attackers from spoofing emails from it, which could be used as part of a social engineering attack.
+  В домене должны быть настроены [SPF, DKIM и DMARC](https://help.mail.ru/postmaster/technical-settings/notes), чтобы злоумышленники не могли подделывать электронные письма с него, что может быть использовано в социальной инженерии.
 
-- Is email considered sufficiently secure?
+- Достаточно ли защищена электронная почта?
 
-  Emails are typically sent unencrypted, and in many cases the user's email account will not be protected by MFA. It may also be shared between multiple individuals, particularly in a corporate environment.
+  Электронные письма обычно отправляются в незашифрованном виде, и во многих случаях учётная запись электронной почты пользователя не защищена MFA. Email также может быть общим для группы людей, особенно в корпоративной среде.
 
-  Consider whether email-based password reset functionality is appropriate, based on the context of the application that is being tested.
+  Подумайте, подходит ли функция сброса пароля через электронную почту для контекста тестируемого приложения.
 
-### Email - Link Sent
+### Email: отправка ссылки
 
-In this model, the user is emailed a link that contains a token. They can then click this link, and are prompted to enter a new password on the site. This is the most common approach used for password reset, but is more complex to implement than the previously discussed approach. The key areas to test are:
+В этой модели пользователям по электронной почте направляется ссылка, содержащая токен. Затем они могут перейти по этой ссылке, и им будет предложено ввести новый пароль на сайте. Это наиболее распространённый подход для сброса пароля, но его сложнее реализовать, чем рассмотренный ранее. Ключевые вопросы для рассмотрения:
 
-- Does the link use HTTPS?
+- Используется ли в ссылке HTTPS?
 
-  If the token is sent over unencrypted HTTP, it may be possible for an attacker to intercept it.
+  Если токен отправляется по незашифрованному протоколу HTTP, злоумышленник может его перехватить.
 
-- Can the link be used multiple times?
+- Можно ли использовать ссылку несколько раз?
 
-  Links should expire after they are used, otherwise they provide a persistent backdoor for the account.
+  Срок действия ссылок должен истекать сразу после их использования, в противном случае они создают постоянный бэкдор для учётной записи.
 
-- Does the link expire if it remains unused?
+- Истекает ли срок действия ссылки, если она остаётся неиспользованной?
 
-  Links should be time limited. Exactly how long is appropriate will depend on the site, but it should rarely be more than an hour.
+  Срок действия ссылки должны быть ограничен. Конкретный срок будет зависеть от сайта, но он редко должен превышать один час.
 
-- Is the token sufficiently long and random?
+- Достаточно ли токен длинный и случайный?
 
-  The security of the process is entirely reliant on an attacker not being able to guess or brute-force a token. The tokens should be generated with a Cryptographically Secure Pseudo-Random Number Generator (CSPRNG), and should be sufficiently long that it is impractical for an attacker to guess or brute-force. At least 128 bits (or 32 hex characters) is a sufficient minimum to make such an online attack impractical.
+  Безопасность процесса полностью зависит от того, сможет ли злоумышленник угадать или подобрать токен. Токены должны формироваться с помощью криптографически стойкого генератора псевдослучайных чисел (CSPRNG) и должны быть достаточно длинными, чтобы злоумышленник не смог их угадать или перебрать. 128 бит (или 32 шестнадцатеричных символа) — пока достаточный минимум, чтобы сделать такую онлайн-атаку нецелесообразной.
 
-  Tokens should never be generated based on known values, such as by taking the MD5 hash of the user's email with `md5($email)`, or using GUIDs which may use insecure PRNG functions, or may not even be random depending on the type.
+  Токены никогда не должны генерироваться на основе известных значений, например, путем использования MD5-хэша электронной почты пользователя с помощью `md5($email)` или с GUID, которые могут использовать некриптостойкие генераторы псевдослучайных чисел (PRNG) или даже могут не быть случайными в зависимости от типа GUID.
 
-  An alternative approach to random tokens is to use a cryptographically signed token such as a JWT. In this case, the usual JWT checks should be carried out (is the signature verified, can the "nONe" algorithm be used, can the HMAC key be brute-forced, etc). See the [Testing JSON Web Tokens](../06-Session_Management_Testing/10-Testing_JSON_Web_Tokens.md) guide for further information.
+  Альтернативный подход к случайным токенам заключается в использовании токена, подписанного электронной подписью, например, JWT. В этом случае следует провести стандартные тесты JWT (проверяется ли подпись, можно ли использовать алгоритм "nONe", можно ли подобрать ключ HMAC и т.д.). Дополнительную информацию см. в разделе [Тестирование JWT](../06-Session_Management_Testing/10-Testing_JSON_Web_Tokens.md).
 
-- Does the link contain a user ID?
+- Содержит ли ссылка идентификатор пользователя?
 
-  Sometimes the password reset link may include a user ID as well as a token, such as `reset.php?userid=1&token=123456`. In this case, it may be possible to modify the `userid` parameter to reset other users' passwords.
+  Иногда ссылка для сброса пароля может включать идентификатор пользователя, а также токен, например `reset.php?userid=1&token=123456`. В этом случае можно изменяя параметр `userid`, сбрасывать пароли других пользователей.
 
-- Can you inject a different host header?
+- Можно ли ввести другой заголовок хоста?
 
-  If the application trusts the value of the `Host` header and uses this to generate the password reset link, it may be possible to steal tokens by injecting a modified `Host` header into the request. See the [Testing for Host Header Injection](../07-Input_Validation_Testing/17-Testing_for_Host_Header_Injection.md) guide for further information.
+  Если приложение доверяет значению заголовка `Host` и использует его при генерации ссылки для сброса пароля, то может оказаться возможным украсть токены, вводя в запрос модифицированный заголовок `Host`. Дополнительную информацию см. в разделе [Тестирование инъекции заголовка хоста](../07-Input_Validation_Testing/17-Testing_for_Host_Header_Injection.md).
 
-- Is the link exposed to third parties?
+- Доступна ли ссылка другим лицам?
 
-  If the page that the user is taken to includes content from other parties (such as loading scripts from other domains), then the reset token in the URL may be exposed in the HTTP `Referer` header sent in these requests. The `Referrer-Policy` HTTP header can be used to protect against this, so check if one is defined for the page.
+  Если страница, на которую переходит пользователь, содержит контент от других сторон (например, загрузку скриптов из других доменов), то токен сброса в URL-адресе может отображаться в HTTP-заголовке `Referer`, отправляемом в этих запросах. Для защиты от этого можно использовать HTTP-заголовок Referrer-Policy, поэтому проверьте, задан ли он для страницы.
 
-  Additionally, if the page includes any tracking, analytics or advertising scripts, the token will also be exposed to them.
+  Кроме того, если страница содержит скрипты отслеживания, web-аналитики или рекламы, токен также будет доступен для них.
 
-- Are the emails sent from a domain with anti-spoofing protection?
+- Защищён ли от спуфинга домен, с которого отправляются электронные письма?
 
-  The domain should implement SPF, DKIM, and DMARC to prevent attackers from spoofing emails from it, which could be used as part of a social engineering attack.
+  В домене должны быть настроены SPF, DKIM и DMARC, чтобы злоумышленники не могли подделывать электронные письма с него, что может быть использовано в социальной инженерии.
 
-- Is email considered sufficiently secure?
+- Достаточно ли защищена электронная почта?
 
-  Emails are typically sent unencrypted, and in many cases the user's email account will not be protected by MFA. It may also be shared between multiple individuals, particularly in a corporate environment.
+  Электронные письма обычно отправляются в незашифрованном виде, и во многих случаях учётная запись электронной почты пользователя не защищена MFA. Email также может быть общим для группы людей, особенно в корпоративной среде.
 
-  Consider whether email-based password reset functionality is appropriate, based on the context of the application that is being tested.
+  Подумайте, подходит ли функция сброса пароля через электронную почту для контекста тестируемого приложения.
 
-### Tokens Sent Over SMS or Phone Call
+### Токены, отправляемые с помощью SMS или звонка по телефону
 
-Rather than sending a token in an email, an alternative approach is to send it via SMS or an automated phone call, which the user will then enter on the application. The key areas to test are:
+Вместо отправки токена по электронной почте альтернативным подходом является отправка его с помощью SMS или автоматического телефонного звонка, который затем пользователь вводит в приложении. Ключевые вопросы для рассмотрения:
 
-- Is the token sufficiently long and random?
+- Достаточно ли токен длинный и случайный?
 
-  Tokens sent this way are typically shorter, as they are intended to be manually typed by the user, rather than being embedded in a link. It's fairly common for applications to use six numeric digits, which only provides ~20 bits of security (feasible for an online brute-force attack), rather than the typically longer email token.
+  Токены, отправляемые таким образом, обычно короче, поскольку они предназначены для ввода вручную, а не для встраивания в ссылку. Довольно часто приложения используют число из шести цифр, которое даёт всего ~20 бит энтропии (можно подобрать онлайн), вместо более длинного токена, применяемого для электронной почты.
 
-  This makes it much more important that the password reset functionality is protected against brute-force attacks.
+  Для этого варианта важно защищать функцию сброса пароля от атак методом перебора.
 
-- Can the token be used multiple times?
+- Можно ли использовать токен несколько раз?
 
-  Tokens should be invalidated after they are used, otherwise they provide a persistent backdoor for the account.
+  Токены должны становиться недействительными сразу после их использования, иначе они обеспечивают постоянный бэкдор для учётной записи.
 
-- Does the token expire if it remains unused?
+- Истекает ли срок действия токена, если он остаётся неиспользованным?
 
-  As the shorter tokens are more susceptible to brute-force attacks, a shorter expiration time should be implemented to limit the window available for an attacker to carry out an attack.
+  Поскольку более короткие токены сильнее подвержены атакам методом перебора, для них следует использовать более короткий срок действия, чтобы закрывать окно, доступное злоумышленнику для проведения атаки.
 
-- Are appropriate rate limiting and restrictions in place?
+- Есть ли ограничения по частоте запросов?
 
-  Sending an SMS or triggering an automated phone call to a user is significantly more disruptive than sending an email, and could be used to harass a user, or even carry out a denial of service attack against their phone. The application should implement rate limiting to prevent this.
+  Отправка SMS-сообщения или автоматический телефонный звонок требуют от пользователя значительно больше внимания, чем отправка электронной почты, и могут применяться для причинения беспокойства или даже атак типа «отказ в обслуживании» на его телефон. Приложение должно реализовать ограничение частоты запросов, чтобы это предотвращать.
 
-  Additionally, SMS messages and phone calls often incur financial costs for the sending party. If an attacker is able to cause a large number of messages to be sent, this could result in significant costs for the website operator. This is especially true if they are sent to international or premium rate numbers. However, allowing international numbers may be a requirement of the application.
+  Кроме того, SMS-сообщения и телефонные звонки часто сопряжены с финансовыми расходами для отправляющей стороны. Если злоумышленник способен вызвать отправку большого количества сообщений, это может привести к значительным затратам для оператора web-сайта. Это особенно заметно, если они отправляются на международные номера или на номера с премиальными тарифами. Однако разрешение звонков на международные номера может быть требованием приложения.
 
-- Is SMS or a phone call considered sufficiently secure?
+- Достаточно ли защищены SMS или телефонный звонки?
 
-  [A variety of attacks](https://www.ncsc.gov.uk/guidance/protecting-sms-messages-used-in-critical-business-processes#section_4) have been demonstrated that would allow an attacker to effectively hijack SMS messages, there are conflicting views about whether SMS is sufficiently secure to be used as an authentication factor.
+  Продемонстрировано [множество атак](https://www.ncsc.gov.uk/guidance/protecting-sms-messages-used-in-critical-business-processes#section_4), позволяющих злоумышленнику перехватить SMS-сообщения. Существуют противоречивые мнения о том, достаточно ли безопасны SMS, чтобы их можно было использовать в качестве фактора аутентификации.
 
-  It is usually possible to answer an automated phone call with physical access to a device, without needing any kind of PIN or fingerprint to unlock the phone. In some circumstances (such as a shared office environment), this could allow an internal attacker to trivially reset another user's password by walking over to their desk when they are out of office.
+  Обычно, имея физический доступ к устройству, можно ответить на автоматический телефонный звонок, не требуя ввода PIN-кода или отпечатка пальца для разблокировки телефона. В некоторых обстоятельствах (например, в открытом пространстве офиса) это может позволить внутреннему злоумышленнику тривиально сбросить пароль другого пользователя, подойдя к его столу, пока его нет рядом.
 
-  Consider whether SMS or automated phone calls are appropriate, based on the context of the application that is being tested.
+  Подумайте, подходят ли SMS или автоматические телефонные звонки, к контексту тестируемого приложения.
 
-### Security Questions
+### Контрольные вопросы
 
-Rather than sending them a link or new password, security questions can be used as a mechanism to authenticate the user. This is considered to be a weak approach, and should not be used if better options are available.
+Вместо того, чтобы отправлять ссылку или новый пароль, в качестве механизма аутентификации пользователя можно использовать контрольные вопросы. Это считается слабым подходом, и его не следует использовать, если есть варианты получше.
 
-See the [Testing for Weak Security Questions](08-Testing_for_Weak_Security_Question_Answer.md) guide for further information.
+Дополнительную информацию см. в разделе [Тестирование ответа на контрольный вопрос](08-Testing_for_Weak_Security_Question_Answer.md).
 
-### Authenticated Password Changes
+### Аутентифицированное изменение пароля
 
-Once the user has proved their identity (either through a password reset link, a recovery code, or by logging in on the application) they should be able to change their password. The key area to test are:
+Как только пользователь подтвердит свою личность (с помощью ссылки для сброса пароля, кода восстановления или путем входа в приложение), он сможет изменить свой пароль. Ключевыми вопросами для рассмотрения являются:
 
-- When setting the password, can you specify the user ID?
+- Указывается ли идентификатор пользователя при установке пароля?
 
-  If the user ID is included in the password reset request and is not validated, it may be possible to modify it and change other users' passwords.
+  Если идентификатор пользователя включается в запрос на сброс пароля, но не проверяется, возможно, его можно модифицировать и изменить пароли других пользователей.
 
-- Is the user required to re-authenticate?
+- Требуется ли пользователю повторная аутентификация?
 
-  If a logged-in user tries to change their password, they should be asked to re-authenticate with their current password in order to protect against an attacker gaining temporary access to an unattended session. If the user has MFA enabled, then they would typically re-authenticate with that, rather than their password.
+  Если вошедший в систему пользователь пытается изменить свой пароль, его следует попросить повторно пройти аутентификацию с текущим паролем, чтобы защититься от злоумышленника, который получил доступ к сессии, временно оставшейся без присмотра. Если у пользователя включена многофакторная аутентификация, он, как правило, будет повторно аутентифицироваться с её помощью, а не через пароль.
 
-- Is the password change form vulnerable to CSRF?
+- Уязвима ли форма смены пароля для CSRF?
 
-  If the user isn't required to re-authenticate, then it may be possible to carry out a CSRF attack against the password reset form, allowing their account to be compromised. See the [Testing for Cross-Site Request Forgery](../06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md) guide for further information.
+  Если от пользователя не требуется повторная аутентификация, то можно провести CSRF-атаку на форму сброса пароля, что позволит скомпрометировать его учётную запись. Дополнительную информацию см. в разделе [Тестирование на подделку межсайтовых запросов](../06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md).
 
-- Is a strong and effective password policy applied?
+- Насколько безопасна и эффективна парольная политика?
 
-  The password policy should be consistent across the registration, password change, and password reset functionality. See the [Testing for Weak Password Policy](07-Testing_for_Weak_Password_Policy.md) guide for further information.
+  Парольная политика должна быть единообразной для всех функций регистрации, изменения и сброса пароля. Дополнительную информацию см. в разделе [Тестирование парольной политики](07-Testing_for_Weak_Password_Policy.md).
 
-## References
+## Ссылки
 
-- [OWASP Forgot Password Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html)
+- [Памятка OWASP по забытым паролям](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html)

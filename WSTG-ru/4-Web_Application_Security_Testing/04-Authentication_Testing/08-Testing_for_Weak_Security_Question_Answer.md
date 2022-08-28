@@ -7,73 +7,74 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Weak Security Question Answer
+# Тестирование ответа на контрольный вопрос
 
 |ID          |
 |------------|
 |WSTG-ATHN-08|
 
-## Summary
+## Обзор
 
-Often called "secret" questions and answers, security questions and answers are often used to recover forgotten passwords (see [Testing for weak password change or reset functionalities](09-Testing_for_Weak_Password_Change_or_Reset_Functionalities.md), or as extra security on top of the password.
+Часто называемые «секретными» вопросами и ответами, контрольные вопросы и ответы часто используются для восстановления забытых паролей (см. [Тестирование функций смены или сброса пароля](09-Testing_for_Weak_Password_Change_or_Reset_Functionalities.md), в качестве дополнительной меры защиты к паролю.
 
-They are typically generated upon account creation and require the user to select from some pre-generated questions and supply an appropriate answer. They may allow the user to generate their own question and answer pairs. Both methods are prone to insecurities.Ideally, security questions should generate answers that are only known by the user, and not guessable or discoverable by anybody else. This is harder than it sounds.
-Security questions and answers rely on the secrecy of the answer. Questions and answers should be chosen so that the answers are only known by the account holder. However, although a lot of answers may not be publicly known, most of the questions that websites implement promote answers that are pseudo-private.
+Обычно они генерируются при создании учётной записи и требуют, чтобы пользователь выбрал один из заранее подготовленных вопросов и дал соответствующий ответ. Они могут позволять пользователю создавать свои собственные пары вопросов и ответов. Оба метода небезопасны. В идеале контрольные вопросы должны разрешать ответы, известные только пользователю, которые не могут быть угаданы или найдены кем-либо ещё. А это сложнее, чем кажется.
 
-### Pre-generated Questions
+Контрольные вопросы и ответы полагаются на секретность ответа. Вопросы и ответы следует выбирать таким образом, чтобы ответы были известны только владельцу учётной записи. Однако, несмотря на то, что многие ответы могут быть не известны широкой публике, большинство вопросов, которые встречаются на web-сайтах, продвигают псевдо-приватные ответы.
 
-The majority of pre-generated questions are fairly simplistic in nature and can lead to insecure answers. For example:
+### Заранее подготовленные вопросы
 
-- The answers may be known to family members or close friends of the user, e.g. "What is your mother's maiden name?", "What is your date of birth?"
-- The answers may be easily guessable, e.g. "What is your favorite color?", "What is your favorite baseball team?"
-- The answers may be brute forcible, e.g. "What is the first name of your favorite high school teacher?" - the answer is probably on some easily downloadable lists of popular first names, and therefore a simple brute force attack can be scripted.
-- The answers may be publicly discoverable, e.g. "What is your favorite movie?" - the answer may easily be found on the user's social media profile page.
+Большинство заранее подготовленных вопросов довольно просты по своей природе и могут привести к вскрытию тайны ответа. Например:
 
-### Self-generated Questions
+- Ответы могут быть известны членам семьи или близким друзьям пользователя, например. «Какая девичья фамилия вашей матери?», «Какая дата вашего рождения?»
+- Ответы могут быть легко угадываемыми, например. «Какой твой любимый цвет?», «Какая твоя любимая футбольная команда?»
+- Ответы могут быть подобраны перебором, например. «Как зовут вашего первого школьного учителя?» — ответ, вероятно, найдётся в каких-нибудь широко распространённых списках популярных имён, и, следовательно, может быть написана простая атака перебором.
+- Ответы могут быть общедоступными, например. "Какой ваш любимый фильм?" — ответ можно легко найти на странице профиля пользователя в социальной сети.
 
-The problem with having users to generate their own questions is that it allows them to generate very insecure questions, or even bypass the whole point of having a security question in the first place. Here are some real world examples that illustrate this point:
+### Самостоятельно созданные вопросы
 
-- "What is 1+1?"
-- "What is your username?"
-- "My password is S3curIty!"
+Проблема с собственными вопросами пользователей заключается в том, что это позволяет им создавать совершенно несекретные вопросы или сразу обойти весь смысл наличия контрольного вопроса. Вот несколько примеров из реальной жизни, иллюстрирующих этот момент:
 
-## Test Objectives
+- «Сколько будет 1+1?»
+- «Какое у тебя имя пользователя?»
+- «Мой пароль — S3curIty!»
 
-- Determine the complexity and how straight-forward the questions are.
-- Assess possible user answers and brute force capabilities.
+## Задачи тестирования
 
-## How to Test
+- Определить сложность вопросов и насколько они прямолинейны.
+- Оценить возможные ответы пользователей и возможности их подбора.
 
-### Testing for Weak Pre-generated Questions
+## Как тестировать
 
-Try to obtain a list of security questions by creating a new account or by following the "I don’t remember my password"-process. Try to generate as many questions as possible to get a good idea of the type of security questions that are asked. If any of the security questions fall in the categories described above, they are vulnerable to being attacked (guessed, brute-forced, available on social media, etc.).
+### Тестирование недостатков в заранее подготовленных вопросах
 
-### Testing for Weak Self-Generated Questions
+Попробуйте получить список «секретных» вопросов, создав новую учётную запись или пройдя через процедуру «Я не помню свой пароль». Постарайтесь сформировать как можно больше вопросов, чтобы получить представление об их типе. Если какие-либо из вопросов попадают в описанные выше категории, они уязвимы для атак (угадываются, подбираются перебором, доступны в социальных сетях и т. д.).
 
-Try to create security questions by creating a new account or by configuring your existing account’s password recovery properties. If the system allows the user to generate their own security questions, it is vulnerable to having insecure questions created. If the system uses the self-generated security questions during the forgotten password functionality and if usernames can be enumerated (see [Testing for Account Enumeration and Guessable User Account](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md), then it should be easy for the tester to enumerate a number of self-generated questions. It should be expected to find several weak self-generated questions using this method.
+### Проверка недостатков в вопросах, созданных самостоятельно
 
-### Testing for Brute-forcible Answers
+Попробуйте сформулировать контрольные вопросы при создании новой учётной записи, или настроив свойства восстановления пароля у имеющейся. Если система позволяет пользователю создавать собственные контрольные вопросы, она уязвима для несекретных вопросов. Если в системе применяются контрольные вопросы, созданные самостоятельно в функции «Забыл(а) пароль», и если имена пользователей можно подобрать (см. [Перебор и угадывание учётных записей пользователей](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md), то тестировщику должно быть легко перебрать набор созданных самостоятельно вопросов. Следует ожидать, что с помощью этого метода будет найдено несколько лёгких самостоятельно созданных вопросов.
 
-Use the methods described in [Testing for Weak lock out mechanism](03-Testing_for_Weak_Lock_Out_Mechanism.md) to determine if a number of incorrectly supplied security answers trigger a lockout mechanism.
+### Тестирование ответов методом перебора
 
-The first thing to take into consideration when trying to exploit security questions is the number of questions that need to be answered. The majority of applications only need the user to answer a single question, whereas some critical applications may require the user to answer two or even more questions.
+Используйте методы, описанные в разделе [Тестирование механизма блокировки](03-Testing_for_Weak_Lock_Out_Mechanism.md), чтобы определить, запускает ли ряд неправильно данных ответов механизм блокировки.
 
-The next step is to assess the strength of the security questions. Could the answers be obtained by a simple Google search or with social engineering attack? As a penetration tester, here is a step-by-step walkthrough of exploiting a security question scheme:
+Первое, на что следует обратить внимание при попытке использования контрольных вопросов, — это количество вопросов, на которые необходимо ответить. Большинству приложений требуется, чтобы пользователь ответил всего на один вопрос, тогда как некоторые важные приложения могут потребовать от пользователя ответа на два или даже больше вопросов.
 
-- Does the application allow the end user to choose the question that needs to be answered? If so, focus on questions which have:
+Следующий шаг — оценить сложность контрольных вопросов. Можно ли получить ответы простым поиском в Google или с помощью социальной инженерии? Вот пошаговое руководство для пентестера по использованию схемы секретных вопросов:
 
-    - A "public" answer; for example, something that could be find with a simple search-engine query.
-    - A factual answer such as a "first school" or other facts which can be looked up.
-    - Few possible answers, such as "what model was your first car". These questions would present the attacker with a short list of possible answers, and based on statistics the attacker could rank answers from most to least likely.
+- Позволяет ли приложение конечному пользователю выбрать вопрос, на который нужно ответить? Если да, сосредоточьтесь на вопросах, которые имеют:
 
-- Determine how many guesses you have if possible.
-    - Does the password reset allow unlimited attempts?
-    - Is there a lockout period after X incorrect answers? Keep in mind that a lockout system can be a security problem in itself, as it can be exploited by an attacker to launch a Denial of Service against legitimate users.
-    - Pick the appropriate question based on analysis from the above points, and do research to determine the most likely answers.
+    - «Общедоступный» ответ; например, что-то, что можно было бы найти с помощью простого запроса в поисковой системе.
+    - Факты из жизни, например, «первый учитель» или другие факты, которые можно найти в соц.сетях.
+    - Несколько вариантов ответов, например, «какой модели был ваш первый автомобиль». Эти вопросы имеют небольшой список возможных ответов, и, основываясь на статистике, злоумышленник мог бы ранжировать их от наиболее до наименее вероятных.
 
-The key to successfully exploiting and bypassing a weak security question scheme is to find a question or set of questions which give the possibility of easily finding the answers. Always look for questions which can give you the greatest statistical chance of guessing the correct answer, if you are completely unsure of any of the answers. In the end, a security question scheme is only as strong as the weakest question.
+- Определите, если это возможно, сколько у вас догадок:
+    - Допускает ли сброс пароля неограниченное количество попыток?
+    - Есть ли период блокировки после нескольких неправильных ответов? Имейте в виду, что система блокировки сама по себе может стать проблемой, поскольку злоумышленник может использовать её для запуска атаки «отказ в обслуживании» против законных пользователей.
+    - Выберите подходящий вопрос на основе анализа вышеперечисленных пунктов и определите наиболее вероятные ответы.
 
-## References
+Ключом к успешной эксплуатации и обходу «секретных» вопросов является поиск вопроса или набора вопросов, дающих возможность легко найти ответы. Всегда ищите вопросы, которые могут дать вам наибольшие статистические шансы угадать правильный ответ, если вы абсолютно не уверены ни в одном из них. В конце концов, схема «секретных» вопросов надёжна ровно настолько, насколько сложен самый простой вопрос.
 
-- [The Curse of the Secret Question](https://www.schneier.com/essay-081.html)
-- [The OWASP Security Questions Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Choosing_and_Using_Security_Questions_Cheat_Sheet.html)
+## Ссылки
+
+- [Проклятие «секретного» вопроса](https://www.schneier.com/essay-081.html)
+- [Памятка OWASP по «секретным» вопросам](https://cheatsheetseries.owasp.org/cheatsheets/Choosing_and_Using_Security_Questions_Cheat_Sheet.html)

@@ -7,92 +7,92 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Weaker Authentication in Alternative Channel
+# Тестирование аутентификации в альтернативных каналах
 
 |ID          |
 |------------|
 |WSTG-ATHN-10|
 
-## Summary
+## Обзор
 
-Even if the primary authentication mechanisms do not include any vulnerabilities, it may be that vulnerabilities exist in alternative legitimate authentication user channels for the same user accounts. Tests should be undertaken to identify alternative channels and, subject to test scoping, identify vulnerabilities.
+Даже если основные механизмы аутентификации пользователей и не содержат уязвимостей, может оказаться, что они есть в существующих альтернативных каналах аутентификации для тех же учётных записей. Следует провести тесты для выявления таких альтернативных каналов и, в зависимости от области тестирования, выявить уязвимости.
 
-The alternative user interaction channels could be utilized to circumvent the primary channel, or expose information that can then be used to assist an attack against the primary channel. Some of these channels may themselves be separate web applications using different hostnames or paths. For example:
+Альтернативные каналы взаимодействия с пользователем могут быть использованы для обхода основного, или предоставления информации, которая затем может помочь в атаке на основной канал. Некоторые из этих каналов сами по себе могут быть отдельными web-приложениями, использующими разные имена хостов или пути. Например:
 
-- Standard website
-- Mobile, or specific device, optimized website
-- Accessibility optimized website
-- Alternative country and language websites
-- Parallel websites that utilize the same user accounts (e.g. another website offering different functionally of the same organization, a partner website with which user accounts are shared)
-- Development, test, UAT and staging versions of the standard website
+- Стандартный сайт
+- Web-сайт, оптимизированный для мобильных или специальных устройств
+- Web-сайт, оптимизированный для специальных возможностей
+- Сайты для других стран и языков
+- Параллельные web-сайты, использующие те же учётные записи пользователей (например, web-сайт, предлагающий другие функции той же организации, web-сайт партнера, на котором используются общие учётные записи пользователей)
+- Разработка, тестирование, приёмка и прочие промежуточные версии стандартного web-сайта
 
-But they could also be other types of application or business processes:
+Но также это могут быть и другие типы приложений или бизнес-процессов:
 
-- Mobile device app
-- Desktop application
-- Call center operators
-- Interactive voice response or phone tree systems
+- Приложение для мобильных устройств
+- Приложение для настольных ПК
+- Операторы контакт-центра
+- Интерактивный автоответчик или системы голосового меню
 
-Note that the focus of this test is on alternative channels; some authentication alternatives might appear as different content delivered via the same website and would almost certainly be in scope for testing. These are not discussed further here, and should have been identified during information gathering and primary authentication testing. For example:
+Обратите внимание, что основное внимание в этом тесте уделяется альтернативным каналам; некоторые варианты аутентификации могут отображаться как другой контент, доставляемый через тот же web-сайт, и почти наверняка попадут в область тестирования. Они здесь больше не обсуждаются и должны были быть идентифицированы во время сбора информации и первичного тестирования аутентификации. Например:
 
-- Progressive enrichment and graceful degradation that change functionality
-- Site use without cookies
-- Site use without JavaScript
-- Site use without plugins such as for Flash and Java
+- Постепенное улучшение и ухудшение, меняющие функциональность сайта
+- Использование сайта без файлов cookie
+- Использование сайта без JavaScript
+- Использование сайта без плагинов, таких как для Flash и Java
 
-Even if the scope of the test does not allow the alternative channels to be tested, their existence should be documented. These may undermine the degree of assurance in the authentication mechanisms and may be a precursor to additional testing.
+Даже если границы проекта не позволяют протестировать альтернативные каналы, их существование должно быть задокументировано. Они могут подорвать уверенность в механизмах аутентификации и потребовать дополнительного тестирования.
 
-## Example
+## Пример
 
-The primary website is `http://www.example.com` and authentication functions always take place on pages using TLS `https://www.example.com/myaccount/`.
+Основной сайт `http://www.example.com` и функции аутентификации всегда выполняются на страницах, использующих TLS `https://www.example.com/myaccount/`.
 
-However, a separate mobile-optimized website exists that does not use TLS at all, and has a weaker password recovery mechanism `http://m.example.com/myaccount/`.
+Однако есть другой сайт, оптимизированный для мобильных устройств, который не использует TLS и имеет более слабый механизм восстановления пароля. `http://m.example.com/myaccount/`.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify alternative authentication channels.
-- Assess the security measures used and if any bypasses exists on the alternative channels.
+- Определить альтернативные каналы аутентификации.
+- Оценить применяющиеся меры защиты и наличие обходных путей по альтернативным каналам.
 
-## How to Test
+## Как тестировать
 
-### Understand the Primary Mechanism
+### Разобраться с основным механизмом
 
-Fully test the website's primary authentication functions. This should identify how accounts are issued, created or changed and how passwords are recovered, reset, or changed. Additionally knowledge of any elevated privilege authentication and authentication protection measures should be known. These precursors are necessary to be able to compare with any alternative channels.
+Полностью протестируйте основные функции аутентификации web-сайта. Необходимо определить, как создаются и изменяются учётные записи, а также как восстанавливаются, сбрасываются или изменяются пароли. Кроме того, необходимо знать об отличиях при аутентификации пользователей с повышенными привилегиями и мерах защиты аутентификации. Эти предварительные приготовления необходимы, чтобы иметь возможность сравнивать их с альтернативными каналами.
 
-### Identify Other Channels
+### Определить другие каналы
 
-Other channels can be found by using the following methods:
+Другие каналы можно найти, используя следующие методы:
 
-- Reading site content, especially the home page, contact us, help pages, support articles and FAQs, T&Cs, privacy notices, the robots.txt file and any sitemap.xml files.
-- Searching HTTP proxy logs, recorded during previous information gathering and testing, for strings such as "mobile", "android", blackberry", "ipad", "iphone", "mobile app", "e-reader", "wireless", "auth", "sso", "single sign on" in URL paths and body content.
-- Use search engines to find different websites from the same organization, or using the same domain name, that have similar home page content or which also have authentication mechanisms.
+- Чтение страниц сайта, особенно главной, контактов, справочных, статей поддержки и часто задаваемых вопросов, условий и положений, уведомлений о конфиденциальности, файлов robots.txt, sitemap.xml и т.п.
+- Поиск в журналах HTTP-прокси, записанных во время предыдущих этапов сбора и тестирования информации, таких строк, как mobile, android, iOS, ipad, mobile app, e-reader, wireless, auth, sso, single-sign-on в URL-адресах и теле страниц.
+- Используйте поисковые системы, чтобы найти разные web-сайты одной организации или использующие одно и то же доменное имя, которые имеют похожее содержание домашней страницы или механизмы аутентификации.
 
-For each possible channel confirm whether user accounts are shared across these, or provide access to the same or similar functionality.
+Для каждого возможного канала убедитесь, являются ли учётные записи пользователей общими для всех этих каналов и дают ли они доступ к тем же или аналогичным функциям.
 
-### Enumerate Authentication Functionality
+### Инвентаризация функций аутентификации
 
-For each alternative channel where user accounts or functionality are shared, identify if all the authentication functions of the primary channel are available, and if anything extra exists. It may be useful to create a grid like the one below:
+Для каждого альтернативного канала, в котором используются общие учётные записи пользователей или функциональные возможности, определите, доступны ли все функции аутентификации основного канала и существует ли что-либо дополнительное. Может быть полезно создать таблицу, подобную приведённой ниже:
 
-  | Primary | Mobile  |  Call Center | Partner Website |
+  | Основной | Мобильный | Контакт-центр | Сайт партнёра |
   |---------|---------|--------------|-----------------|
-  | Register| Yes     |     -        |       -         |
-  | Log in  | Yes     |    Yes       |    Yes(SSO)     |
-  | Log out |   -     |     -        |       -         |
-  |Password reset |   Yes  |   Yes   |       -         |
-  | -       | Change password |   -  |       -         |
+  | Регистрация| Да     |     -        |       -         |
+  | Вход  | Да     |    Да       |    Да (SSO)     |
+  | Выход |   -     |     -        |       -         |
+  |Сброс пароля |   Да  |   Да   |       -         |
+  | -       | Изменение пароля |   -  |       -         |
 
-In this example, mobile has an extra function "change password" but does not offer "log out". A limited number of tasks are also possible by phoning the call center. Call centers can be interesting, because their identity confirmation checks might be weaker than the website's, allowing this channel to be used to aid an attack against a user's account.
+В этом примере мобильный сайт имеет дополнительную функцию Изменения пароля, но не предлагает Выхода из системы. Ограниченное количество задач можно также решить по телефону контакт-центра. Контакт-центры могут быть интересны, потому что их проверки при подтверждении личности могут быть слабее, чем на web-сайте, что позволяет использовать этот канал для атак на учётную запись пользователя.
 
-While enumerating these it is worth taking note of how session management is undertaken, in case there is overlap across any channels (e.g. cookies scoped to the same parent domain name, concurrent sessions allowed across channels, but not on the same channel).
+Перечисляя каналы, стоит обратить внимание на то, как осуществляется управление сессиями, в случае пересечения между каналами (например, файлы cookie привязаны к одному и тому же имени родительского домена, одновременные сессии разрешены, но не в одном и том же канале).
 
-### Review and Test
+### Анализ и тестирование
 
-Alternative channels should be mentioned in the testing report, even if they are marked as "information only" or "out of scope". In some cases the test scope might include the alternative channel (e.g. because it is just another path on the target host name), or may be added to the scope after discussion with the owners of all the channels. If testing is permitted and authorized, all the other authentication tests in this guide should then be performed, and compared against the primary channel.
+Альтернативные каналы должны быть упомянуты в отчёте о тестировании, даже если они помечены как «только для информации» или «за рамками проекта». В некоторых случаях область тестирования может включать альтернативные каналы (например, потому что это просто другой путь к целевому хосту) или они могут быть добавлены в проект после обсуждения с владельцами всех каналов. Если тестирование разрешено и санкционировано, то следует провести все остальные тесты аутентификации, описанные в этом руководстве, и сравнить их с основным каналом.
 
-## Related Test Cases
+## Связанные тестовые примеры
 
-The test cases for all the other authentication tests should be utilized.
+Следует использовать тестовые примеры, приведённые во всех остальных тестах аутентификации.
 
-## Remediation
+## Как исправить
 
-Ensure a consistent authentication policy is applied across all channels so that they are equally secure.
+Убедитесь, что ко всем каналам применяется единообразная политика аутентификации, чтобы они были одинаково хорошо защищены.

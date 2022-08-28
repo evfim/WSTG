@@ -7,57 +7,57 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test User Registration Process
+# Тестирование процесса регистрации пользователя
 
 |ID          |
 |------------|
 |WSTG-IDNT-02|
 
-## Summary
+## Обзор
 
-Some websites offer a user registration process that automates (or semi-automates) the provisioning of system access to users. The identity requirements for access vary from positive identification to none at all, depending on the security requirements of the system. Many public applications completely automate the registration and provisioning process because the size of the user base makes it impossible to manage manually. However, many corporate applications will provision users manually, so this test case may not apply.
+На некоторых web-сайтах процесс регистрации пользователя полностью или частично автоматизирует предоставление пользователям доступа к системе. Требования к идентификации для доступа варьируются от положительной идентификации до полного её отсутствия, в зависимости от требований к защите системы. Многие общедоступные приложения полностью автоматизируют процесс регистрации пользователей и предоставления доступа, поскольку масштаб аудитории не позволяет им управлять ею вручную. Однако многие корпоративные приложения предоставляют пользователям доступ вручную, поэтому данный сценарий тестирования может быть неприменим.
 
-## Test Objectives
+## Задачи тестирования
 
-- Verify that the identity requirements for user registration are aligned with business and security requirements.
-- Validate the registration process.
+- Убедитесь, что требования к идентификации при регистрации пользователей соответствуют бизнес-требованиям и требованиям безопасности.
+- Подтвердите безопасность процесса регистрации пользователей.
 
-## How to Test
+## Как тестировать
 
-Verify that the identity requirements for user registration are aligned with business and security requirements:
+Убедитесь, что требования к идентификации для регистрации пользователей соответствуют бизнес-требованиям и требованиям безопасности:
 
-1. Can anyone register for access?
-2. Are registrations vetted by a human prior to provisioning, or are they automatically granted if the criteria are met?
-3. Can the same person or identity register multiple times?
-4. Can users register for different roles or permissions?
-5. What proof of identity is required for a registration to be successful?
-6. Are registered identities verified?
+1. Кто может зарегистрироваться для доступа к системе?
+2. Проверяется ли кем-то регистрация учётной записи до предоставления доступа, или при соблюдении определённых критериев он предоставляется автоматически?
+3. Может ли одно и то же лицо зарегистрироваться несколько раз?
+4. Могут ли пользователи зарегистрировать несколько учётных записей для разных ролей или разрешений?
+5. Какое удостоверение личности требуется для успешной регистрации?
+6. [Верифицируются](https://cbr.ru/Press/event/?id=6383) ли зарегистрированные учётные записи?
 
-Validate the registration process:
+Подтвердите безопасность процесса регистрации пользователей:
 
-1. Can identity information be easily forged or faked?
-2. Can the exchange of identity information be manipulated during registration?
+1. Легко ли сфальсифицировать учётные данные?
+2. Можно ли манипулировать обменом информацией об учётной записи во время регистрации?
 
-### Example
+### Пример
 
-In the WordPress example below, the only identification requirement is an email address that is accessible to the registrant.
+В приведённом ниже примере WordPress единственным требованием для идентификации является адрес электронной почты, доступный владельцу учётной записи.
 
 ![WordPress Registration Page](images/Wordpress_registration_page.jpg)\
-*Figure 4.3.2-1: WordPress Registration Page*
+*Рисунок 4.3.2-1: Страница регистрации в WordPress*
 
-In contrast, in the Google example below the identification requirements include name, date of birth, country, mobile phone number, email address and CAPTCHA response. While only two of these can be verified (email address and mobile number), the identification requirements are stricter than WordPress.
+В отличие от WordPress, у Google требования к идентификации включают имя, дату рождения, страну, номер мобильного телефона, адрес электронной почты и ответ на CAPTCHA. Хотя проверить можно только два из них (адрес электронной почты и номер мобильного телефона), требования к идентификации более строгие, чем у WordPress.
 
 ![Google Registration Page](images/Google_registration_page.jpg)\
-*Figure 4.3.2-2: Google Registration Page*
+*Рисунок 4.3.2-2: Страница регистрации в Google*
 
-## Remediation
+## Как исправить
 
-Implement identification and verification requirements that correspond to the security requirements of the information the credentials protect.
+Выполнить требования к идентификации и верификации, соответствующие требованиям к защите информации, защищаемой учётными данными.
 
-## Tools
+## Инструменты
 
-A HTTP proxy can be a useful tool to test this control.
+Для тестирования данной меры защиты полезным инструментом может быть HTTP-прокси.
 
-## References
+## Ссылки
 
-[User Registration Design](https://mashable.com/2011/06/09/user-registration-design/)
+[User Registration Design (archive)](https://mashable.com/2011/06/09/user-registration-design/)

@@ -7,43 +7,43 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test Account Provisioning Process
+# Тестирование процесса создания учётных записей
 
 |ID          |
 |------------|
 |WSTG-IDNT-03|
 
-## Summary
+## Обзор
 
-The provisioning of accounts presents an opportunity for an attacker to create a valid account without application of the proper identification and authorization process.
+Создание учётных записей даёт злоумышленнику возможность получить действительную учётную запись без надлежащей идентификации и авторизации.
 
-## Test Objectives
+## Задача тестирования
 
-- Verify which accounts may provision other accounts and of what type.
+- Проанализировать, какие пользователи могут создавать учётные записи для других и какого типа.
 
-## How to Test
+## Как тестировать
 
-Determine which roles are able to provision users and what sort of accounts they can provision.
+Определите, какие роли могут создавать пользователей и какие учётные записи они могут предоставлять.
 
-- Is there any verification, vetting and authorization of provisioning requests?
-- Is there any verification, vetting and authorization of de-provisioning requests?
-- Can an administrator provision other administrators or just users?
-- Can an administrator or other user provision accounts with privileges greater than their own?
-- Can an administrator or user de-provision themselves?
-- How are the files or resources owned by the de-provisioned user managed? Are they deleted? Is access transferred?
+- Проводится ли какая-либо верификация, утверждение и авторизация запросов на предоставление ресурсов?
+- Проводится ли какая-либо верификация, утверждение и авторизация запросов на блокировку?
+- Может ли администратор создавать учётные записи другим администраторам или только обычным пользователям?
+- Может ли администратор или другой пользователь предоставить учётным записям права, превышающие их собственные?
+- Может ли администратор или пользователь сам себя заблокировать?
+- Кто владеет файлами или ресурсами, принадлежащими заблокированным пользователям? Они удаляются? Делегируется ли доступ?
 
-### Example
+### Пример
 
-In WordPress, only a user's name and email address are required to provision the user, as shown below:
+В WordPress для создания учётной записи требуется только имя пользователя и адрес электронной почты, как показано ниже:
 
 ![WordPress User Add](images/Wordpress_useradd.png)\
-*Figure 4.3.3-1: WordPress User Add*
+*Рисунок 4.3.3-1: Добавление пользователя в WordPress*
 
-De-provisioning of users requires the administrator to select the users to be de-provisioned, select Delete from the dropdown menu (circled) and then applying this action. The administrator is then presented with a dialog box asking what to do with the user's posts (delete or transfer them).
+Для блокировки пользователей администратор должен выбрать учётную запись, которую нужно заблокировать, выбрать «Удалить» в раскрывающемся меню (обведено красным), а затем применить это действие. Затем администратору выдаётся диалоговое окно с вопросом, что делать с сообщениями пользователя (удалить или перенести их).
 
 ![WordPress Auth and Users](images/Wordpress_authandusers.png)\
-*Figure 4.3.3-2: WordPress Auth and Users*
+*Рисунок 4.3.3-2: Аутентификация и пользователи в WordPress*
 
-## Tools
+## Инструменты
 
-While the most thorough and accurate approach to completing this test is to conduct it manually, HTTP proxy tools could be also useful.
+Хотя наиболее тщательный и точный подход к этому тесту заключается в его проведении вручную, также могут быть полезны инструменты HTTP-прокси.

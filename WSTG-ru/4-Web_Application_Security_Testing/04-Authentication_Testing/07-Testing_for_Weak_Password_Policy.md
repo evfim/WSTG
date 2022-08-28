@@ -7,36 +7,36 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Weak Password Policy
+# Тестирование парольной политики
 
 |ID          |
 |------------|
 |WSTG-ATHN-07|
 
-## Summary
+## Обзор
 
-The most prevalent and most easily administered authentication mechanism is a static password. The password represents the keys to the kingdom, but is often subverted by users in the name of usability. In each of the recent high profile hacks that have revealed user credentials, it is lamented that most common passwords are still: `123456`, `password` and `qwerty`.
+Наиболее распространённым и наиболее простым в администрировании механизмом аутентификации является статичный пароль. Пароль — ключ от королевства, но пользователи часто недооценивают это в угоду удобству. В каждом из недавних громких взломов, в которых раскрывались учётные данные пользователей, сетуют на то, что наиболее распространёнными паролями по-прежнему являются `123456`, `password` и `qwerty`.
 
-## Test Objectives
+## Задача тестирования
 
-- Determine the resistance of the application against brute force password guessing using available password dictionaries by evaluating the length, complexity, reuse, and aging requirements of passwords.
+- Определить устойчивость приложения к подбору паролей методом перебора с использованием доступных словарей паролей, оценив требования к их длине, сложности, повторному использованию и устареванию.
 
-## How to Test
+## Как тестировать
 
-1. What characters are permitted and forbidden for use within a password? Is the user required to use characters from different character sets such as lower and uppercase letters, digits and special symbols?
-2. How often can a user change their password? How quickly can a user change their password after a previous change? Users may bypass password history requirements by changing their password 5 times in a row so that after the last password change they have configured their initial password again.
-3. When must a user change their password?
-    - Both [NIST](https://pages.nist.gov/800-63-3/sp800-63b.html#memsecretver) and [NCSC](https://www.ncsc.gov.uk/collection/passwords/updating-your-approach#PasswordGuidance:UpdatingYourApproach-Don'tenforceregularpasswordexpiry) recommend **against** forcing regular password expiry, although it may be required by standards such as PCI DSS.
-4. How often can a user reuse a password? Does the application maintain a history of the user's previous used 8 passwords?
-5. How different must the next password be from the last password?
-6. Is the user prevented from using his username or other account information (such as first or last name) in the password?
-7. What are the minimum and maximum password lengths that can be set, and are they appropriate for the sensitivity of the account and application?
-8. Is it possible to set common passwords such as `Password1` or `123456`?
+1. Какие символы разрешены и запрещены для использования в пароле? Требуется ли пользователю использовать символы из разных групп, таких как буквы в верхнем и нижнем регистрах (допустимо ли смешивать символы из разных кодовых страниц?), цифры и специальные символы?
+2. Как часто пользователь может менять свой пароль? Как быстро пользователь может изменить свой пароль после предыдущего изменения? Могут ли пользователи обойти требования к истории паролей, изменив свой пароль, например, 5 раз подряд, чтобы после последней смены пароля снова установить свой первоначальный пароль.
+3. Когда пользователь должен менять свой пароль?
+    - Как [NIST](https://pages.nist.gov/800-63-3/sp800-63b.html#memsecretver), так и [NCSC](https://www.ncsc.gov.uk/collection/passwords/updating-your-approach#PasswordGuidance:UpdatingYourApproach-Don'tenforceregularpasswordexpiry) **против** требования регулярной замены  паролей, хотя это может требоваться такими стандартами, как PCI DSS.
+4. Как часто пользователь может переиспользовать пароль? Ведёт ли приложение историю предыдущих восьми паролей?
+5. Насколько следующий пароль должен отличаться от предыдущего?
+6. Запрещено ли в пароле использовать своё имя пользователя или другую информацию учётной записи (например, имя или фамилию)?
+7. Каковы минимальные и максимальные длины паролей, которые можно установить, и сопоставляются ли они с уровнем критичности учётной записи и приложения?
+8. Можно ли установить широко известные пароли, такие как `Password1` или `123456`?
 
-## Remediation
+## Как исправить
 
-To mitigate the risk of easily guessed passwords facilitating unauthorized access there are two solutions: introduce additional authentication controls (i.e. two-factor authentication) or introduce a strong password policy. The simplest and cheapest of these is the introduction of a strong password policy that ensures password length, complexity, reuse and aging; although ideally both of them should be implemented.
+Для снижения риска легко угадываемых паролей, облегчающих несанкционированный доступ, есть два решения: ввести дополнительные меры защиты для аутентификации (например, двухфакторную аутентификацию) или установить строгую парольную политику. Проще и дешевле введение строгой парольной политики, которая будет контролировать длину, сложность, повторное использование и устаревание паролей; хотя в идеале должны быть реализованы оба решения.
 
-## References
+## Ссылки
 
-- [Brute Force Attacks](https://owasp.org/www-community/attacks/Brute_force_attack)
+- [Атака методом перебора](https://owasp.org/www-community/attacks/Brute_force_attack)
