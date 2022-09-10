@@ -7,78 +7,81 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Insecure Direct Object References
+# Тестирование на наличие небезопасных прямых ссылок на объекты
 
 |ID          |
 |------------|
 |WSTG-ATHZ-04|
 
-## Summary
+## Обзор
 
-Insecure Direct Object References (IDOR) occur when an application provides direct access to objects based on user-supplied input. As a result of this vulnerability attackers can bypass authorization and access resources in the system directly, for example database records or files.
-Insecure Direct Object References allow attackers to bypass authorization and access resources directly by modifying the value of a parameter used to directly point to an object. Such resources can be database entries belonging to other users, files in the system, and more. This is caused by the fact that the application takes user supplied input and uses it to retrieve an object without performing sufficient authorization checks.
+Небезопасные прямые ссылки на объекты (англ.: Insecure Direct Object References, IDOR) возникают, когда приложение предоставляет прямой доступ к объектам на основе введённых пользователем данных. В результате этой уязвимости злоумышленники могут обойти авторизацию и получить прямой доступ к ресурсам в системе, например к записям базы данных или файлам.
+Небезопасные прямые ссылки на объекты позволяют обходить авторизацию и получать доступ к ресурсам напрямую, изменяя значение параметра, используемого для прямого указания на объект. Такими ресурсами могут быть записи базы данных, принадлежащие другим пользователям, файлы в системе и др. Это вызвано тем, что приложение проводит недостаточно строгую авторизацию, принимая введённые пользователем данные и используя их для извлечения объекта.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify points where object references may occur.
-- Assess the access control measures and if they're vulnerable to IDOR.
+- Найти точки с прямыми ссылками на объекты.
+- Оценить меры контроля доступа и их уязвимость для IDOR.
 
-## How to Test
+## Как тестировать
 
-To test for this vulnerability the tester first needs to map out all locations in the application where user input is used to reference objects directly. For example, locations where user input is used to access a database row, a file, application pages and more. Next the tester should modify the value of the parameter used to reference objects and assess whether it is possible to retrieve objects belonging to other users or otherwise bypass authorization.
+Чтобы проверить наличие этой уязвимости, сначала необходимо нанести на схему приложения все точки, где для прямых ссылок на объекты ожидается ввод данных от пользователя. Например, там, где пользователь должен что-то ввести для доступа к записи в базе данных, к файлу, к страницам приложений и т.д. Затем, изменяя значение параметров в ссылке на объекты, необходимо оценить, можно ли увидеть объекты, принадлежащие другим пользователям, или иным образом обойти авторизацию.
 
-The best way to test for direct object references would be by having at least two (often more) users to cover different owned objects and functions. For example two users each having access to different objects (such as purchase information, private messages, etc.), and (if relevant) users with different privileges (for example administrator users) to see whether there are direct references to application functionality. By having multiple users the tester saves valuable testing time in guessing different object names as he can attempt to access objects that belong to the other user.
+Лучший способ проверить наличие прямых ссылок на объекты — иметь по крайней мере двух (часто больше) пользователей для охвата различных принадлежащих объектов и функций. Например, два пользователя, каждый из которых имеет доступ к разным объектам (таким как информация о покупках, личные сообщения и т.д.), и (если применимо) пользователя с отличающимися привилегиями (например, администратора), чтобы увидеть, есть ли прямые ссылки на функциональность приложения. Имея несколько пользователей, экономится драгоценное время на перебор имён объектов, поскольку можно попытаться получить доступ к объектам, принадлежащим другому пользователю.
 
-Below are several typical scenarios for this vulnerability and the methods to test for each:
+Ниже приведены несколько типичных сценариев для этой уязвимости и методы тестирования для каждого из них:
 
-### The Value of a Parameter Is Used Directly to Retrieve a Database Record
+### Значение параметра используется непосредственно для извлечения записи из базы данных
 
-Sample request:
+Пример запроса:
 
 ```text
 http://foo.bar/somepage?invoice=12345
 ```
 
-In this case, the value of the *invoice* parameter is used as an index in an invoices table in the database. The application takes the value of this parameter and uses it in a query to the database. The application then returns the invoice information to the user.
+В этом случае значение параметра *invoice* используется как индекс в таблице счетов в базе данных. Приложение принимает значение этого параметра и использует его в запросе к базе данных. Затем приложение возвращает информацию о счёте пользователю.
 
-Since the value of *invoice* goes directly into the query, by modifying the value of the parameter it is possible to retrieve any invoice object, regardless of the user to whom the invoice belongs. To test for this case the tester should obtain the identifier of an invoice belonging to a different test user (ensuring he is not supposed to view this information per application business logic), and then check whether it is possible to access objects without authorization.
+Поскольку значение *invoice* входит в сам запрос, путём изменения значения этого параметра можно получить любой объект счета, независимо от пользователя, которому этот счёт принадлежит. Для проверки этого случая необходимо найти идентификатор счёта, принадлежащего другому тестовому пользователю (убедившись, что он не должен просматривать эту информацию согласно бизнес-логике приложения), а затем проверить, возможен ли доступ к объектам без авторизации.
 
-### The Value of a Parameter Is Used Directly to Perform an Operation in the System
+### Значение параметра используется непосредственно для выполнения операции в системе
 
-Sample request:
+Пример запроса:
 
 ```text
 http://foo.bar/changepassword?user=someuser
 ```
 
-In this case, the value of the `user` parameter is used to tell the application for which user it should change the password. In many cases this step will be a part of a wizard, or a multi-step operation. In the first step the application will get a request stating for which user's password is to be changed, and in the next step the user will provide a new password (without asking for the current one).
+В этом случае значение параметра `user` используется, чтобы сообщить приложению, для какого пользователя следует изменить пароль. Во многих случаях этот шаг будет входить в состав мастера или многошаговой операцией. На первом этапе приложение получит запрос о том, для какого пользователя необходимо изменить пароль, а на следующем этапе пользователь предоставит новый пароль (не спрашивая текущего).
 
-The `user` parameter is used to directly reference the object of the user for whom the password change operation will be performed. To test for this case the tester should attempt to provide a different test username than the one currently logged in, and check whether it is possible to modify the password of another user.
+Параметр `user` используется для прямой ссылки на объект пользователя, для которого будет выполнена операция смены пароля. Чтобы проверить этот случай, тестировщик должен попытаться ввести другое тестовое имя пользователя, отличного от того, который в данный момент вошёл в систему, и проверить, возможно ли изменить пароль другого пользователя.
 
-### The Value of a Parameter Is Used Directly to Retrieve a File System Resource
+### Значение параметра используется непосредственно для доступа к ресурсам файловой системы
 
-Sample request:
+Пример запроса:
 
 ```text
-http://foo.bar/showImage?img=img00011
+http://foo.bar/showImage?img=img00011.jpg
 ```
 
-In this case, the value of the `file` parameter is used to tell the application what file the user intends to retrieve. By providing the name or identifier of a different file (for example file=image00012.jpg) the attacker will be able to retrieve objects belonging to other users.
+В этом случае значение параметра `img` используется, чтобы сообщить приложению, какой файл пользователь намеревается получить. Указав имя или идентификатор другого файла (например, img=img00012.jpg), злоумышленник сможет получить объекты, принадлежащие другим пользователям.
 
-To test for this case, the tester should obtain a reference the user is not supposed to be able to access and attempt to access it by using it as the value of `file` parameter. Note: This vulnerability is often exploited in conjunction with a directory/path traversal vulnerability (see [Testing for Path Traversal](01-Testing_Directory_Traversal_File_Include.md))
+Чтобы протестировать этот случай, тестировщик должен получить ссылку, к которой пользователь не должен иметь доступа, и попытаться получить к ней доступ, используя ее в качестве значения параметра `img`. Примечание: эта уязвимость часто используется в сочетании с уязвимостью обхода каталога/пути (см. [Тестирование включения файлов при обходе каталогов](01-Testing_Directory_Traversal_File_Include.md))
 
-### The Value of a Parameter Is Used Directly to Access Application Functionality
+### Значение параметра используется непосредственно для доступа к функциям приложения
 
-Sample request:
+Пример запроса:
 
 ```text
 http://foo.bar/accessPage?menuitem=12
 ```
 
-In this case, the value of the `menuitem` parameter is used to tell the application which menu item (and therefore which application functionality) the user is attempting to access. Assume the user is supposed to be restricted and therefore has links available only to access to menu items 1, 2 and 3. By modifying the value of `menuitem` parameter it is possible to bypass authorization and access additional application functionality. To test for this case the tester identifies a location where application functionality is determined by reference to a menu item, maps the values of menu items the given test user can access, and then attempts other menu items.
+В этом случае значение параметра `menuitem` используется, чтобы сообщить приложению, к какому пункту меню (и, следовательно, к какой функциональности) пользователь пытается получить доступ. Предположим, что пользователь имеет ограниченный доступ, т.е. ему доступны только ссылки для доступа к пунктам меню 1, 2 и 3. Изменяя значение параметра `menuitem`, можно обойти авторизацию и получить доступ к дополнительным возможностям приложения. Чтобы проверить этот случай, тестировщик находит то место, где функциональность приложения определяется ссылкой на элемент меню, сопоставляет значения элементов меню, к которым может получить доступ данный тестовый пользователь, а затем пытается использовать другие элементы меню.
 
-In the above examples the modification of a single parameter is sufficient. However, sometimes the object reference may be split between more than one parameter, and testing should be adjusted accordingly.
+В приведённых выше примерах достаточно изменить один параметр. Однако иногда ссылка на объект может быть разделена между более чем одним параметром, и тестирование должно быть соответствующим образом скорректировано.
 
-## References
+## Ссылки
 
-[Top 10 2013-A4-Insecure Direct Object References](https://owasp.org/www-project-top-ten/2017/Release_Notes)
+OWASP Top 10: 
+- [A4:2013 Insecure Direct Object References](https://wiki.owasp.org/index.php/Top_10_2013-A4-Insecure_Direct_Object_References) 
+- [A5:2017 - Broken Access Control](https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control/)
+- [A01:2021 – Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)

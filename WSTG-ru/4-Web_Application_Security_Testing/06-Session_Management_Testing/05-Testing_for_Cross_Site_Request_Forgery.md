@@ -7,13 +7,13 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Cross Site Request Forgery
+# Тестирование на подделку межсайтовых запросов
 
 |ID          |
 |------------|
 |WSTG-SESS-05|
 
-## Summary
+## Обзор
 
 Cross-Site Request Forgery ([CSRF](https://owasp.org/www-community/attacks/csrf)) is an attack that forces an end user to execute unintended actions on a web application in which they are currently authenticated. With a little social engineering help (like sending a link via email or chat), an attacker may force the users of a web application to execute actions of the attacker's choosing. A successful CSRF exploit can compromise end user data and operation when it targets a normal user. If the targeted end user is the administrator account, a CSRF attack can compromise the entire web application.
 

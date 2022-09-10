@@ -7,13 +7,13 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing Cross Origin Resource Sharing
+# Тестирование Cross Origin Resource Sharing
 
 |ID          |
 |------------|
 |WSTG-CLNT-07|
 
-## Summary
+## Обзор
 
 [Cross Origin Resource Sharing](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) (CORS) is a mechanism that enables a web browser to perform cross-domain requests using the XMLHttpRequest (XHR) Level 2 (L2) API in a controlled manner. In the past, the XHR L1 API only allowed requests to be sent within the same origin as it was restricted by the [Same Origin Policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) (SOP).
 

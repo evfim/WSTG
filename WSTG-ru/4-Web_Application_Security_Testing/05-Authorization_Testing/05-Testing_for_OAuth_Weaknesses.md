@@ -7,57 +7,57 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for OAuth Weaknesses
+# Тестирование на наличие уязвимостей в OAuth
 
 |ID          |
 |------------|
 |WSTG-ATHZ-05|
 
-## Summary
+## Обзор
 
-[OAuth2.0](https://oauth.net/2/) (hereinafter referred to as OAuth) is an authorization framework that allows a client to access resources on the behalf of its user.
+[OAuth2.0](https://oauth.net/2/) (далее именуемый OAuth) — это фреймворк авторизации, который позволяет клиенту получать доступ к ресурсам от имени своего пользователя.
 
-In order to achieve this, OAuth heavily relies on tokens to communicate between the different entities, each entity having a different [role](https://datatracker.ietf.org/doc/html/rfc6749#section-1.1):
+Чтобы достичь этого, OAuth в значительной степени полагается на токены для связи между различными сущностями, причем каждая сущность играет свою [роль](https://datatracker.ietf.org/doc/html/rfc6749#section-1.1):
 
-- **Resource Owner:** The entity who grants access to a resource, the owner, and in most cases is the user themselves
-- **Client:** The application that is requesting access to a resource on behalf of the Resource Owner. These clients come in two [types](https://oauth.net/2/client-types/):
-    - **Public:** clients that can't protect a secret (*e.g.* front-end focused applications, such as SPAs, mobile applications, etc.)
-    - **Confidential:** clients that are able to securely authenticate with the authorization server by keeping their registered secrets safe (*e.g.* back-end services)
-- **Authorization Server:** The server that holds authorization information and grants the access
-- **Resource Server:** The application that serves the content accessed by the client
+- **Владелец ресурса (англ.: Resource owner, RO):** субъект, предоставляющий доступ к ресурсу, владелец и в большинстве случаев сам пользователь
+- **Сервер авторизации (англ.: Authorization Server, AS):** сервер, который хранит информацию об авторизации и предоставляет доступ
+- **Клиентское приложение (англ.: Client):** приложение, запрашивающее доступ к ресурсу от имени Владельца ресурса. Клиентские приложения на основе их способности безопасно аутентифицироваться на сервере авторизации (AS) делятся на два [типа](https://oauth.net/2/client-types/):
+    - **публичные (англ.: Public)** не хранят учётные данных на AS (*например,* такие как одностраничные web-приложения (англ.: single page application, SPA), мобильные приложения и т.д.)
+    - **конфиденциальные (англ.: Confidential),** хранящие учётные данные на AS (*например*, сервисы бэкенда)
+- **Сервер ресурсов (англ.: Resource Server, RS):** Приложение, которое обслуживает контент, к которому обращается клиент.
 
-Since OAuth's responsibility is to delegate access rights by the owner to the client, this is a very attractive target for attackers, and bad implementations lead to unauthorized access to the users' resources and information.
+Поскольку OAuth отвечает за делегирование владельцем прав доступа клиентским приложениям, то он очень привлекателен как мишень для злоумышленников, а неудачные его реализации приводят к несанкционированному доступу к ресурсам и информации пользователей.
 
-In order to provide access to a client application, OAuth relies on several [authorization grant types](https://oauth.net/2/grant-types/) to generate an access token:
+Чтобы предоставить доступ к клиентскому приложению, OAuth использует несколько [типов предоставления разрешений (англ.: authorization grant types)](https://oauth.net/2/grant-types/) для создания токена доступа (англ.: access token):
 
-- [Authorization Code](https://oauth.net/2/grant-types/authorization-code/): used by both confidential and public clients to exchange an authorization code for an access token, but recommended only for confidential clients
-- [Proof Key for Code Exchange (PKCE)](https://oauth.net/2/pkce/): PKCE builds on top of the Authorization Code grant, providing stronger security for it to be used by public clients, and improving the posture of confidential ones
-- [Client Credentials](https://oauth.net/2/grant-types/client-credentials/): used for machine to machine communication, where the "user" here is the machine requesting access to its own resources from the Resource Server
-- [Device Code](https://oauth.net/2/grant-types/device-code/): used for devices with limited input capabilities.
-- [Refresh Token](https://oauth.net/2/grant-types/refresh-token/): tokens provided by the authorization server to allow clients to refresh users' access tokens once they become invalid or expire. This grant type is used in conjunction with one other grant type.
+- [Код авторизации (англ.: Authorization Code)](https://oauth.net/2/grant-types/authorization-code/): используется как конфиденциальными, так и публичными клиентами для обмена кода авторизации на токен доступа, но рекомендуется только для конфиденциальных.
+- [Ключ подтверждения для обмена кодами (англ.: Proof Key for Code Exchange (PKCE))](https://oauth.net/2/pkce/): PKCE расширяет возможности предыдущего типа, обеспечивая ему более надёжную защиту для использования публичными клиентами и улучшая положение конфиденциальных.
+- [Учётные данные клиента (англ.: Client Credentials)](https://oauth.net/2/grant-types/client-credentials/): используется для связи между системами; здесь «пользователь» — система, запрашивающая доступ к своим собственным ресурсам, хранящимся на сервере ресурсов.
+- [Код устройства (англ.: Device Code)](https://oauth.net/2/grant-types/device-code/): используется для устройств без браузера или с ограниченными возможностями ввода.
+- [Токен обновления (англ.: Refresh Token)](https://oauth.net/2/grant-types/refresh-token/): токены, предоставляемые сервером авторизации, позволяющие клиентам обновлять токены доступа пользователей, когда они становятся недействительными или истекают. Этот тип предоставления разрешений используется в сочетании с одним из перечисленных выше.
 
-Two flows will be deprecated in the release of [OAuth2.1](https://oauth.net/2.1/), and their usage is not recommended:
+Два потока признаны устаревшими в предстоящем релизе [OAuth2.1](https://oauth.net/2.1/), и их использование не рекомендуется:
 
-- [Implicit Flow*](https://oauth.net/2/grant-types/implicit/): PKCE's secure implementation renders this flow obsolete. Prior to PKCE, the implicit flow was used by client-side applications such as [single page applications](https://en.wikipedia.org/wiki/Single-page_application) since [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) relaxed the [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) for websites to inter-communicate. For more information on why the implicit grant is not recommended, review this [section](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-2.1.2).
-- [Resource Owner Password Credentials](https://oauth.net/2/grant-types/password/):used to exchange users' credentials directly with the client, which then sends them to the authorization to exchange them for an access token. For information on why this flow is not recommended, review this [section](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-2.4).
+- [Поток неявных разрешений (англ.: Implicit Flow)*](https://oauth.net/2/grant-types/implicit/): безопасная реализация PKCE выводит этот поток из употребления. До PKCE неявный поток использовался клиентскими приложениями, например, [одностраничными](https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5), с тех пор как [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/CORS) ослабил [политику одного источника](https://developer.mozilla.org/ru/docs/Web/Security/Same-origin_policy) для взаимодействия между web-сайтами. Дополнительные сведения о том, почему неявное предоставление разрешений не рекомендуется, см. [здесь](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-2.1.2).
+- [Поток с предоставлением клиенту пароля (англ.: Resource Owner Password Credentials, ROPC)](https://oauth.net/2/grant-types/password/): используется для передачи пользователем учётных данных непосредственно в клиентское приложение, которое затем отправляет их на авторизацию для обмена на токен доступа. Сведения о том, почему этот поток не рекомендуется, см. [здесь](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-2.4).
 
-*: The implicit flow in OAuth only is deprecated, yet is still a viable solution within Open ID Connect (OIDC) to retrieve `id_tokens`. Be careful to understand how the implicit flow is being used, which can be identified if only the `/authorization` endpoint is being used to gain an access token, without relying on `/token` endpoint in any way. An example on this can be found [here](https://auth0.com/docs/get-started/authentication-and-authorization-flow/implicit-flow-with-form-post).
+*: Неявный поток устарел только для OAuth, а в OpenID Connect (OIDC) он применяется для получения `id_tokens`. Будьте внимательны: неявный поток можно распознать, когда для получения токена доступа используется только конечная точка `/authorization`, никоим образом не полагаясь на конечную точку `/token`. Пример этого можно найти [здесь](https://auth0.com/docs/get-started/authentication-and-authorization-flow/implicit-flow-with-form-post).
 
-*Please note that OAuth flows are a complex topic, and the above includes only a summary of the key areas. The inline references contain further information about the specific flows.*
+*Обратите внимание, что потоки OAuth — сложная тема, и приведённое выше даёт очень краткое представление о её ключевых областях. Ссылки содержат дополнительную информацию о конкретных потоках.*
 
-## Test Objectives
+## Задача тестирования
 
-- Determine if OAuth2 implementation is vulnerable or using a deprecated or custom implementation.
+- Определить, является ли реализация OAuth2 уязвимой, устаревшей или нестандартной.
 
-## How to Test
+## Как тестировать
 
-### Testing for Deprecated Grant Types
+### Тестирование на наличие устаревших потоков
 
-Deprecated grant types were obsoleted for security and functionality reasons. Identifying if they're being used allows us to quickly review if they're susceptible to any of the threats pertaining to their usage. Some might be out of scope to the attacker, such as the way a client might be using the users' credentials. This should be documented and raised to the internal engineering teams.
+Устаревшие потоки были удалены по соображениям безопасности и функциональности. Выявление их использования позволяет нам быстро проверить, подвержены ли они каким-либо угрозам, связанным с их эксплуатацией. Некоторые из них могут быть недоступны злоумышленнику, например, способ, которым клиентское приложение может использовать учётные данные пользователей. Это должно быть задокументировано и доведено до сведения внутренних инженерных команд.
 
-For public clients, it is generally possible to identify the grant type in the request to the `/token` endpoint. It is indicated in the token exchange with the parameter `grant_type`.
+Для публичных приложений, как правило, можно определить тип разрешения в запросе к конечной точке `/token`. Он указывается при обмене токенами в параметре `grant_type`.
 
-The following example shows the Authorization Code grant with PKCE.
+В примере ниже показано предоставление кода авторизации с помощью PKCE.
 
 ```http
 POST /oauth/token HTTP/1.1
@@ -73,13 +73,13 @@ Host: as.example.com
 }
 ```
 
-The values for the `grant_type` parameter and the grant type they indicate are:
+Соответствие между значениями параметра `grant_type` и типами предоставления разрешений, на которые они указывают:
 
-- `password`: Indicates the ROPC grant.
-- `client_credentials`: Indicates the Client Credential grant.
-- `authorization_code`: Indicates the Authorization Code grant.
+- `password` — ROPC.
+- `client_credentials` — учётные данные клиента.
+- `authorization_code` — код авторизации.
 
-The Implicit Flow type is not indicated by the `grant_type` parameter since the token is presented in the response to the `/authorization` endpoint request, and instead can be identified through the `response_type`. Below is an example.
+Неявный тип потока не отображается в параметре `grant_type`, поскольку токен предоставляется в ответ на запрос конечной точки `/authorization`, и вместо этого может быть обнаружен с помощью `response_type`. Пример:
 
 ```http
 GET /authorize
@@ -90,13 +90,13 @@ GET /authorize
   &state=<random_state>
 ```
 
-The following URL parameters indicate the OAuth flow being used:
+На используемый поток OAuth указывают следующие параметры URL:
 
-- `response_type=token`: Indicates Implicit Flow, as the client is directly requesting from the authorization server to return a token.
-- `response_type=code`: Indicates Authorization Code flow, as the client is requesting from the authorization server to return a code, that will be exchanged afterwards with a token.
-- `code_challenge=sha256(xyz)`: Indicates the PKCE extension, as no other flow uses this parameter.
+- `response_type=token` — неявный поток, т.к. клиент напрямую просит у сервера авторизации вернуть токен.
+- `response_type=code` — поток с кодом авторизации, поскольку клиент просит у сервера авторизации вернуть код, который впоследствии будет обменен на токен.
+- `code_challenge=sha256(xyz)`— расширение PKCE, т.к. ни один другой поток не использует этот параметр.
 
-The following is an example authorization request for Authorization Code flow with PKCE:
+Ниже приведен пример запроса авторизации для потока кода авторизации с PKCE:
 
 ```http
 GET /authorize
@@ -113,34 +113,34 @@ Host: as.example.com
 [...]
 ```
 
-#### Public Clients
+#### Публичные клиентские приложения
 
-The Authorization Code grant with PKCE extension is recommended for public clients. An authorization request for Authorization Code flow with PKCE should contain `response_type=code` and `code_challenge=sha256(xyz)`.
+Для публичных клиентов рекомендуется поток с предоставлением кода авторизации с расширением PKCE. Запрос авторизации для потока кода авторизации с PKCE должен содержать `response_type=code` и `code_challenge=sha256(xyz)`.
 
-The token exchange should contain the grant type `authorization_code` and a `code_verifier`.
+Обмен токенами должен содержать тип предоставления разрешения `authorization_code` и `code_verifier`.
 
-Improper grant types for public clients are:
+Для публичных клиентов не подходят следующие типы потоков:
 
-- Authorization Code grant without the PKCE extension
-- Client Credentials
-- Implicit Flow
-- ROPC
+- код авторизации без расширения PKCE
+- учётные данные клиента
+- неявный поток
+- ROPC.
 
-#### Confidential Clients
+#### Конфиденциальные клиентские приложения
 
-The Authorization Code grant is recommended for confidential clients. The PKCE extension may be used as well.
+Для конфиденциальных клиентов рекомендуется поток с предоставлением кода авторизации. Также может применяться расширение PKCE.
 
-Improper grant types for confidential clients are:
+Для конфиденциальных клиентов не подходят следующие типы потоков:
 
-- Client Credentials (Except for machine-to-machine -- see below)
-- Implicit Flow
-- ROPC
+- учётные данные клиента (за исключением взаимодействий между системами — см. ниже)
+- неявный поток
+- ROPC.
 
-##### Machine-to-Machine
+##### Межсистемные взаимодействия
 
-In situations where no user interaction occurs and the clients are only confidential clients, the Client Credentials grant may be used.
+В ситуациях, когда взаимодействия с пользователем нет, а клиентами являются только конфиденциальными приложения, может использоваться поток с предоставлением учётных данных клиента.
 
-If you know the `client_id` and `client_secret`, it is possible to obtain a token by passing the `client_credentials` grant type.
+Если вы знаете `client_id` и `client_secret`, можно получить токен, передав тип предоставления разрешений `client_credentials'.
 
 ```bash
 $ curl --request POST \
@@ -149,52 +149,52 @@ $ curl --request POST \
   --data '{"client_id":"<some_client_id>","client_secret":"<some_client_secret>","grant_type":"client_credentials"}' --proxy http://localhost:8080/ -k
 ```
 
-### Credential Leakage
+### Раскрытие учётных данных
 
-Depending on the flow, OAuth transports several types of credentials in as URL parameters.
+В зависимости от потока OAuth передает несколько типов учётных данных в качестве параметров URL.
 
-The following tokens can be considered to be leaked credentials:
+Раскрытию учётных данных подвержены следующие токены:
 
-- access token
-- refresh token
-- authorization code
-- PKCE code challenge / code verifier
+- токен доступа (англ.: access token)
+- токен обновления (англ.: refresh token)
+- код авторизации (англ.: authorization code)
+- запрос / ответ при обмене PKCE (англ.: code challenge / code verifier)
 
-Due to how OAuth works, the authorization `code` as well as the `code_challenge`, and `code_verifier` may be part of the URL. The implicit flow transports the authorization token as part of the URL if the `response_mode` is not set to [`form_post`](https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html). This may lead to leakage of the requested token or code in the referrer header, in log files, and proxies due to these parameters being passed either in the query or the fragment.
+Из-за особенностей работы OAuth `authorization_code`, а также `code_challenge`, и `code_verifier` могут указываться в URL. В неявном потоке токен авторизации передаётся в URL если `response_mode` не установлен в значение [`form_post`](https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html). Это может привести к раскрытию запрошенного токена или кода в заголовке `Referrer`, в файлах журналов и прокси-серверах из-за того, что эти параметры передаются либо в запросе, либо во фрагменте.
 
-The risk that's carried by the implicit flow leaking the tokens is far higher than leaking the `code` or any other `code_*` parameters, as they are bound to specific clients and are harder to abuse in case of leakage.
+Риск раскрытия токенов, который имеет неявный поток, намного выше, чем утечка `code` или других параметров `code_*`, поскольку они привязаны к конкретным клиентам и ими труднее воспользоваться в случае утечки.
 
-In order to test this scenario, make use of an HTTP intercepting proxy such as OWASP ZAP and intercept the OAuth traffic.
+Чтобы протестировать этот сценарий, используйте HTTP-прокси, например, OWASP ZAP, и перехватывайте трафик OAuth.
 
-- Step through the authorization process and identify any credentials present in the URL.
-- If any external resources are included in a page involved with the OAuth flow, analyze the request made to them. Credentials could be leaked in the referrer header.
+- Пройдите процесс авторизации и определите все учётные данные, присутствующие в URL.
+- Если в страницу, связанную с потоком OAuth, включены какие-либо внешние ресурсы, проанализируйте запросы к ним. Учётные данные могут раскрываться в заголовке `Referrer`.
 
-After stepping through the OAuth flow and using the application, a few requests are captured in the request history of an HTTP intercepting proxy. Search for the HTTP referrer header (e.g. `Referer: https://idp.example.com/`) containing the authorization server and client URL in the request history.
+После OAuth-авторизации и использования приложения в истории запросов перехватывающего HTTP-прокси появится несколько запросов. Поищите по HTTP-заголовку Referrer (например, `Referer: https://idp.example.com/`) URL-адреса сервера авторизации и клиента в истории запросов.
 
-Reviewing the HTML meta tags (although this tag is [not supported](https://caniuse.com/mdn-html_elements_meta_name_referrer) on all browsers), or the [Referrer-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) could help assess if any credential leakage is happening through the referrer header.
+Анализ метатегов Referrer в HTML (хотя этот тег [не поддерживается](https://caniuse.com/mdn-html_elements_meta_name_referrer) ни в одном браузере), или [Referrer-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) может помочь оценить, происходит ли раскрытие учётных данных через заголовок Referrer.
 
-## Related Test Cases
+## Связанный сценарий тестирования
 
-- [Testing JSON Web Tokens](../06-Session_Management_Testing/10-Testing_JSON_Web_Tokens.md)
+- [Тестирование JWT](../06-Session_Management_Testing/10-Testing_JSON_Web_Tokens.md)
 
-## Remediation
+## Как исправить
 
-- When implementing OAuth, always consider the technology used and whether the application is a server-side application that can avoid revealing secrets, or a client-side application that cannot.
-- In almost any case, use the Authorization Code flow with PKCE. One exception may be machine-to-machine flows.
-- Use POST parameters or header values to transport secrets.
-- When no other possibilities exists (for example, in legacy applications that can not be migrated), implement additional security headers such as a `Referrer-Policy`.
+- При внедрении OAuth всегда учитывайте используемую технологию и то, где находится приложение: если на стороне сервера, то оно может избежать раскрытия секретов, а если на стороне клиента, то нет.
+- Практически в любом случае используйте поток кодов авторизации с PKCE. Единственное исключение — потоки без участия пользователей.
+- Для передачи секретов используйте параметры POST или значения заголовков.
+- Если других возможностей нет (например, в устаревших приложениях, которые нельзя мигрировать), реализуйте дополнительные заголовки безопасности, например, `Referrer-Policy`.
 
-## Tools
+## Инструменты
 
-- [BurpSuite](https://portswigger.net/burp/releases)
-- [EsPReSSO](https://github.com/portswigger/espresso)
+- [Burp Suite](https://portswigger.net/burp/releases)
+- [EsPReSSO (расширение для Burp)](https://github.com/portswigger/espresso)
 - [OWASP ZAP](https://www.zaproxy.org/)
 
-## References
+## Ссылки
 
-- [User Authentication with OAuth 2.0](https://oauth.net/articles/authentication/)
-- [The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)
-- [The OAuth 2.0 Authorization Framework: Bearer Token Usage](https://datatracker.ietf.org/doc/html/rfc6750)
-- [OAuth 2.0 Threat Model and Security Considerations](https://datatracker.ietf.org/doc/html/rfc6819)
-- [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics-16)
-- [Authorization Code Flow with Proof Key for Code Exchange](https://auth0.com/docs/authorization/flows/authorization-code-flow-with-proof-key-for-code-exchange-pkce)
+- [Аутентификация пользователей в OAuth 2.0](https://oauth.net/articles/authentication/)
+- [Фреймворк авторизации OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749)
+- [Фреймворк авторизации OAuth 2.0: Использование токена на предъявителя](https://datatracker.ietf.org/doc/html/rfc6750)
+- [Модель угроз OAuth 2.0 и соображения безопасности](https://datatracker.ietf.org/doc/html/rfc6819)
+- [Рекомендации по безопасности OAuth 2.0](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics-20)
+- [Поток кода авторизации с ключом подтверждения для обмена кодами (PKCE)](https://auth0.com/docs/authorization/flows/authorization-code-flow-with-proof-key-for-code-exchange-pkce)

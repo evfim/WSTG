@@ -143,19 +143,19 @@ tags: WSTG
 
 ### 4.5 [Тестирование авторизации](4-Web_Application_Security_Testing/05-Authorization_Testing/README.md)
 
-#### 4.5.1 [Testing Directory Traversal File Include](4-Web_Application_Security_Testing/05-Authorization_Testing/01-Testing_Directory_Traversal_File_Include.md)
+#### 4.5.1 [Тестирование включения файлов при обходе каталогов](4-Web_Application_Security_Testing/05-Authorization_Testing/01-Testing_Directory_Traversal_File_Include.md)
 
-#### 4.5.2 [Testing for Bypassing Authorization Schema](4-Web_Application_Security_Testing/05-Authorization_Testing/02-Testing_for_Bypassing_Authorization_Schema.md)
+#### 4.5.2 [Тестирование обхода схемы авторизации](4-Web_Application_Security_Testing/05-Authorization_Testing/02-Testing_for_Bypassing_Authorization_Schema.md)
 
-#### 4.5.3 [Testing for Privilege Escalation](4-Web_Application_Security_Testing/05-Authorization_Testing/03-Testing_for_Privilege_Escalation.md)
+#### 4.5.3 [Тестирование повышения привилегий](4-Web_Application_Security_Testing/05-Authorization_Testing/03-Testing_for_Privilege_Escalation.md)
 
-#### 4.5.4 [Testing for Insecure Direct Object References](4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References.md)
+#### 4.5.4 [Тестирование на наличие небезопасных прямых ссылок на объекты](4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References.md)
 
-#### 4.5.5 [Testing for OAuth Weaknesses](4-Web_Application_Security_Testing/05-Authorization_Testing/05-Testing_for_OAuth_Weaknesses.md)
+#### 4.5.5 [Тестирование на наличие уязвимостей в OAuth](4-Web_Application_Security_Testing/05-Authorization_Testing/05-Testing_for_OAuth_Weaknesses.md)
 
-##### 4.5.5.1 [Testing for OAuth Authorization Server Weaknesses](4-Web_Application_Security_Testing/05-Authorization_Testing/05.1-Testing_for_OAuth_Authorization_Server_Weaknesses.md)
+##### 4.5.5.1 [Тестирование уязвимостей сервера авторизации OAuth](4-Web_Application_Security_Testing/05-Authorization_Testing/05.1-Testing_for_OAuth_Authorization_Server_Weaknesses.md)
 
-##### 4.5.5.2 [Testing for OAuth Client Weaknesses](4-Web_Application_Security_Testing/05-Authorization_Testing/05.2-Testing_for_OAuth_Client_Weaknesses.md)
+##### 4.5.5.2 [Тестирование уязвимостей клиента OAuth](4-Web_Application_Security_Testing/05-Authorization_Testing/05.2-Testing_for_OAuth_Client_Weaknesses.md)
 
 ### 4.6 [Тестирование управления сессиями](4-Web_Application_Security_Testing/06-Session_Management_Testing/README.md)
 
@@ -167,7 +167,7 @@ tags: WSTG
 
 #### 4.6.4 [Testing for Exposed Session Variables](4-Web_Application_Security_Testing/06-Session_Management_Testing/04-Testing_for_Exposed_Session_Variables.md)
 
-#### 4.6.5 [Testing for Cross Site Request Forgery](4-Web_Application_Security_Testing/06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md)
+#### 4.6.5 [Тестирование на подделку межсайтовых запросов](4-Web_Application_Security_Testing/06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md)
 
 #### 4.6.6 [Testing for Logout Functionality](4-Web_Application_Security_Testing/06-Session_Management_Testing/06-Testing_for_Logout_Functionality.md)
 
@@ -235,7 +235,7 @@ tags: WSTG
 
 #### 4.7.18 [Testing for Server-side Template Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection.md)
 
-#### 4.7.19 [Testing for Server-Side Request Forgery](4-Web_Application_Security_Testing/07-Input_Validation_Testing/19-Testing_for_Server-Side_Request_Forgery.md)
+#### 4.7.19 [Тестирование подделки запросов на стороне сервера](4-Web_Application_Security_Testing/07-Input_Validation_Testing/19-Testing_for_Server-Side_Request_Forgery.md)
 
 #### 4.7.20 [Testing for Mass Assignment](4-Web_Application_Security_Testing/07-Input_Validation_Testing/20-Testing_for_Mass_Assignment.md)
 
@@ -287,17 +287,17 @@ tags: WSTG
 
 #### 4.11.3 [Testing for HTML Injection](4-Web_Application_Security_Testing/11-Client-side_Testing/03-Testing_for_HTML_Injection.md)
 
-#### 4.11.4 [Testing for Client-side URL Redirect](4-Web_Application_Security_Testing/11-Client-side_Testing/04-Testing_for_Client-side_URL_Redirect.md)
+#### 4.11.4 [Тестирование перенаправления URL на стороне клиента](4-Web_Application_Security_Testing/11-Client-side_Testing/04-Testing_for_Client-side_URL_Redirect.md)
 
 #### 4.11.5 [Testing for CSS Injection](4-Web_Application_Security_Testing/11-Client-side_Testing/05-Testing_for_CSS_Injection.md)
 
 #### 4.11.6 [Testing for Client-side Resource Manipulation](4-Web_Application_Security_Testing/11-Client-side_Testing/06-Testing_for_Client-side_Resource_Manipulation.md)
 
-#### 4.11.7 [Testing Cross Origin Resource Sharing](4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing.md)
+#### 4.11.7 [Тестирование Cross Origin Resource Sharing](4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing.md)
 
 #### 4.11.8 [Testing for Cross Site Flashing](4-Web_Application_Security_Testing/11-Client-side_Testing/08-Testing_for_Cross_Site_Flashing.md)
 
-#### 4.11.9 [Testing for Clickjacking](4-Web_Application_Security_Testing/11-Client-side_Testing/09-Testing_for_Clickjacking.md)
+#### 4.11.9 [Тестирование на перехват клика](4-Web_Application_Security_Testing/11-Client-side_Testing/09-Testing_for_Clickjacking.md)
 
 #### 4.11.10 [Testing WebSockets](4-Web_Application_Security_Testing/11-Client-side_Testing/10-Testing_WebSockets.md)
 

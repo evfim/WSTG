@@ -7,7 +7,7 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Server-Side Request Forgery
+# Тестирование подделки запроса на стороне сервера
 
 |ID          |
 |------------|
@@ -80,7 +80,7 @@ In some cases, a server may convert uploaded files to PDF format. Try injecting 
 <iframe src="file:///c:/windows/win.ini" width="400" height="400">
 ```
 
-### Common Filter Bypass
+### Распространённые пути обхода фильтра
 
 Some applications block references to `localhost` and `127.0.0.1`. This can be circumvented by:
 

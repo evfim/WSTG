@@ -7,7 +7,7 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Clickjacking
+# Тестирование на перехват клика
 
 |ID          |
 |------------|

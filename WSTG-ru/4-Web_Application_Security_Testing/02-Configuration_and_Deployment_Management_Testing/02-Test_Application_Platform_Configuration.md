@@ -15,7 +15,7 @@ tags: WSTG
 
 ## Обзор
 
-Правильная конфигурация отдельных элементов, составляющих архитектуру приложения, важна для предотвращения ошибок, которые могут поставить под угрозу безопасность всей архитектуры.
+Правильная конфигурация элементов, составляющих архитектуру приложения, важна для предотвращения ошибок, которые могут поставить под угрозу безопасность всей архитектуры.
 
 Анализ и тестирование конфигурации — важнейшая задача при разработке и сопровождении архитектуры. Это связано с тем, что различным системам, как правило, предоставляются универсальные конфигурации, которые могут не подходить для выполняемых ими задач на конкретном сайте, на котором они установлены.
 
@@ -188,7 +188,7 @@ tags: WSTG
 - Универсальное
     - [Памятка по журналам](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html), OWASP
     - [SP 800-92](https://csrc.nist.gov/publications/detail/sp/800-92/final) Руководство по безопасному журналированию, NIST
-    - [PCI DSS v3.2.1](https://ru.pcisecuritystandards.org/_onelink_/pcisecurity/en2ru/minisite/en/docs/PCI_DSS_v3-2-1_RU.pdf) см. требование 10 и требование 4 в PA-DSS v3.2 (с октября 2022 распределён между двумя стандартами PCI Secure Software Standard и PCI Secure SLC Standard), PCI Security Standards Council
+    - [PCI DSS v3.2.1](https://ru.pcisecuritystandards.org/_onelink_/pcisecurity/en2ru/minisite/en/docs/PCI_DSS_v3-2-1_RU.pdf) см. требование 10 и требование 4 в PA-DSS v3.2 (с октября 2022 разделён между двумя стандартами PCI Secure Software Standard и PCI Secure SLC Standard), PCI Security Standards Council
 
 - Общее:
     - [Модули укрепления безопасности CERT: защита общедоступных web-серверов, 2000](https://resources.sei.cmu.edu/asset_files/SecurityImprovementModule/2000_006_001_13637.pdf)
