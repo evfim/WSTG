@@ -7,62 +7,62 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Exposed Session Variables
+# Тестирование незащищённых параметров сессии
 
 |ID          |
 |------------|
 |WSTG-SESS-04|
 
-## Summary
+## Обзор
 
-The Session Tokens (Cookie, SessionID, Hidden Field), if exposed, will usually enable an attacker to impersonate a victim and access the application illegitimately. It is important that they are protected from eavesdropping at all times, particularly whilst in transit between the client browser and the application servers.
+Незащищённые сессионные токены (Cookie, SessionID, скрытые поля форм) обычно позволяют злоумышленнику выдать себя за жертву и получить незаконный доступ к приложению. Важно, чтобы они всегда были защищены от раскрытия, особенно во время передачи между браузером и серверами приложений.
 
-The information here relates to how transport security applies to the transfer of sensitive Session ID data rather than data in general, and may be stricter than the caching and transport policies applied to the data served by the site.
+Приведённая здесь информация относится к тому, как транспортная безопасность применяется к передаче конфиденциальных Session ID, а не к данным в целом, и может быть более строгой, чем политики кэширования и передачи, применяемые к данным, обслуживаемым сайтом.
 
-Using a personal proxy, it is possible to ascertain the following about each request and response:
+Используя HTTP-прокси, можно о каждом запросе и ответе узнать:
 
-- Protocol used (e.g., HTTP vs. HTTPS)
-- HTTP Headers
-- Message Body (e.g., POST or page content)
+- используемый протокол (например, HTTP или HTTPS)
+- HTTP-заголовки
+- тело сообщения (например, POST или контент страницы)
 
-Each time Session ID data is passed between the client and the server, the protocol, cache, and privacy directives and body should be examined. Transport security here refers to Session IDs passed in GET or POST requests, message bodies, or other means over valid HTTP requests.
+Каждый раз, когда Session ID передаются между клиентом и сервером, следует проверять директивы протокола, кэша и конфиденциальности, а также тело. Транспортная безопасность здесь относится к Session ID, передаваемым в запросах GET или POST, текстах сообщений или другими способами через допустимые HTTP-запросам.
 
-## Test Objectives
+## Задачи тестирования
 
-- Ensure that proper encryption is implemented.
-- Review the caching configuration.
-- Assess the channel and methods' security.
+- Убедится, что реализовано надлежащее шифрование.
+- Проанализировать настройки кэширования.
+- Оцените защиту канала и HTTP-методов.
 
-## How to Test
+## Как тестировать
 
-### Testing for Encryption & Reuse of Session Tokens Vulnerabilities
+### Тестирование уязвимостей шифрования и повторного использования сессионных токенов
 
-Protection from eavesdropping is often provided by SSL encryption, but may incorporate other tunneling or encryption. It should be noted that encryption or cryptographic hashing of the Session ID should be considered separately from transport encryption, as it is the Session ID itself being protected, not the data that may be represented by it.
+Защита от "прослушивания" канала часто обеспечивается TLS-шифрованием, но может включать и другие методы туннелирования или шифрования. Следует отметить, что шифрование или криптографическое хэширование Session ID следует рассматривать отдельно от транспортного шифрования, поскольку защищается сам Session ID, а не данные, которые могут быть им представлены.
 
-If the Session ID could be presented by an attacker to the application to gain access, then it must be protected in transit to mitigate that risk. It should therefore be ensured that encryption is both the default and enforced for any request or response where the Session ID is passed, regardless of the mechanism used (e.g., a hidden form field). Simple checks such as replacing `https://` with `http://` during interaction with the application should be performed, together with modification of form posts to determine if adequate segregation between the secure and non-secure sites is implemented.
+Если Session ID может быть предоставлен злоумышленником приложению для получения доступа, то он должен быть защищён при передаче, чтобы снизить этот риск. Поэтому следует убедиться, чтобы по умолчанию для любого запроса или ответа, в котором передаётся Session ID, независимо от используемого механизма (например, скрытое поле формы) принудительно применялось шифрование. Для того, чтобы определить, реализовано ли адекватное разделение между защищёнными и незащищёнными сайтами необходимо проводить простые проверки, например, заменить `https://` на `http://` во время взаимодействия с приложением, а также изменять запросы POST в формах.
 
-Note that if there is also an element to the site where the user is tracked with Session IDs but security is not present (e.g., noting which public documents a registered user downloads) it is essential that a different Session ID is used. The Session ID should therefore be monitored as the client switches from the secure to non-secure elements to ensure a different one is used.
+Обратите внимание, что если на сайте также есть элементы, где пользователь отслеживается с помощью Session ID, но защита отсутствует (например, для отслеживания, какие общедоступные документы загружает зарегистрированный пользователь), важно, чтобы использовался другой Session ID. Поэтому необходимо контролировать, когда клиент переключается с защищённых элементов на незащищенные, чтобы убедиться, что используется другой Session ID.
 
-> Every time the authentication is successful, the user should expect to receive:
+> Каждый раз, когда аутентификация проходит успешно, пользователь должен ожидать:
 >
-> - A different session token
-> - A token sent via encrypted channel every time they make an HTTP Request
+> - Другой сессионый токен.
+> - Токен отправляется по зашифрованному каналу каждый раз, когда он делает HTTP-запрос.
 
-### Testing for Proxies & Caching Vulnerabilities
+### Тестирование уязвимостей прокси-серверов и кэширования
 
-Proxies must also be considered when reviewing application security. In many cases, clients will access the application through corporate, ISP, or other proxies or protocol aware gateways (e.g., Firewalls). The HTTP protocol provides directives to control the behavior of downstream proxies, and the correct implementation of these directives should also be assessed.
+При анализе безопасности приложений также необходимо учитывать прокси-серверы. Во многих случаях клиенты получают доступ к приложению через прокси-серверы своей организации, интернет-провайдера или другие шлюзы с поддержкой протокола (например, межсетевые экраны). Протокол HTTP предоставляет директивы для управления поведением нижестоящих прокси-серверов, и необходимо оценивать правильность реализации этих директив.
 
-In general, the Session ID should never be sent over unencrypted transport and should never be cached. The application should be examined to ensure that encrypted communications are both the default and enforced for any transfer of Session IDs. Furthermore, whenever the Session ID is passed, directives should be in place to prevent its caching by intermediate and even local caches.
+В общем случае Session ID никогда не должен передаваться по незашифрованному каналу и никогда не должен кэшироваться. Приложение должно быть исследовано, чтобы убедиться, что как по умолчанию, так и принудительно при любой передаче Session ID используются зашифрованные сообщения. Кроме того, всякий раз, когда передаётся Session ID, должны быть установлены директивы, предотвращающие его кэширование промежуточными и даже локальными кэшами.
 
-The application should also be configured to secure data in caches over both HTTP/1.0 and HTTP/1.1 – RFC 2616 discusses the appropriate controls with reference to HTTP. HTTP/1.1 provides a number of cache control mechanisms. `Cache-Control: no-cache` indicates that a proxy must not re-use any data. Whilst `Cache-Control: Private` appears to be a suitable directive, this still allows a non-shared proxy to cache data. In the case of web-cafes or other shared systems, this presents a clear risk. Even with single-user workstations the cached Session ID may be exposed through a compromise of the file-system or where network stores are used. HTTP/1.0 caches do not recognise the `Cache-Control: no-cache` directive.
+Приложение также должно быть настроено на защиту данных в кэшах как по HTTP/1.0, так и по HTTP/1.1 — в RFC 2616 обсуждаются соответствующие элементы управления со ссылкой на HTTP. HTTP/1.1 предоставляет ряд механизмов управления кэшем. `Cache-Control: no-cache` указывает, что прокси-сервер не должен повторно использовать какие-либо данные. Хотя `Cache-Control: Private` кажется подходящей директивой, она по-прежнему позволяет непубличному прокси-серверу кэшировать данные. В случае интернет-кафе или других общих систем это представляет собой явный риск. Кэшированный Session ID может быть раскрыт даже на однопользовательских рабочих станциях из-за компрометации файловой системы или использования сетевых хранилищ. HTTP/1.0 не поддерживает директиву `Cache-Control: no-cache`.
 
-> The `Expires: 0` and `Cache-Control: max-age=0` directives should be used to further ensure caches do not expose the data. Each request/response passing Session ID data should be examined to ensure appropriate cache directives are in use.
+> Директивы `Expires: 0` и `Cache-Control: max-age=0` следует использовать для дополнительной гарантии того, что кэши не раскрывают данные. Должен быть проверен каждый запрос/ответ, передающий данные Session ID, чтобы убедиться, что используются соответствующие директивы кэша.
 
-### Testing for GET & POST Vulnerabilities
+### Тестирование на уязвимости в GET и POST
 
-In general, GET requests should not be used, as the Session ID may be exposed in Proxy or Firewall logs. They are also far more easily manipulated than other types of transport, although it should be noted that almost any mechanism can be manipulated by the client with the right tools. Furthermore, [Cross-site Scripting (XSS)](https://owasp.org/www-community/attacks/xss/) attacks are most easily exploited by sending a specially constructed link to the victim. This is far less likely if data is sent from the client as POSTs.
+Как правило, не следует использовать запросы GET, так как Session ID может отображаться в журналах прокси-сервера или межсетевого экрана. Ими также гораздо легче манипулировать, чем другими методами, хотя следует отметить, что клиент может манипулировать практически любым механизмом с помощью соответствующих инструментов. Кроме того, атаки [межсайтового скриптинга (XSS)](https://owasp.org/www-community/attacks/xss/) легче всего реализовать, отправляя жертве специально созданную ссылку. Это гораздо менее вероятно, если данные отправляются от клиента в виде POST.
 
-All server-side code receiving data from POST requests should be tested to ensure it does not accept the data if sent as a GET. For example, consider the following POST request (`http://owaspapp.com/login.asp`) generated by a log in page.
+Весь код на стороне сервера, получающий данные из запросов POST, должен быть протестирован, чтобы убедиться, что он не принимает данные, если они отправлены в GET. Например, рассмотрим следующий запрос POST (`http://owaspapp.com/login.asp`), сгенерированный страницей входа.
 
 ```http
 POST /login.asp HTTP/1.1
@@ -74,25 +74,25 @@ Content-Length: 51
 Login=Username&password=Password&SessionID=12345678
 ```
 
-If login.asp is badly implemented, it may be possible to log in using the following URL: `http://owaspapp.com/login.asp?Login=Username&password=Password&SessionID=12345678`
+Если login.asp реализован плохо, возможно, удастся войти в систему, используя следующий URL: `http://owaspapp.com/login.asp?Login=Username&password=Password&SessionID=12345678`
 
-Potentially insecure server-side scripts may be identified by checking each POST in this way.
+Таким образом, с помощью проверки каждого POST можно найти потенциально небезопасные скрипты на стороне сервера.
 
-### Testing for Transport Vulnerabilities
+### Тестирование уязвимостей канала передачи
 
-All interaction between the Client and Application should be tested at least against the following criteria.
+Взаимодействие между клиентом и приложением должно быть проверено, по крайней мере, на соответствие следующим критериям.
 
-- How are Session IDs transferred? e.g., GET, POST, Form Field (including hidden fields)
-- Are Session IDs always sent over encrypted transport by default?
-- Is it possible to manipulate the application to send Session IDs unencrypted? e.g., by changing HTTPS to HTTP?
-- What cache-control directives are applied to requests/responses passing Session IDs?
-- Are these directives always present? If not, where are the exceptions?
-- Are GET requests incorporating the Session ID used?
-- If POST is used, can it be interchanged with GET?
+- Как передаются Session ID? например, в GET, POST, поле формы (включая скрытые)
+- Всегда ли Session IDs передаются по зашифрованному каналу по умолчанию?
+- Можно ли манипулировать приложением, чтобы отправлять Session IDs в незашифрованном виде? например, изменив HTTPS на HTTP?
+- Какие директивы по управлению кэшем применяются к запросам/ответам, передающим Session IDs?
+- Всегда ли присутствуют эти директивы? Если нет, то где исключения?
+- Используются ли запросы GET, содержащие Session ID?
+- Если используется POST, можно ли его заменить на GET?
 
-## References
+## Ссылки
 
-### Whitepapers
+### Технические руководства
 
 - [RFCs 2109 & 2965 – HTTP State Management Mechanism [D. Kristol, L. Montulli]](https://www.ietf.org/rfc/rfc2965.txt)
 - [RFC 2616 – Hypertext Transfer Protocol - HTTP/1.1](https://www.ietf.org/rfc/rfc2616.txt)

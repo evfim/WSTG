@@ -7,52 +7,53 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Session Puzzling
+# Тестирование пазла сессии
 
 |ID          |
 |------------|
 |WSTG-SESS-08|
 
-## Summary
+## Обзор
 
-Session Variable Overloading (also known as Session Puzzling) is an application level vulnerability which can enable an attacker to perform a variety of malicious actions, including but not limited to:
+Перегрузка переменных сессии (также известная как пазл сессии) — это уязвимость на уровне приложения, которая позволяет злоумышленнику выполнять различные вредоносные действия, включая, помимо прочего:
 
-- Bypass efficient authentication enforcement mechanisms, and impersonate legitimate users.
-- Elevate the privileges of a malicious user account, in an environment that would otherwise be considered foolproof.
-- Skip over qualifying phases in multi-phase processes, even if the process includes all the commonly recommended code level restrictions.
-- Manipulate server-side values in indirect methods that cannot be predicted or detected.
-- Execute traditional attacks in locations that were previously unreachable, or even considered secure.
+- Обход действующих механизмов принудительной аутентификации и выдачу себя за законного пользователя.
+- Повышение привилегии учётной записи злоумышленника в окружении, которое в противном случае считалось бы защищённым.
+- Пропуск этапов отбора в многоэтапных процессах, даже если процесс включает все обычно рекомендуемые ограничения на уровне кода.
+- Манипуляцию значениями на стороне сервера косвенными методами, которые невозможно предсказать или обнаружить.
+- Проведение традиционных атак там, где они ранее были невозможны или даже считались безопасными.
 
-This vulnerability occurs when an application uses the same session variable for more than one purpose. An attacker can potentially access pages in an order unanticipated by the developers so that the session variable is set in one context and then used in another.
+Эта уязвимость возникает, когда приложение использует одну и ту же переменную сессии более чем для одной цели. Злоумышленник потенциально может получить доступ к страницам в порядке, неожиданном для разработчиков, так что переменная сессии назначается в одном контексте, а используется в другом.
 
-For example, an attacker could use session variable overloading to bypass authentication enforcement mechanisms of applications that enforce authentication by validating the existence of session variables that contain identity–related values, which are usually stored in the session after a successful authentication process. This means an attacker first accesses a location in the application that sets session context and then accesses privileged locations that examine this context.
+Например, злоумышленник может использовать перегрузку переменных сессии, чтобы обойти механизмы принудительной аутентификации приложений, проверяя существование переменных сессии, содержащих значения, связанные с учётными данными, которые обычно сохраняются в сессии после успешной процедуры аутентификации. Это означает, что злоумышленник сначала получает доступ к месту в приложении, которое задаёт контекст сессии, а затем — к привилегированным местам, которые проверяют этот контекст.
 
-For example - an authentication bypass attack vector could be executed by accessing a publicly accessible entry point (e.g. a password recovery page) that populates the session with an identical session variable, based on fixed values or on user originating input.
+Например, вектор атаки обхода аутентификации может быть реализован путём доступа к общедоступной точке входа (например, к странице восстановления пароля), которая присваивается той же переменной сессии на основе фиксированных значений или вводимых пользователем данных.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify all session variables.
-- Break the logical flow of session generation.
+- Определить все переменные сессии.
+- Нарушить логику процесса создания сессии.
 
-## How to Test
+## Как тестировать
 
-### Black-Box Testing
+### Тестирование методом чёрного ящика
 
-This vulnerability can be detected and exploited by enumerating all of the session variables used by the application and in which context they are valid. In particular this is possible by accessing a sequence of entry points and then examining exit points. In case of black-box testing this procedure is difficult and requires some luck since every different sequence could lead to a different result.
+Эту уязвимость можно обнаружить и проэксплуатировать, перебрав все переменные сессии, используемые приложением, с учётом контекста, в котором они допустимы. В частности, это возможно путём доступа к последовательности точек входа с последующим изучением точек выхода. В случае тестирования методом чёрного ящика эта процедура сложна и требует некоторой удачи, поскольку каждая отдельная последовательность может привести к другому результату.
 
-#### Examples
+#### Примеры
 
-A very simple example could be the password reset functionality that, in the entry point, could request the user to provide some identifying information such as the username or the email address. This page might then populate the session with these identifying values, which are received directly from the client-side, or obtained from queries or calculations based on the received input. At this point there may be some pages in the application that show private data based on this session object. In this manner the attacker could bypass the authentication process.
+Очень простым примером может быть функция сброса пароля, которая в точке входа может запросить у пользователя некоторую идентифицирующую информацию, такую как имя пользователя или адрес электронной почты. Затем эта страница может присвоить переменной сессии эти идентифицирующие значения, которые получены непосредственно от клиента или из запросов или вычислены на основе полученных входных данных. На данном этапе в приложении могут быть некоторые страницы, которые отображают личные данные клиента на основе текущего экземпляра сессии. Таким образом злоумышленник может обойти процедуру аутентификации.
 
-### Gray-Box Testing
+### Тестирование методом серого ящика
 
-The most effective way to detect these vulnerabilities is via a source code review.
+Наиболее эффективный способ обнаружения этих уязвимостей — проверка исходного кода.
 
-## Remediation
+## Как исправить
 
-Session variables should only be used for a single consistent purpose.
+Переменные сессии следует использовать только для одной предназначенной им цели.
 
-## References
+## Ссылки
 
 - [Session Puzzles](https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/puzzlemall/Session%20Puzzles%20-%20Indirect%20Application%20Attack%20Vectors%20-%20May%202011%20-%20Whitepaper.pdf)
 - [Session Puzzling and Session Race Conditions](http://sectooladdict.blogspot.com/2011/09/session-puzzling-and-session-race.html)
+- [Session Puzzling Attacks (a.k.a. “Session Variable Overloading”)](https://appcheck-ng.com/session-puzzling-attacks-a-k-a-session-variable-overloading)

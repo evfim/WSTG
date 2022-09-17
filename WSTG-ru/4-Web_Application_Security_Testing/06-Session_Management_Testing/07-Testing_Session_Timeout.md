@@ -7,53 +7,53 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing Session Timeout
+# Тестирование тайм-аута сессии
 
 |ID          |
 |------------|
 |WSTG-SESS-07|
 
-## Summary
+## Обзор
 
-In this phase testers check that the application automatically logs out a user when that user has been idle for a certain amount of time, ensuring that it is not possible to "reuse" the same session and that no sensitive data remains stored in the browser cache.
+На этом этапе тестировщики проверяют, что приложение автоматически выводит пользователя из системы, когда он бездействует в течение определённого времени, гарантируя, что невозможно «повторно использовать» одну и ту же сессию и что в кэше браузера не осталось чувствительных данных.
 
-All applications should implement an idle or inactivity timeout for sessions. This timeout defines the amount of time a session will remain active in case there is no activity by the user, closing and invalidating the session upon the defined idle period since the last HTTP request received by the web application for a given session ID. The most appropriate timeout should be a balance between security (shorter timeout) and usability (longer timeout) and heavily depends on the sensitivity level of the data handled by the application. For example, a 60 minute log out time for a public forum can be acceptable, but such a long time would be too much in a home banking application (where a maximum timeout of 15 minutes is recommended). In any case, any application that does not enforce a timeout-based log out should be considered not secure, unless such behavior is required by a specific functional requirement.
+Все приложения должны реализовывать тайм-аут ожидания (или бездействия) для сессий. Этот тайм-аут определяет количество времени, в течение которого сессия будет оставаться активной в случае отсутствия действий со стороны пользователя, закрытия и деактивации сессии по истечении определённого периода простоя с момента последнего HTTP-запроса, полученного web-приложением для данного Session ID. Наиболее подходящий тайм-аут должен обеспечивать баланс между безопасностью (более короткий тайм-аут) и удобством использования (более длительный) и в значительной степени зависит от уровня чувствительности данных, обрабатываемых приложением. Например, 60-минутное время выхода из системы для публичного форума может быть приемлемым, но такое же время было бы слишком большим для домашнего банковского приложения (где рекомендуется тайм-аут максимум 15 минут). В любом случае, приложение, которое не обеспечивает принудительный выход из системы на основе тайм-аута, следует считать небезопасным, если только такое поведение не обусловлено конкретным функциональным требованием.
 
-The idle timeout limits the chances that an attacker has to guess and use a valid session ID from another user, and under certain circumstances could protect public computers from session reuse. However, if the attacker is able to hijack a given session, the idle timeout does not limit the attacker’s actions, as he can generate activity on the session periodically to keep the session active for longer periods of time.
+Тайм-аут простоя ограничивает вероятность того, что злоумышленник угадает и воспользуется действующим Session ID другого пользователя, и при определённых обстоятельствах может защитить общедоступные компьютеры от повторного использования сессии. Однако, если злоумышленник может перехватить данную сессию, тайм-аут простоя не ограничит его действия, поскольку он может периодически генерировать активность в сессии, чтобы поддерживать её активной в течение более длительного периода времени.
 
-Session timeout management and expiration must be enforced server-side. If some data under the control of the client is used to enforce the session timeout, for example using cookie values or other client parameters to track time references (e.g. number of minutes since log in time), an attacker could manipulate these to extend the session duration. So the application has to track the inactivity time server-side and, after the timeout is expired, automatically invalidate the current user's session and delete every data stored on the client.
+Управление таймаутом сессии и истечением срока её действия должно выполняться на стороне сервера. Если какие-либо данные, находящиеся под контролем клиента, необходимы для тайм-аута сеанса, например, значения в cookie или другие параметры для отслеживания времени (например, количество минут с момента входа), то злоумышленник сможет манипулировать ими, чтобы увеличить продолжительность сессии. Таким образом, приложение должно отслеживать время бездействия на стороне сервера и по истечении тайм-аута автоматически деактивировать сессию текущего пользователя и удалить все данные, хранящиеся на клиенте.
 
-Both actions must be implemented carefully, in order to avoid introducing weaknesses that could be exploited by an attacker to gain unauthorized access if the user forgot to log out from the application. More specifically, as for the log out function, it is important to ensure that all session tokens (e.g. cookies) are properly destroyed or made unusable, and that proper controls are enforced server-side to prevent the reuse of session tokens. If such actions are not properly carried out, an attacker could replay these session tokens in order to "resurrect" the session of a legitimate user and impersonate him/her (this attack is usually known as 'cookie replay'). Of course, a mitigating factor is that the attacker needs to be able to access those tokens (which are stored on the victim's PC), but, in a variety of cases, this may not be impossible or particularly difficult.
+Оба действия должны проводиться аккуратно, чтобы не допустить возникновения уязвимостей, которыми злоумышленник может воспользоваться для получения несанкционированного доступа, если пользователь забудет выйти из приложения. В частности, что касается функции выхода, важно убедиться, что все сессионные токены (например, cookie) должным образом уничтожены или деактивированы, а на стороне сервера применяются надлежащие меры защиты для предотвращения повторного использования сессионных токенов. Если такие действия должным образом не выполняются, злоумышленник сможет воспроизвести эти токены, чтобы «воскресить» сессию законного пользователя и выдать себя за него (эта атака обычно известна как «воспроизведение cookie»). Конечно, смягчающим фактором является то, что злоумышленник должен иметь доступ к этим токенам (которые хранятся на компьютере жертвы), но в ряде случаев это не является невозможным или особенно сложным.
 
-The most common scenario for this kind of attack is a public computer that is used to access some private information (e.g., web mail, online bank account). If the user moves away from the computer without explicitly logging out and the session timeout is not implemented on the application, then an attacker could access to the same account by simply pressing the "back" button of the browser.
+Наиболее распространённым сценарием такого рода атак является общедоступный компьютер, который используется для доступа к некоторой частной информации (например, к web-почте, счёту в онлайн-банке). Если пользователь отходит от компьютера без явного выхода из системы и тайм-аут сессии в приложении не реализован, то злоумышленник может получить доступ к той же учётной записи, просто нажав кнопку «назад» в браузере.
 
-## Test Objectives
+## Задача тестирования
 
-- Validate that a hard session timeout exists.
+- Убедиться, что установлен жёсткий тайм-аут сессии.
 
-## How to Test
+## Как тестирования
 
-### Black-Box Testing
+### Тестирование методом чёрного ящика
 
-The same approach seen in the [Testing for logout functionality](06-Testing_for_Logout_Functionality.md) section can be applied when measuring the timeout log out.
-The testing methodology is very similar. First, testers have to check whether a timeout exists, for instance, by logging in and waiting for the timeout log out to be triggered. As in the log out function, after the timeout has passed, all session tokens should be destroyed or be unusable.
+Тот же подход, что и в разделе [Тестирование выхода из системы](06-Testing_for_Logout_Functionality.md), можно применить при измерении времени ожидания выхода из системы.
+Методология тестирования очень похожа. Во-первых, необходимо проверить, существует ли тайм-аут, например, войдя в систему и дождавшись срабатывания тайм-аута выхода из системы. Как и в функции выхода из системы, по истечении времени ожидания все сессионные токены должны быть уничтожены или деактивированы.
 
-Then, if the timeout is configured, testers need to understand whether the timeout is enforced by the client or by the server (or both). If the session cookie is non-persistent (or, more in general, the session cookie does not store any data about the time), testers can assume that the timeout is enforced by the server. If the session cookie contains some time related data (e.g., log in time, or last access time, or expiration date for a persistent cookie), then it's possible that the client is involved in the timeout enforcing. In this case, testers could try to modify the cookie (if it's not cryptographically protected) and see what happens to the session. For instance, testers can set the cookie expiration date far in the future and see whether the session can be prolonged.
+Затем, если тайм-аут настроен, необходимо понять, применяется ли он клиентом или сервером (или и тем, и другим). Если сессионный cookie не является постоянным (или, в более общем случае, сессионный cookie не хранит данных о времени), можно предположить, что тайм-аут принудительно установлен сервером. Если сессионный cookie содержит какие-то данные, связанные со временем (например, время входа, или время последнего доступа, или дата истечения срока действия постоянного cookie), то возможно, что клиент участвует в применении тайм-аута. В этом случае можно попытаться изменить cookie (если он не защищён криптографически) и посмотреть, что происходит с сессией. Например, можно установить дату истечения срока действия cookie далеко в будущем и посмотреть, можно ли продлить сессию.
 
-As a general rule, everything should be checked server-side and it should not be possible, by re-setting the session cookies to previous values, to access the application again.
+Как правило, всё должно проверяться на стороне сервера, и не должно быть возможности, повторно установив сессионные cookie в предыдущие значения, снова получить доступ к приложению.
 
-### Gray-Box Testing
+### Тестирование методом серого ящика
 
-The tester needs to check that:
+Тестировщик должен проверить, что:
 
-- The log out function effectively destroys all session token, or at least renders them unusable,
-- The server performs proper checks on the session state, disallowing an attacker to replay previously destroyed session identifiers
-- A timeout is enforced and it is properly enforced by the server. If the server uses an expiration time that is read from a session token that is sent by the client (but this is not advisable), then the token must be cryptographically protected from tampering.
+- Функция выхода действительно удаляет все сессионные токены или, по крайней мере, деактивирует их.
+- Сервер выполняет надлежащие проверки состояния сессии, запрещая воспроизводить удалённые ранее идентификаторы сессии
+- Установлен тайм-аут и он контролируется со стороны серверы. Если сервер считывает срок действия из сессионного токена, отправленного клиентом (что не рекомендуется), то токен должен быть криптографически защищён от подделки.
 
-Note that the most important thing is for the application to invalidate the session on the server-side. Generally this means that the code must invoke the appropriate methods, e.g. `HttpSession.invalidate()` in Java and `Session.abandon()` in .NET. Clearing the cookies from the browser is advisable, but is not strictly necessary, since if the session is properly invalidated on the server, having the cookie in the browser will not help an attacker.
+Обратите внимание, что самое главное, чтобы приложение деактивировало сессию на стороне сервера. Обычно это означает, что код должен вызывать соответствующие методы, например. `HttpSession.invalidate()` в Java или `Session.abandon()` в .NET. Очистка файлов cookie в браузере желательна, но не является строго обязательной, поскольку, если сессия признана недействительной на сервере, наличие cookie в браузере злоумышленнику не поможет.
 
-## References
+## Ссылки
 
-### OWASP Resources
+### Ресурсы OWASP
 
-- [Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
+- [Памятка по управлению сессиями](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)

@@ -7,149 +7,149 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Cookies Attributes
+# Тестирование атрибутов Cookie
 
 |ID          |
 |------------|
 |WSTG-SESS-02|
 
-## Summary
+## Обзор
 
-Web Cookies (herein referred to as cookies) are often a key attack vector for malicious users (typically targeting other users) and the application should always take due diligence to protect cookies.
+Web-cookie (далее именуемые cookie или куки) часто являются ключевым вектором атаки злоумышленниками (обычно нацеленных на других пользователей), и приложение всегда должно проявлять должную осмотрительность для защиты файлов cookie.
 
-HTTP is a stateless protocol, meaning that it doesn't hold any reference to requests being sent by the same user. In order to fix this issue, sessions were created and appended to HTTP requests. Browsers, as discussed in [testing browser storage](../11-Client-side_Testing/12-Testing_Browser_Storage.md), contain a multitude of storage mechanisms. In that section of the guide, each is discussed thoroughly.
+HTTP — это протокол без сохранения состояния, что означает, что он не содержит ссылок на запросы, отправленные одним и тем же пользователем. Чтобы решить эту проблему, были созданы сессии и добавлены к HTTP-запросам. Браузеры, как подробно обсуждается в разделе [Тестирование хранилищ браузера](../11-Client-side_Testing/12-Testing_Browser_Storage.md), содержат несколько механизмов для хранения.
 
-The most used session storage mechanism in browsers is cookie storage. Cookies can be set by the server, by including a [`Set-Cookie`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) header in the HTTP response or via JavaScript. Cookies can be used for a multitude of reasons, such as:
+Наиболее часто используемым механизмом хранения сессий в браузерах является хранилище cookie. Cookie могут быть установлены сервером, путем включения заголовка [`Set-Cookie`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) в HTTP-ответ или с помощью JavaScript. Cookie могут применяться по ряду причин, таких как:
 
-- session management
-- personalization
-- tracking
+- управление сессиями;
+- персонализация;
+- отслеживание.
 
-In order to secure cookie data, the industry has developed means to help lock down these cookies and limit their attack surface. Over time cookies have become a preferred storage mechanism for web applications, as they allow great flexibility in use and protection.
+Чтобы обезопасить данные в cookie, разработаны средства, помогающие изолировать cookie и ограничивать возможность их атаки. Со временем файлы cookie стали предпочтительным механизмом хранения для web-приложений, поскольку они обеспечивают большую гибкость в использовании и защите.
 
-The means to protect the cookies are:
+Средствами защиты cookie являются:
 
-- [Cookie Attributes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Creating_cookies)
-- [Cookie Prefixes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Cookie_prefixes)
+- [Атрибуты Cookie](https://developer.mozilla.org/ru/docs/Web/HTTP/Cookies#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BA%D1%83%D0%BA%D0%B8)
+- [Префиксы Cookie](https://developer.mozilla.org/ru/docs/Web/HTTP/Cookies#%D0%BA%D1%83%D0%BA%D0%B8_%D1%81_%D0%BF%D1%80%D0%B5%D1%84%D0%B8%D0%BA%D1%81%D0%B0%D0%BC%D0%B8)
 
-## Test Objectives
+## Задача тестирования
 
-- Ensure that the proper security configuration is set for cookies.
+- Убедитесь, что для cookie установлена безопасная конфигурация.
 
-## How to Test
+## Как тестировать
 
-Below, a description of every attribute and prefix will be discussed. The tester should validate that they are being used properly by the application. Cookies can be reviewed by using an [intercepting proxy](#intercepting-proxy), or by reviewing the browser's cookie jar.
+Ниже будет рассмотрено описание каждого атрибута и префикса. Тестировщик должен убедиться, что приложение использует их должным образом. Cookie можно просмотреть с помощью [перехватывающего прокси](#перехватывающие-прокси), или просмотрев хранилище cookie браузера.
 
-### Cookie Attributes
+### Атрибуты Cookie
 
-#### Secure Attribute
+#### Атрибут Secure
 
-The [`Secure`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#Secure) attribute tells the browser to only send the cookie if the request is being sent over a secure channel such as `HTTPS`. This will help protect the cookie from being passed in unencrypted requests. If the application can be accessed over both `HTTP` and `HTTPS`, an attacker could be able to redirect the user to send their cookie as part of non-protected requests.
+Атрибут [`Secure`](https://developer.mozilla.org/ru/docs/Web/HTTP/Cookies#secure_(%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D1%8B%D0%B5)_%D0%B8_httponly_cookies) указывает браузеру отправлять cookie только в том случае, если запрос отправляется по защищённому каналу, например, `HTTPS`. Это поможет защитить cookie от передачи в незашифрованных запросах. Если к приложению можно получить доступ как по `HTTP`, так и по `HTTPS`, злоумышленник сможет перенаправить пользователя для отправки cookie в составе незащищённых запросов.
 
-#### HttpOnly Attribute
+#### Атрибут HttpOnly
 
-The [`HttpOnly`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#HttpOnly) attribute is used to help prevent attacks such as session leakage, since it does not allow the cookie to be accessed via a client-side script such as JavaScript.
+Атрибут [`HttpOnly`](https://developer.mozilla.org/ru/docs/Web/HTTP/Headers/Set-Cookie#httponly) используется для предотвращения атак, таких как раскрытие сессии, поскольку он не позволяет получить доступ к файлу cookie с помощью клиентского скрипта, например, JavaScript.
 
-> This doesn't limit the whole attack surface of XSS attacks, as an attacker could still send request in place of the user, but limits immensely the reach of XSS attack vectors.
+> Это не ограничивает всю поверхность XSS-атак, поскольку злоумышленник все равно может отправить запрос вместо пользователя, но значительно ограничивает область действия векторов XSS-атак.
 
-#### Domain Attribute
+#### Атрибут Domain
 
-The [`Domain`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Scope_of_cookies) attribute is used to compare the cookie's domain against the domain of the server for which the HTTP request is being made. If the domain matches or if it is a subdomain, then the [`path`](#path-attribute) attribute will be checked next.
+Атрибут [`Domain`](https://developer.mozilla.org/ru/docs/Web/HTTP/Cookies#%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C_%D0%B2%D0%B8%D0%B4%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8_%D0%BA%D1%83%D0%BA%D0%B8) используется для сравнения домена cookie с доменом сервера, для которого выполняется HTTP-запрос. Если домены совпадают или если это поддомен, то следующим будет проверен атрибут [`path`](#атрибут-path).
 
-Note that only hosts that belong to the specified domain can set a cookie for that domain. Additionally, the `domain` attribute cannot be a top level domain (such as `.gov` or `.com`) to prevent servers from setting arbitrary cookies for another domain (such as setting a cookie for `owasp.org`). If the domain attribute is not set, then the hostname of the server that generated the cookie is used as the default value of the `domain`.
+Обратите внимание, что только хосты, принадлежащие указанному домену, могут установить cookie для этого домена. Кроме того, атрибут `domain` не может быть доменом верхнего уровня (например, `.org` или `.com`), чтобы серверы не могли устанавливать произвольные cookie для другого домена (например, для `owasp.org`). Если атрибут домена не задан, то в качестве значения по умолчанию для `domain` используется имя хоста сервера, сгенерировавшего cookie.
 
-For example, if a cookie is set by an application at `app.mydomain.com` with no domain attribute set, then the cookie would be resubmitted for all subsequent requests for `app.mydomain.com` and its subdomains (such as `hacker.app.mydomain.com`), but not to `otherapp.mydomain.com`. If a developer wanted to loosen this restriction, then he could set the `domain` attribute to `mydomain.com`. In this case the cookie would be sent to all requests for `app.mydomain.com` and `mydomain.com` subdomains, such as `hacker.app.mydomain.com`, and even `bank.mydomain.com`. If there was a vulnerable server on a subdomain (for example, `otherapp.mydomain.com`) and the `domain` attribute has been set too loosely (for example, `mydomain.com`), then the vulnerable server could be used to harvest cookies (such as session tokens) across the full scope of `mydomain.com`.
+Например, если cookie установлен приложением `app.mydomain.com` без атрибута домена, то этот cookie будет отправляться во всех последующих запросах на `app.mydomain.com` и его поддомены (например, на `hacker.app.mydomain.com`), но не на `otherapp.mydomain.com`. Если разработчик хотел ослабить это ограничение, он мог установить атрибут `domain` в значение `mydomain.com`. В этом случае cookie будет отправляться во всех запросах на поддомены `app.mydomain.com` и `mydomain.com`, например, `hacker.app.mydomain.com`, и даже `bank.mydomain.com`. Если на поддомене был уязвимый сервер (например, `otherapp.mydomain.com`) и атрибут `domain` был установлен слишком вольно (например, `mydomain.com`), то уязвимый сервер мог быть использован для сбора cookie (например, сессионных токенов) по всему домену `mydomain.com`.
 
-#### Path Attribute
+#### Атрибут Path
 
-The [`Path`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Scope_of_cookies) attribute plays a major role in setting the scope of the cookies in conjunction with the [`domain`](#domain-attribute). In addition to the domain, the URL path that the cookie is valid for can be specified. If the domain and path match, then the cookie will be sent in the request. Just as with the domain attribute, if the path attribute is set too loosely, then it could leave the application vulnerable to attacks by other applications on the same server. For example, if the path attribute was set to the web server root `/`, then the application cookies will be sent to every application within the same domain (if multiple application reside under the same server). A couple of examples for multiple applications under the same server:
+Атрибут [`Path`](https://developer.mozilla.org/ru/docs/Web/HTTP/Cookies#%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C_%D0%B2%D0%B8%D0%B4%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8_%D0%BA%D1%83%D0%BA%D0%B8) играет важную роль в настройке области действия cookie в сочетании с [`domain`](#атрибут-domain). В дополнение к домену можно указать URL, для которого действителен cookie. Если домен и путь совпадают, то cookie будет отправлен в запросе. Как и в случае с атрибутом домена, если атрибут path задан слишком вольно, это может сделать приложение уязвимым для атак со стороны других приложений на том же сервере. Например, если атрибут path установлен на webroot `/`, то cookie будут отправляться каждому приложению в пределах одного домена (если несколько приложений находятся на одном сервере). Ниже примеры для случая нескольких приложений на одном сервере:
 
 - `path=/bank`
 - `path=/private`
 - `path=/docs`
 - `path=/docs/admin`
 
-#### Expires Attribute
+#### Атрибут Expires
 
-The [`Expires`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Permanent_cookies) attribute is used to:
+Атрибут [`Expires`](https://developer.mozilla.org/ru/docs/Web/HTTP/Cookies#%D0%BF%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%BD%D1%8B%D0%B5_cookies) используется для:
 
-- set persistent cookies
-- limit lifespan if a session lives for too long
-- remove a cookie forcefully by setting it to a past date
+- установки постоянных cookie;
+- ограничения их срока действия, если сессия длится слишком долго;
+- принудительного удаления cookie, устанавливая для него прошедшую дату.
 
-Unlike [session cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Session_cookies), persistent cookies will be used by the browser until the cookie expires. Once the expiration date has exceeded the time set, the browser will delete the cookie.
+В отличие от [сессионных](https://developer.mozilla.org/ru/docs/Web/HTTP/Cookies#%D1%81%D0%B5%D1%81%D1%81%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B5_cookie), постоянные cookie будут использоваться браузером до истечения их срока действия. Как только срок действия превысит установленное время, браузер удалит cookie.
 
-#### SameSite Attribute
+#### Атрибут SameSite
 
-The [`SameSite`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#SameSite_cookies) attribute is used to assert that a cookie ought not to be sent along with cross-site requests. This feature allows the server to mitigate the risk of cross-origin information leakage. In some cases, it is used too as a risk reduction (or defense in depth mechanism) strategy to prevent [cross-site request forgery](05-Testing_for_Cross_Site_Request_Forgery.md) attacks. This attribute can be configured in three different modes:
+Атрибут [`SameSite`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite) используется для подтверждения того, что cookie не следует отправлять с межсайтовыми запросами. Эта функция позволяет серверу снизить риск утечки информации при наличии разных источников (cross-origin). В некоторых случаях он также используется в качестве стратегии снижения риска (или механизма эшелонированной защиты) для предотвращения атак [подделки межсайтовых запросов](05-Testing_for_Cross_Site_Request_Forgery.md). Этот атрибут можно использовать в трёх различных режимах:
 
 - `Strict`
 - `Lax`
 - `None`
 
-##### Strict Value
+##### Значение Strict
 
-The `Strict` value is the most restrictive usage of `SameSite`, allowing the browser to send the cookie only to first-party context without top-level navigation. In other words, the data associated with the cookie will only be sent on requests matching the current site shown on the browser URL bar. The cookie will not be sent on requests generated by third-party websites. This value is especially recommended for actions performed at the same domain. However, it can have some limitations with some session management systems negatively affecting the user navigation experience. Since the browser would not send the cookie on any requests generated from a third-party domain or email, the user would be required to sign in again even if they already have an authenticated session.
+Значение `Strict` — наиболее строгое использование атрибута `SameSite`, позволяющее браузеру отправлять cookie только в контексте от первого лица без навигации верхнего уровня. Другими словами, данные, связанные с cookie, будут отправляться только по запросам, соответствующим текущему сайту, отображаемому в строке URL браузера. Cookie не будет отправляться по запросам, сгенерированным сторонними web-сайтами. Это значение особенно рекомендуется для действий, выполняемых в том же домене. Однако у него могут быть ограничения, поскольку некоторые системы управления сессиями негативно влияют на навигацию пользователя. Поскольку браузер не будет отправлять cookie на запросы, сгенерированные из стороннего домена или электронной почты, пользователю потребуется снова входить в систему, даже если у него уже есть аутентифицированная сессия.
 
-##### Lax Value
+##### Значение Lax
 
-The `Lax` value is less restrictive than `Strict`. The cookie will be sent if the URL equals the cookie’s domain (first-party) even if the link is coming from a third-party domain. This value is considered by most browsers the default behavior since it provides a better user experience than the `Strict` value. It doesn't trigger for assets, such as images, where cookies might not be needed to access them.
+Значение `Lax` является менее строгим, чем `Strict`. Cookie будет отправлен, если URL соответствует домену в cookie (от первого лица), даже если это ссылка со стороннего домена. Это значение считается большинством браузеров поведением по умолчанию, поскольку оно обеспечивает лучший пользовательский опыт, чем значение `Strict`. `Lax` не действует на ресурсы, для доступа к которым cookie не требуются например, для загрузки изображений или фреймов на сторонний сайт.
 
-##### None Value
+##### Значение None
 
-The `None` value specifies that the browser will send the cookie on cross-site requests (the normal behavior before the implementation of `SameSite`) only if the `Secure` attribute is also used, _e.g._ `SameSite=None; Secure`. It is a recommended value, instead of not specifying any `SameSite` value, as it forces the use of the [`secure` attribute](#secure-attribute).
+Значение `None` указывает, что браузер будет отправлять cookie при межсайтовых запросах (стандартное поведение до появления `SameSite`)  только если также используется атрибут `Secure`, _например,_ `SameSite=None; Secure`. Это рекомендуемое значение, вместо того, чтобы вообще не указывать значение `SameSite`, поскольку оно вынуждает использовать атрибут [`secure`](#атрибут-secure).
 
-### Cookie Prefixes
+### Префиксы Cookie
 
-By design cookies do not have the capabilities to guarantee the integrity and confidentiality of the information stored in them. Those limitations make it impossible for a server to have confidence about how a given cookie's attributes were set at creation. In order to give the servers such features in a backwards-compatible way, the industry has introduced the concept of [`Cookie Name Prefixes`](https://tools.ietf.org/html/draft-ietf-httpbis-cookie-prefixes-00) to facilitate passing such details embedded as part of the cookie name.
+По своей сути cookie не могут гарантировать ни целостности, ни конфиденциальности хранящейся в них информации. Эти ограничения не позволяют серверу быть уверенным в том, в какие значения были установлены атрибуты данного cookie при его создании. Чтобы предоставить серверам такую возможность с сохранением обратной совместимости, была принята концепция  [`Префиксы имён cookie`](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-cookie-prefixes-00), обеспечив передачу информации, включаемой в наименование файла cookie.
 
-#### Host Prefix
+#### Префикс Host
 
-The [`__Host-`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Cookie_prefixes) prefix expects cookies to fulfill the following conditions:
+Прификс [`__Host-`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Cookie_prefixes) требует, чтобы cookie соответствовали следующим условиям:
 
-  1. The cookie must be set with the [`Secure` attribute](#secure-attribute).
-  2. The cookie must be set from a URI considered secure by the user agent.
-  3. Sent only to the host who set the cookie and MUST NOT include any [`Domain` attribute](#domain-attribute).
-  4. The cookie must be set with the [`Path` attribute](#path-attribute) with a value of `/` so it would be sent with every request to the host.
+  1. cookie должен быть установлен с атрибутом [`Secure`](#атрибут-secure).
+  2. cookie должен быть установлен из URI, который агент пользователя считает безопасным.
+  3. отправляется только тому хосту, который установил cookie, и НЕ ДОЛЖЕН содержать атрибут [`Domain`](#атрибут-domain).
+  4. cookie должен быть установлен с атрибутом [`Path`](#атрибут-path) в значении `/`, который отправляется с каждым запросом к хосту.
 
-For this reason, the cookie `Set-Cookie: __Host-SID=12345; Secure; Path=/` would be accepted while any of the following ones would always be rejected:
+По этой причине cookie `Set-Cookie: __Host-SID=12345; Secure; Path=/` будет принят, а любой из приведённых ниже будет отклонён:
 `Set-Cookie: __Host-SID=12345`
 `Set-Cookie: __Host-SID=12345; Secure`
 `Set-Cookie: __Host-SID=12345; Domain=site.example`
 `Set-Cookie: __Host-SID=12345; Domain=site.example; Path=/`
 `Set-Cookie: __Host-SID=12345; Secure; Domain=site.example; Path=/`
 
-#### Secure Prefix
+#### Префикс Secure
 
-The [`__Secure-`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Cookie_prefixes) prefix is less restrictive and can be introduced by adding the case-sensitive string `__Secure-` to the cookie name. Any cookie that matches the prefix `__Secure-` would be expected to fulfill the following conditions:
+Префикс [`__Secure-`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Cookie_prefixes) является менее строгим, чем `__Host-` и может быть введён путём добавления чувствительной к регистру строки `__Secure-` к имени файла cookie. Ожидается, что любой cookie, соответствующий префиксу `__Secure-`будет удовлетворять следующим условиям:
 
-  1. The cookie must be set with the `Secure` attribute.
-  2. The cookie must be set from a URI considered secure by the user agent.
+  1. cookie должен быть установлен с атрибутом [`Secure`](#атрибут-secure).
+  2. cookie должен быть установлен из URI, который агент пользователя считает безопасным.
 
-### Strong Practices
+### Рекомендованная практика
 
-Based on the application needs, and how the cookie should function, the attributes and prefixes must be applied. The more the cookie is locked down, the better.
+Атрибуты и префиксы должны применяться в зависимости от потребностей приложения и задач, решаемых с помощью cookie. Чем сильнее будет изолирован cookie, тем лучше.
 
-Putting all this together, we can define the most secure cookie attribute configuration as: `Set-Cookie: __Host-SID=<session token>; path=/; Secure; HttpOnly; SameSite=Strict`.
+Собрав всё вышесказанное воедино, мы можем определить наиболее безопасную конфигурацию атрибутов cookie следующим образом: `Set-Cookie: __Host-SID=<session token>; path=/; Secure; HttpOnly; SameSite=Strict`.
 
-## Tools
+## Инструменты
 
-### Intercepting Proxy
+### Перехватывающие прокси
 
 - [OWASP Zed Attack Proxy Project](https://www.zaproxy.org)
 - [Web Proxy Burp Suite](https://portswigger.net)
 
-### Browser Plug-in
+### Плагины для браузера
 
-- [Tamper Data for FF Quantum](https://addons.mozilla.org/en-US/firefox/addon/tamper-data-for-ff-quantum/)
-- ["FireSheep" for FireFox](https://github.com/codebutler/firesheep)
-- ["EditThisCookie" for Chrome](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg?hl=en)
-- ["Cookiebro - Cookie Manager" for FireFox](https://addons.mozilla.org/en-US/firefox/addon/cookiebro/)
+- [Tamper Data для FF Quantum](https://addons.mozilla.org/en-US/firefox/addon/tamper-data-for-ff-quantum/)
+- [FireSheep для FireFox](https://github.com/codebutler/firesheep)
+- [EditThisCookie для Chrome](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg?hl=en)
+- [Cookiebro - Cookie Manager для FireFox](https://addons.mozilla.org/en-US/firefox/addon/cookiebro/)
 
-## References
+## Ссылки
 
-- [RFC 2965 - HTTP State Management Mechanism](https://tools.ietf.org/html/rfc2965)
-- [RFC 2616 – Hypertext Transfer Protocol – HTTP 1.1](https://tools.ietf.org/html/rfc2616)
-- [Same-Site Cookies - draft-ietf-httpbis-cookie-same-site-00](https://tools.ietf.org/html/draft-ietf-httpbis-cookie-same-site-00)
+- [RFC 6265 - HTTP State Management Mechanism](https://www.rfc-editor.org/rfc/rfc6265)
+- [RFC 7231 – Hypertext Transfer Protocol – HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc7231)
+- [Same-Site Cookies - draft-ietf-httpbis-cookie-same-site-00](https://datatracker.ietf.org/doc/draft-ietf-httpbis-cookie-same-site/)
 - [The important "expires" attribute of Set-Cookie](https://seckb.yehg.net/2012/02/important-expires-attribute-of-set.html)
 - [HttpOnly Session ID in URL and Page Body](https://seckb.yehg.net/2012/06/httponly-session-id-in-url-and-page.html)

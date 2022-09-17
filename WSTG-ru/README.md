@@ -159,25 +159,25 @@ tags: WSTG
 
 ### 4.6 [Тестирование управления сессиями](4-Web_Application_Security_Testing/06-Session_Management_Testing/README.md)
 
-#### 4.6.1 [Testing for Session Management Schema](4-Web_Application_Security_Testing/06-Session_Management_Testing/01-Testing_for_Session_Management_Schema.md)
+#### 4.6.1 [Тестирование схемы управления сессиями](4-Web_Application_Security_Testing/06-Session_Management_Testing/01-Testing_for_Session_Management_Schema.md)
 
-#### 4.6.2 [Testing for Cookies Attributes](4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md)
+#### 4.6.2 [Тестирование атрибутов Cookie](4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md)
 
-#### 4.6.3 [Testing for Session Fixation](4-Web_Application_Security_Testing/06-Session_Management_Testing/03-Testing_for_Session_Fixation.md)
+#### 4.6.3 [Тестирование фиксации сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/03-Testing_for_Session_Fixation.md)
 
-#### 4.6.4 [Testing for Exposed Session Variables](4-Web_Application_Security_Testing/06-Session_Management_Testing/04-Testing_for_Exposed_Session_Variables.md)
+#### 4.6.4 [Тестирование незащищённых параметров сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/04-Testing_for_Exposed_Session_Variables.md)
 
-#### 4.6.5 [Тестирование на подделку межсайтовых запросов](4-Web_Application_Security_Testing/06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md)
+#### 4.6.5 [Тестирование подделки межсайтовых запросов](4-Web_Application_Security_Testing/06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md)
 
-#### 4.6.6 [Testing for Logout Functionality](4-Web_Application_Security_Testing/06-Session_Management_Testing/06-Testing_for_Logout_Functionality.md)
+#### 4.6.6 [Тестирование выхода из системы](4-Web_Application_Security_Testing/06-Session_Management_Testing/06-Testing_for_Logout_Functionality.md)
 
-#### 4.6.7 [Testing Session Timeout](4-Web_Application_Security_Testing/06-Session_Management_Testing/07-Testing_Session_Timeout.md)
+#### 4.6.7 [Тестирование тайм-аута сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/07-Testing_Session_Timeout.md)
 
-#### 4.6.8 [Testing for Session Puzzling](4-Web_Application_Security_Testing/06-Session_Management_Testing/08-Testing_for_Session_Puzzling.md)
+#### 4.6.8 [Тестирование пазла сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/08-Testing_for_Session_Puzzling.md)
 
-#### 4.6.9 [Testing for Session Hijacking](4-Web_Application_Security_Testing/06-Session_Management_Testing/09-Testing_for_Session_Hijacking.md)
+#### 4.6.9 [Тестирование перехвата сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/09-Testing_for_Session_Hijacking.md)
 
-#### 4.6.10 [Testing JSON Web Tokens](4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens.md)
+#### 4.6.10 [Тестирование JSON Web Token](4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens.md)
 
 ### 4.7 [Тестирование контроля входных данных](4-Web_Application_Security_Testing/07-Input_Validation_Testing/README.md)
 
@@ -303,7 +303,7 @@ tags: WSTG
 
 #### 4.11.11 [Testing Web Messaging](4-Web_Application_Security_Testing/11-Client-side_Testing/11-Testing_Web_Messaging.md)
 
-#### 4.11.12 [Testing Browser Storage](4-Web_Application_Security_Testing/11-Client-side_Testing/12-Testing_Browser_Storage.md)
+#### 4.11.12 [Тестирование хранилищ браузера](4-Web_Application_Security_Testing/11-Client-side_Testing/12-Testing_Browser_Storage.md)
 
 #### 4.11.13 [Testing for Cross Site Script Inclusion](4-Web_Application_Security_Testing/11-Client-side_Testing/13-Testing_for_Cross_Site_Script_Inclusion.md)
 

@@ -7,13 +7,13 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing Browser Storage
+# Тестирование хранилищ браузера
 
 |ID          |
 |------------|
 |WSTG-CLNT-12|
 
-## Summary
+## Обзор
 
 Browsers provide the following client-side storage mechanisms for developers to store and retrieve data:
 
@@ -27,12 +27,12 @@ These storage mechanisms can be viewed and edited using the browser's developer 
 
 Note: While cache is also a form of storage it is covered in a [separate section](../04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md) covering its own peculiarities and concerns.
 
-## Test Objectives
+## Задачи тестирования
 
 - Determine whether the website is storing sensitive data in client-side storage.
 - The code handling of the storage objects should be examined for possibilities of injection attacks, such as utilizing unvalidated input or vulnerable libraries.
 
-## How to Test
+## Как тестировать
 
 ### Local Storage
 
