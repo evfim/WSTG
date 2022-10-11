@@ -7,101 +7,101 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Format String Injection
+# Тестирование инъекций в строке форматирования
 
 |ID          |
 |------------|
 |WSTG-INPV-13|
 
-## Summary
+## Обзор
 
-A format string is a null-terminated character sequence that also contains conversion specifiers interpreted or converted at runtime. If server-side code [concatenates a user's input with a format string](https://www.netsparker.com/blog/web-security/string-concatenation-format-string-vulnerabilities/), an attacker can append additional conversion specifiers to cause a runtime error, information disclosure, or buffer overflow.
+Строка форматирования — это последовательность символов, заканчивающаяся нулём (т.е. нуль-терминированная), которая также содержит спецификаторы преобразования, интерпретируемые или преобразуемые во время выполнения. Если код на стороне сервера [конкатенирует пользовательский ввод со строкой форматирования](https://www.netsparker.com/blog/web-security/string-concatenation-format-string-vulnerabilities/), злоумышленник может добавить дополнительные спецификаторы преобразования, чтобы вызвать ошибку во время выполнения, раскрытие информации или переполнение буфера.
 
-The worst case for format strings vulnerabilities occur in languages that don't check arguments and also include a `%n` specifier that writes to memory. These functions, if exploited by an attacker modifying a format string, could cause [information disclosure and code execution](https://www.veracode.com/security/format-string):
+Наихудший случай уязвимостей для строк форматирования возникает в языках, которые не проверяют аргументы, а также включают спецификатор `%n`, который пишет в память. Эти функции при их эксплуатации злоумышленником, изменяющим строку форматирования, могут привести к [раскрытию информации и выполнению кода](https://www.veracode.com/security/format-string):
 
-- C and C++ [printf](https://en.cppreference.com/w/c/io/fprintf) and similar methods fprintf, sprintf, snprintf
-- Perl [printf](https://perldoc.perl.org/functions/printf.html) and sprintf
+- C и C++: [printf](https://en.cppreference.com/w/c/io/fprintf) и похожие (fprintf, sprintf, snprintf)
+- Perl: [printf](https://perldoc.perl.org/functions/printf.html) и sprintf
 
-These format string functions cannot write to memory, but attackers can still cause information disclosure by changing format strings to output values the developers did not intend to send:
+Приведённые ниже функции форматирования строк не могут выполнять запись в память, но злоумышленники всё равно могут вызвать раскрытие информации, изменив строки форматирования на выходные значения, которые разработчики не собирались выводить:
 
-- Python 2.6 and 2.7 [str.format](https://docs.python.org/2/library/string.html) and Python 3 unicode [str.format](https://docs.python.org/3/library/stdtypes.html#str.format) can be modified by injecting strings that can point to [other variables](https://lucumr.pocoo.org/2016/12/29/careful-with-str-format/) in memory
+- Python 2.6 и 2.7: [str.format](https://docs.python.org/2/library/string.html) и в Python 3 unicode [str.format](https://docs.python.org/3/library/stdtypes.html#str.format) может быть изменён путём инъекции строк, которые могут указывать на [другие переменные](https://lucumr.pocoo.org/2016/12/29/careful-with-str-format/) в памяти.
 
-The following format string functions can cause runtime errors if the attacker adds conversion specifiers:
+Следующие функции строк форматирования могут вызывать ошибки во время выполнения, если злоумышленник добавляет спецификаторы преобразования:
 
-- Java [String.format](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html#format%28java.util.Locale%2Cjava.lang.String%2Cjava.lang.Object...%29) and [PrintStream.format](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/PrintStream.html#format%2528java.util.Locale%252Cjava.lang.String%252Cjava.lang.Object...%2529)
-- PHP [printf](https://www.php.net/manual/es/function.printf.php)
+- Java: [String.format](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html#format%28java.util.Locale%2Cjava.lang.String%2Cjava.lang.Object...%29) и [PrintStream.format](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/PrintStream.html#format%2528java.util.Locale%252Cjava.lang.String%252Cjava.lang.Object...%2529)
+- PHP: [printf](https://www.php.net/manual/ru/function.printf.php)
 
-The code pattern that causes a format string vulnerability is a call to a string format function that contains unsanitized user input. The following example shows how a debug `printf` could make a program vulnerable:
+Образец кода, вызывающий уязвимость строки форматирования, представляет собой вызов функции форматирования строки, которая содержит пользовательский ввод без нейтрализации. В следующем примере показано, как отладочная команда `printf` может сделать программу уязвимой:
 
-The example in C:
+Пример на Си:
 
 ```c
-char *userName = /* input from user controlled field */;
+char *userName = /* ввод из поля, контролируемого пользователем */;
 
 printf("DEBUG Current user: ");
-// Vulnerable debugging code
+// Уязвимый отладочный код
 printf(userName);
 ```
 
-The example in Java:
+Пример на Java:
 
 ```java
-final String userName = /* input from user controlled field */;
+final String userName = /* ввод из поля, контролируемого пользователем */;
 
 System.out.printf("DEBUG Current user: ");
-// Vulnerable code:
+// Уязвимый код:
 System.out.printf(userName);
 ```
 
-In this particular example, if the attacker set their `userName` to have one or more conversion specifiers, there would be unwanted behavior. The C example would [print out memory contents](https://www.defcon.org/images/defcon-18/dc-18-presentations/Haas/DEFCON-18-Haas-Adv-Format-String-Attacks.pdf) if `userName` contained `%p%p%p%p%p`, and it can corrupt memory contents if there is a `%n` in the string. In the Java example, a `username` containing any specifier that needs an input (including `%x` or `%s`) would cause the program to crash with `IllegalFormatException`. Although the examples are still subject to other problems, the vulnerability can be fixed by printf arguments of `printf("DEBUG Current user: %s", userName)`.
+В этом конкретном примере, если злоумышленник установит для своего `userName` один или несколько спецификаторов преобразования, это приведет к нежелательному поведению. Пример на Си [выведет на экран содержимое памяти](https://www.defcon.org/images/defcon-18/dc-18-presentations/Haas/DEFCON-18-Haas-Adv-Format-String-Attacks.pdf) если `userName` содержит `%p%p%p%p%p`, и может повредить содержимое памяти, если в строке есть `%n`. В примере на Java `username`, содержащее любой спецификатор, который требует ввода (включая `%x` или `%s`), приведёт к сбою программы с сообщением `IllegalFormatException`. Хотя приведённые выше примеры подвержены другим уязвимостям, уязвимость строки форматирования может быть устранена с помощью аргументов команды printf: `printf("DEBUG Current user: %s", userName)`.
 
-## Test Objectives
+## Задача тестирования
 
-- Assess whether injecting format string conversion specifiers into user-controlled fields causes undesired behavior from the application.
+- Оценить, не вызывает ли инъекция спецификаторов преобразования строк форматирования в контролируемые пользователем поля нежелательного поведения приложения.
 
-## How to Test
+## Как тестировать
 
-Tests include analysis of the code and injecting conversion specifiers as user input to the application under test.
+Тесты включают анализ кода и инъекцию спецификаторов преобразования в качестве пользовательского ввода в тестируемое приложение.
 
-### Static Analysis
+### Статический анализ
 
-Static analysis tools can find format string vulnerabilities in either the code or in binaries. Examples of tools include:
+Инструменты статического анализа могут находить уязвимости строк форматирования либо в коде, либо в бинарных файлах. Примеры инструментов включают:
 
-- C and C++: [Flawfinder](https://dwheeler.com/flawfinder/)
-- Java: FindSecurityBugs rule [FORMAT_STRING_MANIPULATION](https://find-sec-bugs.github.io/bugs.htm#FORMAT_STRING_MANIPULATION)
-- PHP: String formatter Analyzer in [phpsa](https://github.com/ovr/phpsa/blob/master/docs/05_Analyzers.md#function_string_formater)
+- C и C++: [Flawfinder](https://dwheeler.com/flawfinder/)
+- Java: правило FindSecurityBugs [FORMAT_STRING_MANIPULATION](https://find-sec-bugs.github.io/bugs.htm#FORMAT_STRING_MANIPULATION)
+- PHP: String formatter Analyzer в [phpsa](https://github.com/ovr/phpsa/blob/master/docs/05_Analyzers.md#function_string_formater)
 
-### Manual Code Inspection
+### Анализ кода вручную
 
-Static analysis may miss more subtle cases including format strings generated by complex code. To look for vulnerabilities manually in a codebase, a tester can look for all calls in the codebase that accept a format string and trace back to make sure untrusted input cannot change the format string.
+Статический анализ кода может пропустить более тонкие случаи, включая строки форматирования, сгенерированные сложным кодом. Чтобы вручную искать уязвимости в кодовой базе, тестировщик может просмотреть все вызовы, которые принимают строку форматирования, и выполнить трассировку, чтобы убедиться, что недоверенный ввод не может её изменить.
 
-### Conversion Specifier Injection
+### Инъекция спецификатора преобразования
 
-Testers can check at the unit test or full system test level by sending conversion specifiers in any string input. [Fuzz](https://owasp.org/www-community/Fuzzing) the program using all of the conversion specifiers for all languages the system under test uses. See the [OWASP Format string attack](https://owasp.org/www-community/attacks/Format_string_attack) page for possible inputs to use. If the test fails, the program will crash or display an unexpected output. If the test passes, the attempt to send a conversion specifier should be blocked, or the string should go through the system with no issues as with any other valid input.
+Тестировщики могут проверить на уровне модульного или комплексного теста, передавая спецификаторы преобразования в любую строку ввода. Проведите [фаззинг](https://owasp.org/www-community/Fuzzing), используя все спецификаторы преобразования для всех языков, которые использует тестируемая система. См. страницу [OWASP Атака строки форматирования](https://owasp.org/www-community/attacks/Format_string_attack) с возможными входными данными. Если тест завершится неудачей, программа выйдет из строя или отобразит неожиданный результат. Если тест пройден, попытка передать спецификатор преобразования должна быть заблокирована, иначе строка должна пройти через систему без проблем, как и любой другой допустимый ввод.
 
-The examples in the following subsections have a URL of this form:
+В следующих подразделах в качестве примера будут использоваться URL вида:
 
 `https://vulnerable_host/userinfo?username=x`
 
-- The user-controlled value is `x` (for the `username` parameter).
+- `x` — контролируемое пользователем значение (для параметра `username`).
 
-#### Manual Injection
+#### Ручная инъекция
 
-Testers can perform a manual test using a web browser or other web API debugging tools. Browse to the web application or site such that the query has conversion specifiers. Note that most conversion specifiers need [encoding](https://tools.ietf.org/html/rfc3986#section-2.1) if sent inside a URL because they contain special characters including `%` and `{`. The test can introduce a string of specifiers `%s%s%s%n` by browsing with the following URL:
+Тестировщики могут провести ручное тестирование с помощью web-браузера или других инструментов отладки web-API. Перейдите к web-приложению или сайту, чтобы запрос содержал спецификаторы преобразования. Обратите внимание, что большинству спецификаторов преобразования требуется [экранирование](https://tools.ietf.org/html/rfc3986#section-2.1), если они передаются внутри URL, поскольку они содержат специальные символы, включая `%` и `{`. В тесте можно ввести строку спецификаторов `%s%s%s%n`, перейдя по следующему URL:
 
 `https://vulnerable_host/userinfo?username=%25s%25s%25s%25n`
 
-If the web site is vulnerable, the browser or tool should receive an error, which may include a timeout or an HTTP return code 500.
+Если web-сайт уязвим, браузер или инструмент должны получить сообщение об ошибке, которое может включать тайм-аут или код статуса HTTP 500.
 
-The Java code returns the error
+Код на Java возвращает ошибку
 
 `java.util.MissingFormatArgumentException: Format specifier '%s'`
 
-Depending on the C implementation, the process may crash completely with `Segmentation Fault`.
+В зависимости от реализации языка Си процесс может завершиться сбоем из-за `Segmentation Fault`.
 
-#### Tool Assisted Fuzzing
+#### Инструментальный фаззинг
 
-Fuzzing tools including [wfuzz](https://github.com/xmendez/wfuzz) can automate injection tests. For wfuzz, start with a text file (fuzz.txt in this example) with one input per line:
+Инструменты для фаззинга, включая [wfuzz](https://github.com/xmendez/wfuzz), могут автоматизировать тесты инъекций. Для wfuzz начните с текстового файла (fuzz.txt в этом примере) с одним вводом на строку:
 
 fuzz.txt:
 
@@ -112,19 +112,19 @@ alice
 {event.__init__.__globals__[CONFIG][SECRET_KEY]}
 ```
 
-The `fuzz.txt` file contains the following:
+Файл `fuzz.txt ` содержит:
 
-- A valid input `alice` to verify the application can process a normal input
-- Two strings with C-like conversion specifiers
-- One Python conversion specifier to attempt to read global variables
+- Допустимые входные данные `alice` для проверки того, что приложение может обрабатывать обычный ввод.
+- Две строки с Си-подобными спецификаторами преобразования.
+- Один спецификатор преобразования Python для попытки чтения глобальных переменных.
 
-To send the fuzzing input file to the web application under test, use the following command:
+Чтобы передать входной файл фаззинга в тестируемое web-приложение, воспользуйтесь следующей командой:
 
 `wfuzz -c -z file,fuzz.txt,urlencode https://vulnerable_host/userinfo?username=FUZZ`
 
-In the above call, the `urlencode` argument enables the appropriate escaping for the strings and `FUZZ` (with the capital letters) tells the tool where to introduce the inputs.
+В приведённом выше вызове аргумент `urlencode` позволяет выполнить соответствующее экранирование строк, а `FUZZ` (заглавными буквами) указывает инструменту, куда вводить входные данные.
 
-An example output is as follows
+Пример вывода выглядит следующим образом:
 
 ```text
 ID           Response   Lines    Word     Chars       Payload
@@ -136,4 +136,4 @@ ID           Response   Lines    Word     Chars       Payload
 000000001:   200        0 L      1 W      5 Ch        "alice"
 ```
 
-The above result validates the application's weakness to the injection of C-like conversion specifiers `%s` and `%p`.
+Приведенный выше результат подтверждает уязвимость приложения к инъекции Си-подобных спецификаторов преобразования `%s` и `%p`.

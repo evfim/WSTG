@@ -15,9 +15,9 @@ tags: WSTG
 
 4.5.3 [Тестирование повышения привилегий](03-Testing_for_Privilege_Escalation.md)
 
-4.5.4 [Тестирование на наличие небезопасных прямых ссылок на объекты](04-Testing_for_Insecure_Direct_Object_References.md)
+4.5.4 [Тестирование небезопасных прямых ссылок на объекты](04-Testing_for_Insecure_Direct_Object_References.md)
 
-4.5.5 [Тестирование на наличие уязвимостей в OAuth](05-Testing_for_OAuth_Weaknesses.md)
+4.5.5 [Тестирование уязвимостей в OAuth](05-Testing_for_OAuth_Weaknesses.md)
 
 4.5.5.1 [Тестирование уязвимостей сервера авторизации OAuth](05.1-Testing_for_OAuth_Authorization_Server_Weaknesses.md)
 

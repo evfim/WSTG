@@ -7,10 +7,10 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Buffer Overflow
+# Тестирование переполнения буфера
 
 |ID          |
 |------------|
 |WSTG-INPV-13|
 
-This content has been removed
+Этот контент был удален

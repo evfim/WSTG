@@ -7,30 +7,30 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Host Header Injection
+# Тестирование инъекций в заголовке Host
 
 |ID          |
 |------------|
 |WSTG-INPV-17|
 
-## Summary
+## Обзор
 
-A web server commonly hosts several web applications on the same IP address, referring to each application via the virtual host. In an incoming HTTP request, web servers often dispatch the request to the target virtual host based on the value supplied in the Host header. Without proper validation of the header value, the attacker can supply invalid input to cause the web server to:
+Web-сервер обычно размещает несколько web-приложений на одном IP-адресе, обращаясь к каждому приложению через виртуальный хост. Во входящем HTTP-запросе web-серверы часто отправляют запрос целевому виртуальному хосту на основе значения, указанного в заголовке Host. Без надлежащей проверки значения заголовка злоумышленник может ввести неверные входные данные, чтобы заставить web-сервер:
 
-- Dispatch requests to the first virtual host on the list.
-- Perform a redirect to an attacker-controlled domain.
-- Perform web cache poisoning.
-- Manipulate password reset functionality.
-- Allow access to virtual hosts that were not intended to be externally accessible.
+- Отправлять запросы на первый виртуальный хост в списке.
+- Выполнять перенаправление на домен, контролируемый злоумышленником.
+- Проводить отравление web-кэша.
+- Манипулировать функцией сброса пароля.
+- Разрешать доступ к виртуальным хостам, которые не предназначены для внешнего доступа.
 
-## Test Objectives
+## Задачи тестирования
 
-- Assess if the Host header is being parsed dynamically in the application.
-- Bypass security controls that rely on the header.
+- Оценить, выполняется ли динамический парсинг заголовка Host в приложении.
+- Обойти меры защиты, которые полагаются на этот заголовок.
 
-## How to Test
+## Как тестировать
 
-Initial testing is as simple as supplying another domain (i.e. `attacker.com`) into the Host header field. It is how the web server processes the header value that dictates the impact. The attack is valid when the web server processes the input to send the request to an attacker-controlled host that resides at the supplied domain, and not to an internal virtual host that resides on the web server.
+Первоначальное тестирование — просто указать другой домен (например, `attacker.com`) в поле заголовка Host. Именно то, как web-сервер обрабатывает значение заголовка, определяет воздействие. Атака сработала, если web-сервер обрабатывает входные данные для отправки запроса на контролируемый злоумышленником хост, который находится в указанном домене, а не на внутренний виртуальный хост, который находится на web-сервере.
 
 ```http
 GET / HTTP/1.1
@@ -38,7 +38,7 @@ Host: www.attacker.com
 [...]
 ```
 
-In the simplest case, this may cause a 302 redirect to the supplied domain.
+В простейшем случае это может привести к перенаправлению на указанный домен.
 
 ```http
 HTTP/1.1 302 Found
@@ -47,11 +47,11 @@ Location: http://www.attacker.com/login.php
 
 ```
 
-Alternatively, the web server may send the request to the first virtual host on the list.
+В качестве альтернативы web-сервер может отправить запрос на первый виртуальный хост в списке.
 
-### X-Forwarded Host Header Bypass
+### Обход заголовка X-Forwarded-Host
 
-In the event that Host header injection is mitigated by checking for invalid input injected via the Host header, you can supply the value to the `X-Forwarded-Host` header.
+В случае, если инъекция заголовка Host компенсируется путём проверки недопустимых входных данных, введённых через заголовок Host, вы можете указать значение в заголовке `X-Forwarded-Host`.
 
 ```http
 GET / HTTP/1.1
@@ -60,7 +60,7 @@ X-Forwarded-Host: www.attacker.com
 [...]
 ```
 
-Potentially producing client-side output such as:
+Потенциально выдаст на стороне клиента что-то подобное:
 
 ```html
 [...]
@@ -68,11 +68,11 @@ Potentially producing client-side output such as:
 [...]
 ```
 
-Once again, this depends on how the web server processes the header value.
+Опять же, это зависит от того, как web-сервер обрабатывает значение заголовка.
 
-### Web Cache Poisoning
+### Отравление web-кэша
 
-Using this technique, an attacker can manipulate a web-cache to serve poisoned content to anyone who requests it. This relies on the ability to poison the caching proxy run by the application itself, CDNs, or other downstream providers. As a result, the victim will have no control over receiving the malicious content when requesting the vulnerable application.
+Используя этот метод, злоумышленник может манипулировать web-кэшем, чтобы предоставить заражённый контент всем, кто его запрашивает. Это зависит от способности отравлять кэширующий прокси, установленный на самом приложении, CDN или у других нижестоящих поставщиков. В результате жертва не сможет контролировать получение вредоносного контента при запросе уязвимого приложения.
 
 ```http
 GET / HTTP/1.1
@@ -80,7 +80,7 @@ Host: www.attacker.com
 [...]
 ```
 
-The following will be served from the web cache, when a victim visits the vulnerable application.
+Когда жертва посещает уязвимое приложение, ей из web-кэша будет выдано:
 
 ```html
 [...]
@@ -88,18 +88,18 @@ The following will be served from the web cache, when a victim visits the vulner
 [...]
 ```
 
-### Password Reset Poisoning
+### Отравление при сбросе пароля
 
-It is common for password reset functionality to include the Host header value when creating password reset links that use a generated secret token. If the application processes an attacker-controlled domain to create a password reset link, the victim may click on the link in the email and allow the attacker to obtain the reset token, thus resetting the victim's password.
+Обычно функция сброса пароля включает значение заголовка Host при создании ссылок для сброса пароля, использующих сгенерированный секретный токен. Если приложение обрабатывает контролируемый злоумышленником домен для создания ссылки для сброса пароля, жертва может перейти по ссылке в письме электронной почты и позволить злоумышленнику получить токен сброса, тем самым сбросив свой пароль.
 
-The example below shows a password reset link that is generated in PHP using the value of `$_SERVER['HTTP_HOST']`, which is set based on the contents of the HTTP Host header:
+В приведённом ниже примере показана ссылка для сброса пароля, которая генерируется в PHP с использованием значения `$_SERVER['HTTP_HOST']`, которое устанавливается на основе содержимого HTTP-заголовка Host:
 
 ```php
 $reset_url = "https://" . $_SERVER['HTTP_HOST'] . "/reset.php?token=" .$token;
-send_reset_email($email,$rset_url);
+send_reset_email($email,$reset_url);
 ```
 
-By making a HTTP request to the password reset page with a tampered Host header, we can modify where the URL points:
+Сделав HTTP-запрос на страницу сброса пароля с подделанным заголовком Host, мы можем изменить домен, на который указывает URL:
 
 ```http
 POST /request_password_reset.php HTTP/1.1
@@ -109,31 +109,31 @@ Host: www.attacker.com
 email=user@example.org
 ```
 
-The specified domain (`www.attacker.com`) will then be used in the reset link, which is emailed to the user. When the user clicks this link, the attacker can steal the token and compromise their account.
+Указанный домен (`www.attacker.com `) затем будет использоваться в ссылке сброса, которая отправляется пользователю по электронной почте. Когда пользователь переходит по этой ссылке, злоумышленник может украсть токен и скомпрометировать его учётную запись.
 
 ```text
-... Email snippet ...
+... фрагмент письма ...
 
-Click on the following link to reset your password:
+Перейдите по следующей ссылке, чтобы сбросить свой пароль:
 
 https://www.attacker.com/reset.php?token=12345
 
-... Email snippet ...
+... фрагмент письма ...
 ```
 
-### Accessing Private Virtual Hosts
+### Доступ к частным виртуальным хостам
 
-In some cases a server may have virtual hosts that are not intended to be externally accessible. This is most common with a [split-horizon](https://en.wikipedia.org/wiki/Split-horizon_DNS) DNS setup (where internal and external DNS servers return different records for the same domain).
+В некоторых случаях сервер может иметь виртуальные хосты, которые не предназначены для внешнего доступа. Чаще всего это происходит при настройке [split-horizon DNS](https://en.wikipedia.org/wiki/Split-horizon_DNS) (где внутренние и внешние DNS-серверы возвращают разные записи для одного и того же домена в зависимости от подсети источника запроса).
 
-For example, an organization may have a single webserver on their internal network, which hosts both their public website (on `www.example.org`) and their internal Intranet (on `intranet.example.org`, but that record only exists on the internal DNS server). Although it would not be possible to browse directly to `intranet.example.org` from outside the network (as the domain would not resolve), it may be possible to access to Intranet by making a request from outside with the following `Host` header:
+Например, у организации может быть один web-сервер во внутренней сети, на котором размещены как её общедоступный web-сайт (`www.example.org`), так и внутренняя сеть (`intranet.example.org`, но эта запись есть только во внутреннем DNS-сервере). Несмотря на то, что невозможно перейти непосредственно к `intranet.example.org` за периметром сети (поскольку домен не будет разрешён), можно получить доступ к внутренней сети, сделав запрос извне со следующим заголовком `Host`:
 
 ```http
 Host: intranet.example.org
 ```
 
-This could also be achieved by adding an entry for `intranet.example.org` to your hosts file with the public IP address of `www.example.org`, or by overriding DNS resolution in your testing tool.
+Этого также можно добиться, добавив запись для `intranet.example.org` в файл hosts с публичным IP-адресом `www.example.org`, или переопределив разрешения доменных имён DNS в вашем инструменте тестирования.
 
-## References
+## Ссылки
 
 - [What is a Host Header Attack?](https://www.acunetix.com/blog/articles/automated-detection-of-host-header-attacks/)
 - [Host Header Attack](https://www.briskinfosec.com/blogs/blogsdetail/Host-Header-Attack)

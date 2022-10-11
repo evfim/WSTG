@@ -15,9 +15,9 @@ tags: WSTG
 
 ## 2. [Введение](2-Introduction/)
 
-### 2.1 [Проект OWASP по тестированию](2-Introduction/README.md#The-OWASP-Testing-Project)
+### 2.1 [Проект OWASP по тестированию](2-Introduction/README.md#Проект-OWASP-по-тестированию)
 
-### 2.2 [Принципы тестирования](2-Introduction/README.md#Principles-of-Testing)
+### 2.2 [Принципы тестирования](2-Introduction/README.md#Принципы-тестирования)
 
 ### 2.3 [Методы тестирования](2-Introduction/README.md#Testing-Techniques-Explained)
 
@@ -149,9 +149,9 @@ tags: WSTG
 
 #### 4.5.3 [Тестирование повышения привилегий](4-Web_Application_Security_Testing/05-Authorization_Testing/03-Testing_for_Privilege_Escalation.md)
 
-#### 4.5.4 [Тестирование на наличие небезопасных прямых ссылок на объекты](4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References.md)
+#### 4.5.4 [Тестирование небезопасных прямых ссылок на объекты](4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References.md)
 
-#### 4.5.5 [Тестирование на наличие уязвимостей в OAuth](4-Web_Application_Security_Testing/05-Authorization_Testing/05-Testing_for_OAuth_Weaknesses.md)
+#### 4.5.5 [Тестирование уязвимостей в OAuth](4-Web_Application_Security_Testing/05-Authorization_Testing/05-Testing_for_OAuth_Weaknesses.md)
 
 ##### 4.5.5.1 [Тестирование уязвимостей сервера авторизации OAuth](4-Web_Application_Security_Testing/05-Authorization_Testing/05.1-Testing_for_OAuth_Authorization_Server_Weaknesses.md)
 
@@ -177,67 +177,67 @@ tags: WSTG
 
 #### 4.6.9 [Тестирование перехвата сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/09-Testing_for_Session_Hijacking.md)
 
-#### 4.6.10 [Тестирование JSON Web Token](4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens.md)
+#### 4.6.10 [Тестирование JWT](4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens.md)
 
 ### 4.7 [Тестирование контроля входных данных](4-Web_Application_Security_Testing/07-Input_Validation_Testing/README.md)
 
-#### 4.7.1 [Testing for Reflected Cross Site Scripting](4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting.md)
+#### 4.7.1 [Тестирование отражённых межсайтовых скриптов](4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting.md)
 
-#### 4.7.2 [Testing for Stored Cross Site Scripting](4-Web_Application_Security_Testing/07-Input_Validation_Testing/02-Testing_for_Stored_Cross_Site_Scripting.md)
+#### 4.7.2 [Тестирование хранимых межсайтовых скриптов](4-Web_Application_Security_Testing/07-Input_Validation_Testing/02-Testing_for_Stored_Cross_Site_Scripting.md)
 
-#### 4.7.3 [Testing for HTTP Verb Tampering](4-Web_Application_Security_Testing/07-Input_Validation_Testing/03-Testing_for_HTTP_Verb_Tampering.md)
+#### 4.7.3 [Тестирование фальсификации методов HTTP](4-Web_Application_Security_Testing/07-Input_Validation_Testing/03-Testing_for_HTTP_Verb_Tampering.md)
 
-#### 4.7.4 [Testing for HTTP Parameter Pollution](4-Web_Application_Security_Testing/07-Input_Validation_Testing/04-Testing_for_HTTP_Parameter_Pollution.md)
+#### 4.7.4 [Тестирование загрязнения параметров HTTP](4-Web_Application_Security_Testing/07-Input_Validation_Testing/04-Testing_for_HTTP_Parameter_Pollution.md)
 
-#### 4.7.5 [Testing for SQL Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md)
+#### 4.7.5 [Тестирование SQL-инъекций](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md)
 
-##### 4.7.5.1 [Testing for Oracle](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.1-Testing_for_Oracle.md)
+##### 4.7.5.1 [Тестирование Oracle](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.1-Testing_for_Oracle.md)
 
-##### 4.7.5.2 [Testing for MySQL](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.2-Testing_for_MySQL.md)
+##### 4.7.5.2 [Тестирование MySQL](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.2-Testing_for_MySQL.md)
 
-##### 4.7.5.3 [Testing for SQL Server](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.3-Testing_for_SQL_Server.md)
+##### 4.7.5.3 [Тестирование MS SQL Server](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.3-Testing_for_SQL_Server.md)
 
-##### 4.7.5.4 [Testing PostgreSQL](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.4-Testing_PostgreSQL.md)
+##### 4.7.5.4 [Тестирование PostgreSQL](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.4-Testing_PostgreSQL.md)
 
-##### 4.7.5.5 [Testing for MS Access](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.5-Testing_for_MS_Access.md)
+##### 4.7.5.5 [Тестирование MS Access](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.5-Testing_for_MS_Access.md)
 
-##### 4.7.5.6 [Testing for NoSQL Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.6-Testing_for_NoSQL_Injection.md)
+##### 4.7.5.6 [Тестирование NoSQL-инъекций](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.6-Testing_for_NoSQL_Injection.md)
 
-##### 4.7.5.7 [Testing for ORM Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.7-Testing_for_ORM_Injection.md)
+##### 4.7.5.7 [Тестирование ORM-инъекций](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.7-Testing_for_ORM_Injection.md)
 
-##### 4.7.5.8 [Testing for Client-side](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.8-Testing_for_Client-side.md)
+##### 4.7.5.8 [Тестирование на стороне клиента](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.8-Testing_for_Client-side.md)
 
-#### 4.7.6 [Testing for LDAP Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/06-Testing_for_LDAP_Injection.md)
+#### 4.7.6 [Тестирование LDAP-инъекций](4-Web_Application_Security_Testing/07-Input_Validation_Testing/06-Testing_for_LDAP_Injection.md)
 
-#### 4.7.7 [Testing for XML Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/07-Testing_for_XML_Injection.md)
+#### 4.7.7 [Тестирование XML-инъекций](4-Web_Application_Security_Testing/07-Input_Validation_Testing/07-Testing_for_XML_Injection.md)
 
-#### 4.7.8 [Testing for SSI Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/08-Testing_for_SSI_Injection.md)
+#### 4.7.8 [Тестирование SSI-инъекций](4-Web_Application_Security_Testing/07-Input_Validation_Testing/08-Testing_for_SSI_Injection.md)
 
-#### 4.7.9 [Testing for XPath Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/09-Testing_for_XPath_Injection.md)
+#### 4.7.9 [Тестирование XPath-инъекций](4-Web_Application_Security_Testing/07-Input_Validation_Testing/09-Testing_for_XPath_Injection.md)
 
-#### 4.7.10 [Testing for IMAP SMTP Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/10-Testing_for_IMAP_SMTP_Injection.md)
+#### 4.7.10 [Тестирование IMAP/SMTP-инъекций](4-Web_Application_Security_Testing/07-Input_Validation_Testing/10-Testing_for_IMAP_SMTP_Injection.md)
 
-#### 4.7.11 [Testing for Code Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/11-Testing_for_Code_Injection.md)
+#### 4.7.11 [Тестирование инъекции кода](4-Web_Application_Security_Testing/07-Input_Validation_Testing/11-Testing_for_Code_Injection.md)
 
-##### 4.7.11.1 [Testing for File Inclusion](4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_File_Inclusion.md)
+##### 4.7.11.1 [Тестирование включения файлов](4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_File_Inclusion.md)
 
-#### 4.7.12 [Testing for Command Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/12-Testing_for_Command_Injection.md)
+#### 4.7.12 [Тестирование инъекции команд ОС](4-Web_Application_Security_Testing/07-Input_Validation_Testing/12-Testing_for_Command_Injection.md)
 
-#### 4.7.13 [Testing for Format String Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/13-Testing_for_Format_String_Injection.md)
+#### 4.7.13 [Тестирование инъекций в строке форматирования](4-Web_Application_Security_Testing/07-Input_Validation_Testing/13-Testing_for_Format_String_Injection.md)
 
-#### 4.7.14 [Testing for Incubated Vulnerability](4-Web_Application_Security_Testing/07-Input_Validation_Testing/14-Testing_for_Incubated_Vulnerability.md)
+#### 4.7.14 [Тестирование инкубационных уязвимостей](4-Web_Application_Security_Testing/07-Input_Validation_Testing/14-Testing_for_Incubated_Vulnerability.md)
 
-#### 4.7.15 [Testing for HTTP Splitting Smuggling](4-Web_Application_Security_Testing/07-Input_Validation_Testing/15-Testing_for_HTTP_Splitting_Smuggling.md)
+#### 4.7.15 [Тестирование HTTP Splitting / Smuggling](4-Web_Application_Security_Testing/07-Input_Validation_Testing/15-Testing_for_HTTP_Splitting_Smuggling.md)
 
-#### 4.7.16 [Testing for HTTP Incoming Requests](4-Web_Application_Security_Testing/07-Input_Validation_Testing/16-Testing_for_HTTP_Incoming_Requests.md)
+#### 4.7.16 [Тестирование входящих HTTP-запросов](4-Web_Application_Security_Testing/07-Input_Validation_Testing/16-Testing_for_HTTP_Incoming_Requests.md)
 
-#### 4.7.17 [Testing for Host Header Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/17-Testing_for_Host_Header_Injection.md)
+#### 4.7.17 [Тестирование инъекций в заголовке Host](4-Web_Application_Security_Testing/07-Input_Validation_Testing/17-Testing_for_Host_Header_Injection.md)
 
-#### 4.7.18 [Testing for Server-side Template Injection](4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection.md)
+#### 4.7.18 [Тестирование инъекции шаблона на стороне сервера](4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection.md)
 
 #### 4.7.19 [Тестирование подделки запросов на стороне сервера](4-Web_Application_Security_Testing/07-Input_Validation_Testing/19-Testing_for_Server-Side_Request_Forgery.md)
 
-#### 4.7.20 [Testing for Mass Assignment](4-Web_Application_Security_Testing/07-Input_Validation_Testing/20-Testing_for_Mass_Assignment.md)
+#### 4.7.20 [Тестирование массового переназначения](4-Web_Application_Security_Testing/07-Input_Validation_Testing/20-Testing_for_Mass_Assignment.md)
 
 ### 4.8 [Обработка ошибок](4-Web_Application_Security_Testing/08-Testing_for_Error_Handling/README.md)
 
@@ -313,7 +313,7 @@ tags: WSTG
 
 #### 4.12.1 [Testing GraphQL](4-Web_Application_Security_Testing/12-API_Testing/01-Testing_GraphQL.md)
 
-## 5. [Reporting](5-Reporting/README.md)
+## 5. [Отчётность](5-Reporting/README.md)
 
 ### 5.1 [Reporting Structure](5-Reporting/01-Reporting_Structure.md)
 

@@ -7,19 +7,19 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Server-side Template Injection
+# Тестирование инъекции шаблона на стороне сервера
 
 |ID          |
 |------------|
 |WSTG-INPV-18|
 
-## Summary
+## Обзор
 
-Web applications commonly use server-side templating technologies (Jinja2, Twig, FreeMaker, etc.) to generate dynamic HTML responses. Server-side Template Injection vulnerabilities (SSTI) occur when user input is embedded in a template in an unsafe manner and results in remote code execution on the server. Any features that support advanced user-supplied markup may be vulnerable to SSTI including wiki-pages, reviews, marketing applications, CMS systems etc. Some template engines employ various mechanisms (eg. sandbox, allow listing, etc.) to protect against SSTI.
+Web-приложения для создания динамических HTML-страниц обычно используют технологии шаблонов на стороне сервера (Jinja2, Twig, FreeMaker и т.д.). Уязвимости инъекции шаблонов на стороне сервера (SSTI) возникают, когда пользовательский ввод встраивается в шаблон небезопасным образом и приводит к удалённому выполнению кода (RCE) на сервере. Любые функции, которые поддерживают расширенную пользовательскую разметку, могут быть уязвимы для SSTI, включая wiki-страницы, обзоры, маркетинговые приложения, CMS-системы и т.д. Некоторые шаблонизаторы для защиты от SSTI используют различные механизмы (например, песочницу, список разрешений и т.д.).
 
-### Example - Twig
+### Пример: Twig
 
-The following example is an excerpt from the [Extreme Vulnerable Web Application](https://github.com/s4n7h0/xvwa) project.
+Следующий пример представляет собой выдержку из проекта [Extreme Vulnerable Web Application](https://github.com/s4n7h0/xvwa):
 
 ```php
 public function getFilter($name)
@@ -34,14 +34,14 @@ public function getFilter($name)
 }
 ```
 
-In the getFilter function the `call_user_func($callback, $name)` is vulnerable to SSTI: the `name` parameter is fetched from the HTTP GET request and executed by the server:
+В функции getFilter `call_user_func($callback, $name)` уязвим к SSTI: параметр `name` извлекается из HTTP-запроса GET и выполняется сервером:
 
 ![SSTI XVWA Example](images/SSTI_XVWA.jpeg)\
-*Figure 4.7.18-1: SSTI XVWA Example*
+*Рисунок 4.7.18-1: Пример SSTI в XVWA*
 
-### Example - Flask/Jinja2
+### Пример: Flask/Jinja2
 
-The following example uses Flask and Jinja2 templating engine. The `page` function accepts a 'name' parameter from an HTTP GET request and renders an HTML response with the `name` variable content:
+В следующем примере используется шаблонизатор Jinja2 из Flask. Функция `page` принимает параметр `name` из HTTP-запроса GET и отображает HTML-страницу с содержимым переменной `name`:
 
 ```python
 @app.route("/page")
@@ -51,28 +51,28 @@ def page():
     return output
 ```
 
-This code snippet is vulnerable to XSS but it is also vulnerable to SSTI. Using the following as a payload in the `name` parameter:
+Этот фрагмент кода уязвим для XSS, но также уязвим для SSTI. Используем в качестве полезной нагрузки в параметре `name`:
 
 ```bash
 $ curl -g 'http://www.target.com/page?name={{7*7}}'
 Hello 49!
 ```
 
-## Test Objectives
+## Задачи тестирования
 
-- Detect template injection vulnerability points.
-- Identify the templating engine.
-- Build the exploit.
+- Найти уязвимые точки для инъекции шаблонов.
+- Идентифицировать используемый шаблонизатор.
+- Создать эксплойт.
 
-## How to Test
+## Как тестировать
 
-SSTI vulnerabilities exist either in text or code context. In plaintext context users allowed to use freeform 'text' with direct HTML code. In code context the user input may also be placed within a template statement (eg. in a variable name)
+Уязвимости SSTI существуют в контексте текста или кода. В контексте простого текста пользователям разрешено использовать «текст» произвольной формы в HTML-разметке. В контексте кода пользовательский ввод также может быть помещён в оператор шаблона (например, в имя переменной).
 
-### Identify Template Injection Vulnerability
+### Выявление уязвимости для инъекции шаблона
 
-The first step in testing SSTI in plaintext context is to construct common template expressions used by various template engines as payloads and monitor server responses to identify which template expression was executed by the server.
+Первым шагом в тестировании SSTI в контексте простого текста является построение распространённых шаблонных выражений, используемых различными шаблонизаторами в качестве полезных нагрузок, и отслеживание ответов сервера, чтобы определить, какое шаблонное выражение было выполнено сервером.
 
-Common template expression examples:
+Распространённые примеры шаблонных выражений:
 
 ```text
 a{{bar}}b
@@ -80,51 +80,51 @@ a{{7*7}}
 {var} ${var} {{var}} <%var%> [% var %]
 ```
 
-In this step an extensive [template expression test strings/payloads list](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection) is recommended.
+На данном этапе рекомендуется использовать [обширный список тестовых строк/полезных нагрузок шаблонных  выражений](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection).
 
-Testing for SSTI in code context is slightly different. First, the tester constructs the request that result either blank or error server responses. In the example below the HTTP GET parameter is inserted info the variable `personal_greeting` in a template statement:
+Тестирование SSTI в контексте кода немного отличается. Во-первых, тестировщик формирует запрос, который приводит либо к пустым ответам, либо к ответам с ошибками. В приведённом ниже примере параметр HTTP GET вставляется в переменную `personal_greeting` в операторе шаблона:
 
 ```text
 personal_greeting=username
 Hello user01
 ```
 
-Using the following payload - the server response is blank "Hello":
+Используя следующую полезную нагрузку — ответ сервера — чистое "Hello":
 
 ```text
 personal_greeting=username<tag>
 Hello
 ```
 
-In the next step is to break out of the template statement and injecting HTML tag after it using the following payload
+Следующим шагом является выход из оператора шаблона и вставка HTML-тега после него с использованием следующей полезной нагрузки.
 
 ```text
 personal_greeting=username}}<tag>
 Hello user01 <tag>
 ```
 
-### Identify the Templating Engine
+### Идентификация шаблонизатора
 
-Based on the information from the previous step now the tester has to identify which template engine is used by supplying various template expressions. Based on the server responses the tester deduces the template engine used. This manual approach is discussed in greater detail in [this](https://portswigger.net/blog/server-side-template-injection?#Identify) PortSwigger article. To automate the identification of the SSTI vulnerability and the templating engine various tools are available including [Tplmap](https://github.com/epinna/tplmap) or the [Backslash Powered Scanner Burp Suite extension](https://github.com/PortSwigger/backslash-powered-scanner).
+Основываясь на информации, полученной на предыдущем шаге, теперь тестировщик должен определить, какой шаблонизатор используется, подставляя различные шаблонные выражения. На основе ответов сервера тестировщик делает вывод об используемом шаблонизаторе. Этот ручной подход более подробно обсуждается в [статье](https://portswigger.net/blog/server-side-template-injection?#Identify) на PortSwigger. Для автоматизации выявления уязвимости SSTI и механизма шаблонов доступны различные инструменты, включая [Tplmap](https://github.com/epinna/tplmap) или [расширение сканера Burp Suite с поддержкой обратной косой черты](https://github.com/PortSwigger/backslash-powered-scanner).
 
-### Build the RCE Exploit
+### Создание эксплойта RCE
 
-The main goal in this step is to identify to gain further control on the server with an RCE exploit by studying the template documentation and research. Key areas of interest are:
+Основная цель на этом этапе — определить, как получить дальнейший контроль над сервером с эксплойтом RCE, изучив документацию по шаблону и проведя исследования. Ключевые области интереса:
 
-- **For template authors** sections covering basic syntax.
-- **Security considerations** sections.
-- Lists of built-in methods, functions, filters, and variables.
-- Lists of extensions/plugins.
+- **Для авторов шаблонов** — разделы, посвященные основному синтаксису.
+- Разделы, посвященные **вопросам безопасности**.
+- Списки встроенных методов, функций, фильтров и переменных.
+- Списки расширений/плагинов.
 
-The tester can also identify what other objects, methods and properties can be exposed by focusing on the `self` object. If the `self` object is not available and the documentation does not reveal the technical details, a brute force of the variable name is recommended. Once the object is identified the next step is to loop through the object to identify all the methods, properties and attributes that are accessible through the template engine. This could lead to other kinds of security findings including privilege escalations, information disclosure about application passwords, API keys, configurations and environment variables, etc.
+Тестировщик также может определить, какие другие объекты, методы и свойства могут быть раскрыты, сосредоточившись на объекте `self`. Если объект `self` недоступен и документация не раскрывает технических деталей, рекомендуется использовать перебор по имени переменной. Как только объект идентифицирован, следующим шагом является анализ объекта, чтобы определить все его методы, свойства и атрибуты, доступные через шаблонизатор. Это может привести к выявлению других видов нарушений безопасности, включая повышение привилегий, раскрытие информации о паролях приложений, API-ключах, конфигурациях, переменных среды и т.д.
 
-## Tools
+## Инструменты
 
 - [Tplmap](https://github.com/epinna/tplmap)
-- [Backslash Powered Scanner Burp Suite extension](https://github.com/PortSwigger/backslash-powered-scanner)
-- [Template expression test strings/payloads list](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection)
+- [Расширение сканера Burp Suite с поддержкой обратной косой черты](https://github.com/PortSwigger/backslash-powered-scanner)
+- [Тестовые строки шаблонных выражений / список полезных нагрузок](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection)
 
-## References
+## Ссылки
 
 - [James Kettle: Server-Side Template Injection:RCE for the modern webapp (whitepaper)](https://portswigger.net/kb/papers/serversidetemplateinjection.pdf)
 - [Server-Side Template Injection](https://portswigger.net/blog/server-side-template-injection)

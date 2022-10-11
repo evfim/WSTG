@@ -7,47 +7,47 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Command Injection
+# Тестирование инъекции команд ОС
 
 |ID          |
 |------------|
 |WSTG-INPV-12|
 
-## Summary
+## Обзор
 
-This article describes how to test an application for OS command injection. The tester will try to inject an OS command through an HTTP request to the application.
+В этой статье описывается, как протестировать приложение для инъекции команд операционной системы (ОС). Тестировщик попытается ввести команду ОС через HTTP-запрос к приложению.
 
-OS command injection is a technique used via a web interface in order to execute OS commands on a web server. The user supplies operating system commands through a web interface in order to execute OS commands. Any web interface that is not properly sanitized is subject to this exploit. With the ability to execute OS commands, the user can upload malicious programs or even obtain passwords. OS command injection is preventable when security is emphasized during the design and development of applications.
+Инъекции команд ОС — это метод, используемый через web-интерфейс для выполнения команд ОС на web-сервере. Пользователь вводит команды операционной системе через web-интерфейс для их выполнения ОС. Этой уязвимости подвержен любой web-интерфейс, который не нейтрализует ввод должным образом. Имея возможность выполнять команды ОС, пользователь может загружать вредоносные программы или даже получать пароли. Инъекции команд ОС можно предотвратить, если при проектировании и разработке приложений уделять внимание безопасности.
 
-## Test Objectives
+## Задача тестирования
 
-- Identify and assess the command injection points.
+- Найти точки инъекции команд и оценить их последствия.
 
-## How to Test
+## Как тестировать
 
-When viewing a file in a web application, the filename is often shown in the URL. Perl allows piping data from a process into an open statement. The user can simply append the Pipe symbol `|` onto the end of the filename.
+При просмотре файла в web-приложении имя файла часто отображается в URL-адресе. Perl позволяет передавать данные из процесса в операторе open. Пользователь может просто добавить символ конвейера `|` в конец имени файла.
 
-Example URL before alteration:
+Пример URL до изменения:
 
 `http://sensitive/cgi-bin/userData.pl?doc=user1.txt`
 
-Example URL modified:
+URL после изменения:
 
 `http://sensitive/cgi-bin/userData.pl?doc=/bin/ls|`
 
-This will execute the command `/bin/ls`.
+Он выполнит команду `/bin/ls`.
 
-Appending a semicolon to the end of a URL for a .PHP page followed by an operating system command, will execute the command. `%3B` is URL encoded and decodes to semicolon
+Добавление точки с запятой в конец URL страницы .PHP, за которой следует команда операционной системы, приведёт к выполнению этой команды. `%3B` в кодировке URL декодируется в точку с запятой.
 
-Example:
+Пример:
 
 `http://sensitive/something.php?dir=%3Bcat%20/etc/passwd`
 
-### Example
+### Пример
 
-Consider the case of an application that contains a set of documents that you can browse from the Internet. If you fire up a personal proxy (such as ZAP or Burp Suite), you can obtain a POST HTTP like the following (`http://www.example.com/public/doc`):
+Рассмотрим случай приложения, содержащего набор документов, которые вы можете просматривать в Интернете. Если вы запустите HTTP-прокси (например, ZAP или Burp Suite), то сможете увидеть POST-запрос, показанный ниже. (`http://www.example.com/public/doc`):
 
-```txt
+```http
 POST /public/doc HTTP/1.1
 Host: www.example.com
 [...]
@@ -60,9 +60,9 @@ Content-length: 33
 Doc=Doc1.pdf
 ```
 
-In this post request, we notice how the application retrieves the public documentation. Now we can test if it is possible to add an operating system command to inject in the POST HTTP. Try the following (`http://www.example.com/public/doc`):
+В этом запросе мы замечаем, как приложение извлекает общедоступный документ Doc1.pdf. Теперь мы можем проверить, можно ли добавить команду операционной системы для инъекции в POST-запрос. Попробуйте следующее (`http://www.example.com/public/doc`):
 
-```txt
+```http
 POST /public/doc HTTP/1.1
 Host: www.example.com
 [...]
@@ -75,7 +75,7 @@ Content-length: 33
 Doc=Doc1.pdf+|+Dir c:\
 ```
 
-If the application doesn't validate the request, we can obtain the following result:
+Если приложение не проверяет запрос, мы можем получить следующий результат:
 
 ```txt
     Exec Results for 'cmd.exe /c type "C:\httpd\public\doc\"Doc=Doc1.pdf+|+Dir c:\'
@@ -111,24 +111,24 @@ If the application doesn't validate the request, we can obtain the following res
                                 Return code: 0
 ```
 
-In this case, we have successfully performed an OS injection attack.
+В данном случае мы успешно провели атаку с инъекцией команд операционной системы.
 
-## Special Characters for Command Injection
+## Специальные символы для инъекции команд
 
-The following special character can be used for command injection such as `|` `;` `&` `$` `>` `<` `'` `!`
+Для инъекции команд могут использоваться, например, следующие специальные символы `|` `;` `&` `$` `>` `<` `'` `!`:
 
-- `cmd1|cmd2` : Uses of `|` will make command 2 to be executed whether command 1 execution is successful or not.
-- `cmd1;cmd2` : Uses of `;` will make command 2 to be executed whether command 1 execution is successful or not.
-- `cmd1||cmd2` : Command 2 will only be executed if command 1 execution fails.
-- `cmd1&&cmd2` : Command 2 will only be executed if command 1 execution succeeds.
-- `$(cmd)` : For example, `echo $(whoami)` or `$(touch test.sh; echo 'ls' > test.sh)`
-- `cmd` : It's used to execute a specific command. For example, `whoami`
+- `cmd1|cmd2` : использование `|` приведёт к выполнению `cmd2` независимо от того, будет ли выполнение `cmd1` успешным или нет;
+- `cmd1;cmd2` : использование `;` заставит выполняться `cmd2` независимо от того, выполнена `cmd1` успешно или нет;
+- `cmd1||cmd2` : `cmd2` будет выполнена только в том случае, если выполнение `cmd1` завершится неудачей;
+- `cmd1&&cmd2` : `cmd2` будет выполнена только в том случае, если выполнение `cmd1` завершится успешно;
+- `$(cmd)` : например, `echo $(whoami)` или `$(touch test.sh; echo 'ls' > test.sh)`;
+- `cmd` : используется для выполнения определённой команды. Например, `whoami`
 - `>(cmd)`: `>(ls)`
 - `<(cmd)`: `<(ls)`
 
-## Code Review Dangerous API
+## Анализ кода в небезопасных API
 
-Be aware of the uses of following API as it may introduce the command injection risks.
+Помните об использовании следующих API, так как это может привести к риску инъекций команд ОС.
 
 ### Java
 
@@ -157,27 +157,27 @@ Be aware of the uses of following API as it may introduce the command injection 
 - `proc_open`
 - `eval`
 
-## Remediation
+## Как исправить
 
-### Sanitization
+### Нейтрализация
 
-The URL and form data needs to be sanitized for invalid characters. A deny list of characters is an option but it may be difficult to think of all of the characters to validate against. Also there may be some that were not discovered as of yet. An allow list containing only allowable characters or command list should be created to validate the user input. Characters that were missed, as well as undiscovered threats, should be eliminated by this list.
+URL и данные http-форм необходимо нейтрализовывать от недопустимых символов. Как вариант - список запрещённых символов, но заранее трудно предугадать все возможные символы для контроля. Также могут появляться какие-то символы, которые ещё не обнаружены. Для контроля пользовательского ввода следует создать список разрешённых символов, содержащий только допустимые, или список команд. Пропущенные символы, а также необнаруженные угрозы должны быть исключены из этого списка.
 
-General deny list to be included for command injection can be `|` `;` `&` `$` `>` `<` `'` `\` `!` `>>` `#`
+Общий список запрещённых символов, который должен быть включен для предотвращения инъекции команд ОС, может быть таким: `|` `;` `&` `$` `>` `<` `'` `\` `!` `>>` `#`
 
-Escape or filter special characters for windows,   `(` `)` `<` `>` `&` `*` `‘` `|` `=` `?` `;` `[` `]` `^` `~` `!` `.` `"` `%` `@` `/` `\` `:` `+` `,`  ``` ` ```
-Escape or filter special characters for Linux, `{` `}` `(` `)` `>` `<` `&` `*` `‘` `|` `=` `?` `;` `[` `]` `$` `–` `#` `~` `!` `.` `"` `%`  `/` `\` `:` `+` `,` ``` ` ```
+Экранируйте или фильтруйте следующие специальные символы для Windows:   `(` `)` `<` `>` `&` `*` `‘` `|` `=` `?` `;` `[` `]` `^` `~` `!` `.` `"` `%` `@` `/` `\` `:` `+` `,`  ``` ` ```
+Экранируйте или фильтруйте следующие специальные символы для Linux, `{` `}` `(` `)` `>` `<` `&` `*` `‘` `|` `=` `?` `;` `[` `]` `$` `–` `#` `~` `!` `.` `"` `%`  `/` `\` `:` `+` `,` ``` ` ```
 
-### Permissions
+### Разрешения
 
-The web application and its components should be running under strict permissions that do not allow operating system command execution. Try to verify all this information to test from a gray-box testing point of view.
+Web-приложение и его компоненты должны работать со строгими ограничениями прав, не позволяющими выполнять команды операционной системы. Попробуйте проверить всю эту информацию, чтобы протестировать её с точки зрения серого ящика.
 
-## Tools
+## Инструменты
 
 - OWASP [WebGoat](https://owasp.org/www-project-webgoat/)
 - [Commix](https://github.com/commixproject/commix)
 
-## References
+## Ссылки
 
 - [Penetration Testing for Web Applications (Part Two)](https://www.symantec.com/connect/articles/penetration-testing-web-applications-part-two)
 - [OS Commanding](http://projects.webappsec.org/w/page/13246950/OS%20Commanding)

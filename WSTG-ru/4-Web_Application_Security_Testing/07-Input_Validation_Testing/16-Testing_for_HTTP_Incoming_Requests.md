@@ -7,67 +7,67 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for HTTP Incoming Requests
+# Тестирование входящих HTTP-запросов
 
 |ID          |
 |------------|
 |WSTG-INPV-16|
 
-## Summary
+## Обзор
 
-This section describes how to monitor all incoming/outgoing HTTP requests on both client-side or server-side. The purpose of this testing is to verify if there is unnecessary or suspicious HTTP request sending in the background.
+В этом разделе описывается, как отслеживать все входящие/исходящие HTTP-запросы как на стороне клиента, так и на стороне сервера. Целью этого тестирования является проверка наличия ненужных или подозрительных HTTP-запросов, отправляемых в фоновом режиме.
 
-Most of Web security testing tools (i.e. AppScan, BurpSuite, ZAP) act as HTTP Proxy. This will require changes of proxy on client-side application or browser. The testing techniques listed below is primary focused on how we can monitor HTTP requests without changes of client-side which will be more close to production usage scenario.
+Большинство инструментов тестирования безопасности web-приложений (например, AppScan, BurpSuite, ZAP) действуют как HTTP-proxy. Это требует смены прокси в клиентском приложении или браузере. Методы тестирования, перечисленные ниже, в основном сосредоточены на том, как отслеживать HTTP-запросы без изменений на стороне клиента, что наиболее близко к сценарию промышленной эксплуатации.
 
-## Test Objectives
+## Задачи тестирования
 
-- Monitor all incoming and outgoing HTTP requests to the Web Server to inspect any suspicious requests.
-- Monitor HTTP traffic without changes of end user Browser proxy or client-side application.
+- Отслеживать все входящие и исходящие HTTP-запросы к web-серверу, чтобы проверять подозрительные запросы.
+- Отслеживать HTTP-трафик без изменений прокси-сервера браузера конечного пользователя или клиентского приложения.
 
-## How to Test
+## Как тестировать
 
-### Reverse Proxy
+### Обратный прокси
 
-There is situation that we would like to monitor all HTTP incoming requests on web server but we can't change configuration on the browser or application client-side. In this scenario, we can setup a reverse proxy on web server end to monitor all incoming/outgoing requests on web server.
+Бывают ситуации, когда мы хотели бы отслеживать все входящие HTTP-запросы на web-сервере, но не можем изменять конфигурацию со стороны браузера или приложения. В этом случае мы можем настроить обратный прокси со стороны web-сервера, чтобы отслеживать все входящие/исходящие запросы на web-сервере.
 
-For windows platform, Fiddler is recommended. It provides not only monitor but can also edit/reply the HTTP requests. Refer to [this reference for how to configure Fiddler as reverse Proxy](http://docs.telerik.com/fiddler/Configure-Fiddler/Tasks/UseFiddlerAsReverseProxy)
+Для платформы Windows мы рекомендуем Fiddler. Он обеспечивает не только мониторинг, но и позволяет редактировать/отвечать на HTTP-запросы. Перейдите по [этой ссылке, чтобы узнать, как настроить Fiddler в качестве обратного прокси](http://docs.telerik.com/fiddler/Configure-Fiddler/Tasks/UseFiddlerAsReverseProxy).
 
-For Linux platform, Charles Web Debugging Proxy may be used.
+Для платформы Linux можно использовать [Charles Web Debugging Proxy](https://www.charlesproxy.com/).
 
-The testing steps:
+Этапы тестирования:
 
-1. Install Fiddler or Charles on Web Server
-2. Configure the Fiddler or Charles as Reverse Proxy
-3. Capture the HTTP traffic
-4. Inspect HTTP traffic
-5. Modify HTTP requests and replay the modified requests for testing
+1. Установите Fiddler или Charles на web-сервер.
+2. Настройте Fiddler или Charles как обратный прокси.
+3. Перехватите HTTP-трафик.
+4. Изучите HTTP-трафик.
+5. Для тестирования измените HTTP-запрос и воспроизведите изменённый.
 
-### Port Forwarding
+### Перенаправление портов
 
-Port forwarding is another way to allow us intercept HTTP requests without changes of client-side. You can also use Charles as a SOCKS proxy to act as port forwarding or uses of Port Forwarding tools. It will allow us to forward all coming client-side captured traffic to web server port.
+Перенаправление портов — ещё один способ, позволяющий перехватывать HTTP-запросы без изменений на стороне клиента. Также можно использовать Charles в качестве прокси-сервера SOCKS для перенаправления портов или инструменты Port Forwarding. Это позволит перенаправлять весь входящий захваченный трафик на стороне клиента на порт web-сервера.
 
-The testing flow will be:
+Этапы тестирования:
 
-1. Install the Charles or port forwarding on another machine or web Server
-2. Configure the Charles as Socks proxy as port forwarding.
+1. Установите Charles или перенаправление портов на другой компьютер или web-сервер.
+2. Настройте Charles в качестве Socks-прокси для перенаправления портов.
 
-### TCP-level Network Traffic Capture
+### Захват сетевого трафика на уровне TCP
 
-This technique monitor all the network traffic at TCP-level. TCPDump or WireShark tools can be used. However, these tools don't allow us edit the captured traffic and send modified HTTP requests for testing. To replay the captured traffic (PCAP) packets, Ostinato can be used.
+Этот метод отслеживает весь сетевой трафик на уровне TCP. Можно использовать инструменты TCPDump или WireShark. Однако эти инструменты не позволяют редактировать захваченный трафик и отправлять изменённые HTTP-запросы для тестирования. Для воспроизведения захваченных пакетов трафика (PCAP) можно использовать Ostinato.
 
-The testing steps will be:
+Этапы тестирования:
 
-1. Activate TCPDump or WireShark on Web Server to capture network traffic
-2. Monitor the captured files (PCAP)
-3. Edit PCAP files by Ostinato tool based on need
-4. Reply the HTTP requests
+1. Активируйте TCPDump или WireShark на web-сервере для захвата сетевого трафика.
+2. Исследуйте захваченные файлы (PCAP).
+3. Редактируйте файлы PCAP с помощью инструмента Ostinato при необходимости.
+4. Отвечайте на HTTP-запросы.
 
-Fiddler or Charles are recommended since these tools can capture HTTP traffic and also easily edit/reply the modified HTTP requests. In addition, if the web traffic is HTTPS, the wireshark will need to import the web server private key to inspect the HTTPS message body. Otherwise, the HTTPS message body of the captured traffic will all be encrypted.
+Рекомендуется использовать Fiddler или Charles, поскольку эти инструменты могут перехватывать HTTP-трафик, а также легко редактировать/отвечать на изменённые HTTP-запросы. Кроме того, если web-трафик является HTTPS, для Wireshark потребуется импортировать закрытый ключ web-сервера для проверки тела HTTP-сообщения. В противном случае тело HTTP-сообщения захваченного трафика будет зашифровано.
 
-## Tools
+## Инструменты
 
 - [Fiddler](https://www.telerik.com/fiddler/)
-- [TCPProxy](http://grinder.sourceforge.net/g3/tcpproxy.html)
+- [TCPProxy](https://cossme.github.io/grinder/guide/tcpproxy.html)
 - [Charles Web Debugging Proxy](https://www.charlesproxy.com/)
 - [WireShark](https://www.wireshark.org/)
 - [PowerEdit-Pcap](https://sourceforge.net/projects/powereditpcap/)
@@ -75,7 +75,7 @@ Fiddler or Charles are recommended since these tools can capture HTTP traffic an
 - [replayproxy](https://github.com/sparrowt/replayproxy)
 - [Ostinato](https://ostinato.org/)
 
-## References
+## Ссылки
 
 - [Charles Web Debugging Proxy](https://www.charlesproxy.com/)
 - [Fiddler](https://www.telerik.com/fiddler/)

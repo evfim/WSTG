@@ -7,77 +7,77 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for SSI Injection
+# Тестирование SSI-инъекций
 
 |ID          |
 |------------|
 |WSTG-INPV-08|
 
-## Summary
+## Обзор
 
-Web servers usually give developers the ability to add small pieces of dynamic code inside static HTML pages, without having to deal with full-fledged server-side or client-side languages. This feature is provided by [Server-Side Includes](https://owasp.org/www-community/attacks/Server-Side_Includes_%28SSI%29_Injection)(SSI).
+Web-серверы обычно дают разработчикам возможность добавлять небольшие фрагменты динамического кода внутрь статичных HTML-страниц без необходимости иметь дело с полноценными серверными или клиентскими языками. Эта функция предоставляется включениями на стороне сервера (англ.: [Server-Side Includes](https://owasp.org/www-community/attacks/Server-Side_Includes_%28SSI%29_Injection), SSI).
 
-Server-Side Includes are directives that the web server parses before serving the page to the user. They represent an alternative to writing CGI programs or embedding code using server-side scripting languages, when there's only need to perform very simple tasks. Common SSI implementations provide directives (commands) to include external files, to set and print web server CGI environment variables, or to execute external CGI scripts or system commands.
+Включения на стороне сервера — это директивы, которые web-сервер анализирует перед отправкой страницы пользователю. Они представляют собой альтернативу написанию [CGI](https://ru.wikipedia.org/wiki/CGI)-программ или встраиванию кода с использованием серверных скриптовых языков, когда требуется выполнять только очень простые задачи. Распространённые реализации SSI предоставляют собой директивы (команды) для включения внешних файлов, для установки и печати переменных среды CGI web-сервера или для выполнения внешних CGI-скриптов или команд операционной системы.
 
-SSI can lead to a Remote Command Execution (RCE), however most webservers have the `exec` directive disabled by default.
+SSI может привести к удалённому выполнению команд (RCE), однако на большинстве web-серверов директива `exec` по умолчанию отключена.
 
-This is a vulnerability very similar to a classical scripting language injection vulnerability. One mitigation is that the web server needs to be configured to allow SSI. On the other hand, SSI injection vulnerabilities are often simpler to exploit, since SSI directives are easy to understand and, at the same time, quite powerful, e.g., they can output the content of files and execute system commands.
+Это уязвимость, очень похожая на классическую уязвимость инъекции скриптового языка. Одним из смягчающих факторов является то, что web-сервер должен быть настроен для разрешения SSI. С другой стороны, уязвимости для SSI-инъекций часто проще эксплуатировать, поскольку директивы SSI просты для понимания и в то же время достаточно мощны, например, они могут выводить содержимое файлов и выполнять системные команды.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify SSI injection points.
-- Assess the severity of the injection.
+- Найти точки для инъекции SSI.
+- Оценить последствия от инъекции.
 
-## How to Test
+## Как тестировать
 
-To test for exploitable SSI, inject SSI directives as user input. If SSI are enabled and user input validation has not been properly implemented, the server will execute the directive. This is very similar to a classical scripting language injection vulnerability in that it occurs when user input is not properly validated and sanitized.
+Чтобы проверить, можно ли эксплуатировать SSI, введите директивы SSI в качестве пользовательского ввода. Если SSI включен и проверка пользовательского ввода должным образом не реализована, сервер выполнит директиву. Это очень похоже на классическую уязвимость при инъекции скриптового языка в том смысле, что она возникает, когда пользовательский ввод должным образом не проверяется и не нейтрализуется.
 
-First determine if the web server supports SSI directives. Often, the answer is yes, as SSI support is quite common. To determine if SSI directives are supported, discover the type of web server that the target is running using information gathering techniques (see [Fingerprint Web Server](../01-Information_Gathering/02-Fingerprint_Web_Server.md)). If you have access to the code, determine if SSI directives are used by searching through the webserver configuration files for specific keywords.
+Сначала определите, поддерживает ли web-сервер директивы SSI. Часто ответ положительный, так как поддержка SSI довольно распространена. Чтобы определить, поддерживаются ли директивы SSI, определите тип web-сервера, на котором работает цель, используя методы сбора информации (см. [Определение web-сервера](../01-Information_Gathering/02-Fingerprint_Web_Server.md)). Если у вас есть доступ к коду, определите, используются ли директивы SSI, выполнив поиск в файлах конфигурации web-сервера по определённым ключевым словам.
 
-Another way of verifying that SSI directives are enabled is by checking for pages with the `.shtml` extension, which is associated with SSI directives. The use of the `.shtml` extension is not mandatory, so not having found any `.shtml` files doesn't necessarily mean that the target is not vulnerable to SSI injection attacks.
+Другой способ убедиться, включены ли директивы SSI, — проверить наличие страниц с расширением `.shtml`, которое связано с директивами SSI. Использование расширения `.shtml` не является обязательным, поэтому отсутствие файлов `.shtml` не обязательно означает, что цель не уязвима для атак с SSI.
 
-The next step is determining all the possible user input vectors and testing to see if the SSI injection is exploitable.
+Следующим шагом является определение всех возможных векторов пользовательского ввода и проверка возможности эксплуатации SSI-инъекции.
 
-First find all the pages where user input is allowed. Possible input vectors may also include headers and cookies. Determine how the input is stored and used, i.e if the input is returned as an error message or page element and if it was modified in some way. Access to the source code can help you to more easily determine where the input vectors are and how input is handled.
+Сначала найдите все страницы, на которых разрешён пользовательский ввод. Возможные входные векторы могут также включать заголовки и cookie. Определите, как хранятся и используются входные данные, т.е. выдаются ли они в виде сообщения об ошибке или элемента страницы и изменяются ли они каким-либо образом. Доступ к исходному коду может помочь определить, где находятся входные векторы и как обрабатываются входные данные.
 
-Once you have a list of potential injection points, you may determine if the input is correctly validated. Ensure it is possible to inject characters used in SSI directives such as `<!#=/."->` and `[a-zA-Z0-9]`
+Как только у вас будет список потенциальных точек ввода, вы сможете определить, правильно ли проверены входные данные. Убедитесь, что можно вводить символы, используемые в директивах SSI, такие как `<!#=/."->` и `[a-zA-Z0-9]`
 
-The below example returns the value of the variable. The [references](#references) section has helpful links with server-specific documentation to help you better assess a particular system.
+В приведенном ниже примере возвращается значение переменной. Раздел [ссылок](#ссылки) содержит полезные ссылки на документацию по конкретным серверам.
 
 ```html
 <!--#echo var="VAR" -->
 ```
 
-When using the `include` directive, if the supplied file is a CGI script, this directive will include the output of the CGI script. This directive may also be used to include the content of a file or list files in a directory:
+При использовании директивы `include` , если предоставленный файл является CGI-скриптом, эта директива будет включать выходные данные CGI-скрипта. Эта директива также может использоваться для включения содержимого файла или списка файлов в каталоге:
 
 ```html
 <!--#include virtual="FILENAME" -->
 ```
 
-To return the output of a system command:
+Чтобы показать вывод команды ОС:
 
 ```html
 <!--#exec cmd="OS_COMMAND" -->
 ```
 
-If the application is vulnerable, the directive is injected and it would be interpreted by the server the next time the page is served.
+Если приложение уязвимо, вводится директива; она будет интерпретирована сервером при следующем просмотре страницы.
 
-The SSI directives can also be injected in the HTTP headers, if the web application is using that data to build a dynamically generated page:
+Директивы SSI также могут быть вставлены в HTTP-заголовки, если web-приложение использует эти данные для создания динамически генерируемой страницы:
 
-```text
+```http
 GET / HTTP/1.1
 Host: www.example.com
 Referer: <!--#exec cmd="/bin/ps ax"-->
 User-Agent: <!--#include virtual="/proc/version"-->
 ```
 
-## Tools
+## Инструменты
 
 - [Web Proxy Burp Suite](https://portswigger.net/burp/communitydownload)
 - [OWASP ZAP](https://www.zaproxy.org/)
 - [String searcher: grep](https://www.gnu.org/software/grep)
 
-## References
+## Ссылки
 
 - [Nginx SSI module](http://nginx.org/en/docs/http/ngx_http_ssi_module.html)
 - [Apache: Module mod_include](https://httpd.apache.org/docs/current/mod/mod_include.html)

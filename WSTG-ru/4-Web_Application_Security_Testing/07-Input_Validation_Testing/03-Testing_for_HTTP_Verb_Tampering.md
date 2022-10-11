@@ -7,10 +7,10 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for HTTP Verb Tampering
+# Тестирование фальсификации методов HTTP
 
 |ID          |
 |------------|
 |WSTG-INPV-03|
 
-This content has been merged into: [Test HTTP Methods](../02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods.md)
+Этот сценарий был объединён с [Тестированием методов HTTP](../02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods.md)

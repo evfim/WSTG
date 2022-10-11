@@ -7,27 +7,27 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for XPath Injection
+# Тестирование XPath-инъекций
 
 |ID          |
 |------------|
 |WSTG-INPV-09|
 
-## Summary
+## Обзор
 
-XPath is a language that has been designed and developed primarily to address parts of an XML document. In XPath injection testing, we test if it is possible to inject XPath syntax into a request interpreted by the application, allowing an attacker to execute user-controlled XPath queries. When successfully exploited, this vulnerability may allow an attacker to bypass authentication mechanisms or access information without proper authorization.
+XPath — это язык, который был разработан в первую очередь для обращения к частям XML-документа. При тестировании XPath-инъекций мы проверяем, возможно ли ввести синтаксис XPath в запрос, интерпретируемый приложением, позволяя злоумышленнику выполнять пользовательские XPath-запросы. При успешной эксплуатации эта уязвимость может позволить злоумышленнику обойти механизмы аутентификации или получить доступ к информации без надлежащей авторизации.
 
-Web applications heavily use databases to store and access the data they need for their operations. Historically, relational databases have been by far the most common technology for data storage, but, in the last years, we are witnessing an increasing popularity for databases that organize data using the XML language. Just like relational databases are accessed via SQL language, XML databases use XPath as their standard query language.
+Web-приложения активно используют базы данных для хранения и доступа к данным, необходимым им для работы. Исторически реляционные базы данных были наиболее распространённой технологией хранения данных, но в последние годы мы наблюдаем растущую популярность баз данных, которые организуют данные с использованием языка XML. Так же, как доступ к реляционным базам данных осуществляется через язык SQL, базы данных XML используют XPath в качестве стандартного языка запросов.
 
-Since, from a conceptual point of view, XPath is very similar to SQL in its purpose and applications, an interesting result is that XPath injection attacks follow the same logic as [SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection) attacks. In some aspects, XPath is even more powerful than standard SQL, as its whole power is already present in its specifications, whereas a large number of the techniques that can be used in a SQL Injection attack depend on the characteristics of the SQL dialect used by the target database. This means that XPath injection attacks can be much more adaptable and ubiquitous. Another advantage of an XPath injection attack is that, unlike SQL, no ACLs are enforced, as our query can access every part of the XML document.
+Поскольку с концептуальной точки зрения XPath очень похож на SQL по своему назначению и приложениям, интересным результатом является то, что атаки с XPath-инъекциями следуют той же логике, что и атаки с [SQL-инъекциями](https://owasp.org/www-community/attacks/SQL_Injection). В некоторых аспектах XPath даже мощнее, чем стандартный SQL, поскольку вся его мощь уже заложена в его спецификациях, в то время как большинство методов, которые могут эксплуатироваться в SQL-инъекциях, зависят от диалекта SQL, используемого целевой базой данных. Это означает, что атаки с XPath-инъекциями могут быть гораздо более адаптируемыми и повсеместными. Ещё одно преимущество атаки с XPath заключается в том, что, в отличие от SQL, не применяются списки управления доступом (ACL), поскольку запрос может получить доступ к любой части XML-документа.
 
-## Test Objectives
+## Задача тестирования
 
-- Identify XPATH injection points.
+- Найти точки для инъекции XPath.
 
-## How to Test
+## Как тестировать
 
-The [XPath attack pattern was first published by Amit Klein](http://dl.packetstormsecurity.net/papers/bypass/Blind_XPath_Injection_20040518.pdf) and is very similar to the usual SQL Injection. In order to get a first grasp of the problem, let's imagine a login page that manages the authentication to an application in which the user must enter their username and password. Let's assume that our database is represented by the following XML file:
+[Шаблон атаки XPath был впервые опубликован Амитом Кляйном](http://dl.packetstormsecurity.net/papers/bypass/Blind_XPath_Injection_20040518.pdf) и очень похож на обычную SQL-инъекцию. Чтобы получить первое представление о проблеме, давайте представим страницу входа, которая управляет аутентификацией в приложении, в котором пользователь должен ввести своё имя и пароль. Давайте предположим, что наша база данных представлена следующим XML-файлом:
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -50,28 +50,28 @@ The [XPath attack pattern was first published by Amit Klein](http://dl.packetsto
 </users>
 ```
 
-An XPath query that returns the account whose username is `gandalf` and the password is `!c3` would be the following:
+XPath-запрос, который выдаёт учётную запись, имя пользователя которой `gandalf`, а пароль `!c3`, будет следующим:
 
 `string(//user[username/text()='gandalf' and password/text()='!c3']/account/text())`
 
-If the application does not properly filter user input, the tester will be able to inject XPath code and interfere with the query result. For instance, the tester could input the following values:
+Если приложение неправильно фильтрует вводимые пользователем данные, тестировщик сможет ввести код XPath и повлиять на результат запроса. Например, тестировщик мог бы ввести следующие значения:
 
 ```text
 Username: ' or '1' = '1
 Password: ' or '1' = '1
 ```
 
-Looks quite familiar, doesn't it? Using these parameters, the query becomes:
+Выглядит довольно знакомо, не так ли? Используя эти параметры, получается запрос:
 
 `string(//user[username/text()='' or '1' = '1' and password/text()='' or '1' = '1']/account/text())`
 
-As in a common SQL Injection attack, we have created a query that always evaluates to true, which means that the application will authenticate the user even if a username or a password have not been provided. And as in a common SQL Injection attack, with XPath injection, the first step is to insert a single quote (`'`) in the field to be tested, introducing a syntax error in the query, and to check whether the application returns an error message.
+Как и в обычной атаке SQL-инъекцией, мы создали запрос, который всегда оценивается как true, что означает, что приложение будет аутентифицировать пользователя, даже если имя пользователя или пароль не были предоставлены. И, как и при обычной атаке SQL-инъекцией, при инъекции XPath первым шагом является вставка одинарной кавычки (`'`) в поле, подлежащее проверке, что приводит к синтаксической ошибке в запросе, и к проверке: выдаёт ли приложение сообщение об ошибке.
 
-If there is no knowledge about the XML data internal details and if the application does not provide useful error messages that help us reconstruct its internal logic, it is possible to perform a [Blind XPath Injection](https://owasp.org/www-community/attacks/Blind_XPath_Injection) attack, whose goal is to reconstruct the whole data structure. The technique is similar to inference based SQL Injection, as the approach is to inject code that creates a query that returns one bit of information. [Blind XPath Injection](https://owasp.org/www-community/attacks/Blind_XPath_Injection) is explained in more detail by Amit Klein in the referenced paper.
+Если сведения о внутреннем устройстве XML отсутствуют, и приложение не предоставляет полезных сообщений об ошибках, которые помогли бы восстановить его внутреннюю логику, можно провести атаку [слепой XPath-инъекции](https://owasp.org/www-community/attacks/Blind_XPath_Injection), целью которой является восстановление полной структуры данных. Этот метод аналогичен SQL-инъекции на основе логического вывода, поскольку подход заключается во вставке кода, который создаёт запрос, возвращающий один бит информации. [Слепая XPath-инъекция](https://owasp.org/www-community/attacks/Blind_XPath_Injection) более подробно объясняется Амитом Кляйном в упомянутой статье.
 
-## References
+## Ссылки
 
-### Whitepapers
+### Технические руководства
 
 - [Amit Klein: "Blind XPath Injection"](http://dl.packetstormsecurity.net/papers/bypass/Blind_XPath_Injection_20040518.pdf)
-- [XPath 1.0 specifications](https://www.w3.org/TR/1999/REC-xpath-19991116/)
+- [Спецификации XPath](https://www.w3.org/TR/xpath/)

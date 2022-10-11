@@ -105,7 +105,7 @@ HTTP — это протокол без сохранения состояния,
 
 #### Префикс Host
 
-Прификс [`__Host-`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Cookie_prefixes) требует, чтобы cookie соответствовали следующим условиям:
+Префикс [`__Host-`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Cookie_prefixes) требует, чтобы cookie соответствовали следующим условиям:
 
   1. cookie должен быть установлен с атрибутом [`Secure`](#атрибут-secure).
   2. cookie должен быть установлен из URI, который агент пользователя считает безопасным.
