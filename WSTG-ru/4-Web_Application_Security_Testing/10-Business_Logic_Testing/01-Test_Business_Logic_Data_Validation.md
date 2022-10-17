@@ -7,72 +7,74 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test Business Logic Data Validation
+# Тестирование форматно-логического контроля данных
 
 |ID          |
 |------------|
 |WSTG-BUSL-01|
 
-## Summary
+## Обзор
 
-The application must ensure that only logically valid data can be entered at the front end as well as directly to the server-side of an application of system. Only verifying data locally may leave applications vulnerable to server injections through proxies or at handoffs with other systems. This is different from simply performing Boundary Value Analysis (BVA) in that it is more difficult and in most cases cannot be simply verified at the entry point, but usually requires checking some other system.
+Приложение должно гарантировать, что как со стороны клиента, так и на стороне сервера можно ввести только логически корректные данные. Только локальная проверка данных может сделать приложения уязвимыми для серверных инъекций через прокси или при обмене данными с другими системами. Это сложнее, чем просто провести анализ граничных значений (англ.: Boundary Value Analysis, BVA), и в большинстве случаев это недостаточно проконтролировать только в точке входа, обычно требуется проверка какой-либо другой системой.
 
-For example: An application may ask for your Social Security Number. In BVA the application should check formats and semantics (is the value 9 digits long, not negative and not all 0's) for the data entered, but there are logic considerations also. SSNs are grouped and categorized. Is this person on a death file? Are they from a certain part of the country?
+Например: приложение может запросить ваш номер социального страхования. В BVA приложение должно проверять форматы и семантику введённых данных (значение состоит из девяти цифр, не отрицательное ли оно, не все ли нулевые), но есть и логический контроль. SSN сгруппированы и классифицированы. Этот человек не числится среди умерших? Из какого он региона?
 
-Vulnerabilities related to business data validation is unique in that they are application specific and different from the vulnerabilities related to forging requests in that they are more concerned about logical data as opposed to simply breaking the business logic workflow.
+Уязвимости, связанные с контролем бизнес-данных, уникальны тем, что они специфичны для конкретного приложения и отличаются от уязвимостей, связанных с подделкой запросов тем, что они больше касаются семантики данных, а не просто нарушают бизнес-процесс.
 
-The front end and the back end of the application should be verifying and validating that the data it has, is using and is passing along is logically valid. Even if the user provides valid data to an application the business logic may make the application behave differently depending on data or circumstances.
+Клиентская и серверная части приложения должны контролировать и подтверждать, что данные, которые они хранят, обрабатывают и передают, являются логически допустимыми. Даже если пользователь предоставляет приложению допустимые данные, бизнес-логика может привести к тому, что приложение будет вести себя по-разному в зависимости от этих данных или обстоятельств.
 
-### Example 1
+### Пример 1
 
-Suppose you manage a multi-tiered e-commerce site that allows users to order carpet. The user selects their carpet, enters the size, makes the payment, and the front end application has verified that all entered information is correct and valid for contact information, size, make and color of the carpet. But, the business logic in the background has two paths, if the carpet is in stock it is directly shipped from your warehouse, but if it is out of stock in your warehouse a call is made to a partner’s system and if they have it in-stock they will ship the order from their warehouse and reimbursed by them. What happens if an attacker is able to continue a valid in-stock transaction and send it as out-of-stock to your partner? What happens if an attacker is able to get in the middle and send messages to the partner warehouse ordering carpet without payment?
+Предположим, вы управляете сайтом онлайн-магазина, который позволяет заказывать ковры. Пользователь выбирает свой ковёр, вводит размер, производит оплату, клиентское приложение проверяет, что вся введённая информация корректна и допустима в части контактной информации, размера, марки и цвета ковра. У бизнес-логики есть два варианта: если ковёр в наличии, он поставляется непосредственно с вашего склада, а если его у вас нет, делается вызов в систему партнера, и, если он есть там, они отправят заказ со своего склада, а потом вы с ними рассчитываетесь. Что произойдёт, если злоумышленник сможет при наличии товара передать вашему партнёру, что товар отсутствует? Что будет, если злоумышленник сможет вмешаться и передать сообщение на склад партнёра, заказав ковёр без оплаты?
 
-### Example 2
+### Пример 2
 
-Many credit card systems are now downloading account balances nightly so the customers can check out more quickly for amounts under a certain value. The inverse is also true. If I pay my credit card off in the morning I may not be able to use the available credit in the evening. Another example may be if I use my credit card at multiple locations very quickly it may be possible to exceed my limit if the systems are basing decisions on last night’s data.
+Многие системы кредитных карт загружают остатки на счетах каждую ночь, чтобы клиенты с утра уже могли расплачиваться суммами ниже определённого порога. Верно и обратное. Если пополню баланс кредитной карты утром, я, возможно, не смогу воспользоваться доступным лимитом вечером. Другой случай, если в течении дня я часто плачу своей кредитной картой в разных местах, то могу превысить свой лимит, если системы принимают решения на основе данных прошлой ночи.
 
-### Example 3
+### Пример 3
 
 **[Distributed Denial of Dollar (DDo$)](https://news.hitb.org/content/pirate-bay-proposes-distributed-denial-dollars-attack-ddo):**
-This was a campaign that was proposed by the founder of the website "The Pirate Bay" against the law firm who brought prosecutions against "The Pirate Bay". The goal was to take advantage of errors in the design of business features and in the process of credit transfer validation.
+Это была кампания, предложенная основателем web-сайта The Pirate Bay против юридической фирмы, которая возбудила уголовное дело против The Pirate Bay. Цель состояла в том, чтобы воспользоваться ошибками в дизайне бизнес-функций и в процессе проверки денежного перевода.
 
-This attack was performed by sending very small amounts of money of 1 SEK ($0.13 USD) to the law firm.
-The bank account to which the payments were directed had only 1000 free transfers, after which any transfers have a surcharge for the account holder (2 SEK). After the first thousand Internet transactions every 1 SEK donation to the law firm will actually end up costing it 1 SEK instead.
+Эта атака была осуществлена путем отправки очень небольших сумм в размере 1 шведской кроны (0,13 доллара США) в юридическую фирму.
+Банковский счет, на который направлялись платежи, имел только 1000 бесплатных переводов, после чего за каждый перевод для владельца счёта взималась надбавка (2 кроны). После первой тысячи интернет-транзакций каждое пожертвование в размере 1 кроны юридической фирме фактически обходилось ей в 1 крону.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify data injection points.
-- Validate that all checks are occurring on the back end and can't be bypassed.
-- Attempt to break the format of the expected data and analyze how the application is handling it.
+- Определить точки инъекции данных.
+- Убедиться, что все проверки проводятся на серверной части и их нельзя обойти.
+- Попытаться нарушить формат ожидаемых данных и проанализировать, как приложение их обрабатывает.
 
-## How to Test
+## Как тестировать
 
-### Generic Test Method
+### Общая методика тестирования
 
-- Review the project documentation and use exploratory testing looking for data entry points or hand off points between systems or software.
-- Once found try to insert logically invalid data into the application/system.
-Specific Testing Method:
-- Perform front-end GUI Functional Valid testing on the application to ensure that the only "valid" values are accepted.
-- Using an intercepting proxy observe the HTTP POST/GET looking for places that variables such as cost and quality are passed. Specifically, look for "hand-offs" between application/systems that may be possible injection or tamper points.
-- Once variables are found start interrogating the field with logically "invalid" data, such as social security numbers or unique identifiers that do not exist or that do not fit the business logic. This testing verifies that the server functions properly and does not accept logically invalid data.
+- Просмотрите проектную документацию и попробуйте выяснить местонахождение точек ввода данных или точек обмена данными между системами или приложениями.
+- После обнаружения попробуйте вставить логически недопустимые данные в приложение/систему.
 
-## Related Test Cases
+### Специальная методика тестирования
 
-- All [Input Validation](../07-Input_Validation_Testing/README.md) test cases.
-- [Testing for Account Enumeration and Guessable User Account](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md).
-- [Testing for Bypassing Session Management Schema](../06-Session_Management_Testing/01-Testing_for_Session_Management_Schema.md).
-- [Testing for Exposed Session Variables](../06-Session_Management_Testing/04-Testing_for_Exposed_Session_Variables.md).
+- Проведите функциональное тестирование графического интерфейса клиентской части приложения, чтобы убедиться, что принимаются только «допустимыми» значения.
+- Используя перехватывающий прокси, понаблюдайте за HTTP-запросами POST/GET в поисках мест, где передаются такие переменные, как стоимость и количество. В частности, ищите точки обмена между приложениями/системами, которые могут стать возможными точками инъекции или несанкционированного доступа.
+- Как только переменные найдены, начинайте опрашивать поле с логически «недопустимыми» данными, такими как номера социального страхования или уникальные идентификаторы, которых не существует или они не соответствуют бизнес-логике. Это тестирование контролирует, что сервер работает корректно и не принимает логически недопустимые данные.
 
-## Remediation
+## Связанные сценарии тестирования
 
-The application/system must ensure that only "logically valid" data is accepted at all input and hand off points of the application or system and data is not simply trusted once it has entered the system.
+- Все сценарии из раздела [Тестирование контроля входных данных](../07-Input_Validation_Testing/README.md).
+- [Перебор и угадывание учётных записей пользователей](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md).
+- [Тестирование схемы управления сессиями](../06-Session_Management_Testing/01-Testing_for_Session_Management_Schema.md).
+- [Тестирование незащищённых параметров сессии](../06-Session_Management_Testing/04-Testing_for_Exposed_Session_Variables.md).
 
-## Tools
+## Как исправить
+
+Приложение/система должны гарантировать, что они не просто доверяют всем данным, которые попали в систему, а что во всех точках входа и обмена приложения или системы принимаются только «логически допустимые» данные.
+
+## Инструменты
 
 - [OWASP Zed Attack Proxy (ZAP)](https://www.zaproxy.org)
 - [Burp Suite](https://portswigger.net/burp)
 
-## References
+## Ссылки
 
-- [OWASP Proactive Controls (C5) - Validate All Inputs](https://owasp.org/www-project-proactive-controls/v3/en/c5-validate-inputs)
+- [OWASP Proactive Controls (C5) - Validate All Inputs](https://owasp.org/www-project-proactive-controls/v3/en/c5-validate-inputs) ([перевод](https://github.com/OWASP/www-project-proactive-controls/blob/master/v3/Owasp-top-10-proactive-controls-2018-russian.pdf))
 - [OWASP Cheatsheet Series - Input_Validation_Cheat_Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html)

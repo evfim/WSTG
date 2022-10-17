@@ -7,17 +7,17 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# 4.10 Business Logic Testing
+# 4.10 Тестирование бизнес-логики
 
-4.10.0 [Introduction to Business Logic](00-Introduction_to_Business_Logic.md)
+4.10.0 [Введение в бизнес-логику](00-Introduction_to_Business_Logic.md)
 
-4.10.1 [Test Business Logic Data Validation](01-Test_Business_Logic_Data_Validation.md)
+4.10.1 [Тестирование форматно-логического контроля данных](01-Test_Business_Logic_Data_Validation.md)
 
-4.10.2 [Test Ability to Forge Requests](02-Test_Ability_to_Forge_Requests.md)
+4.10.2 [Тестирование способности подделывать запросы](02-Test_Ability_to_Forge_Requests.md)
 
-4.10.3 [Test Integrity Checks](03-Test_Integrity_Checks.md)
+4.10.3 [Тестирование проверки целостности](03-Test_Integrity_Checks.md)
 
-4.10.4 [Test for Process Timing](04-Test_for_Process_Timing.md)
+4.10.4 [Тестирование времени обработки](04-Test_for_Process_Timing.md)
 
 4.10.5 [Test Number of Times a Function Can Be Used Limits](05-Test_Number_of_Times_a_Function_Can_Be_Used_Limits.md)
 

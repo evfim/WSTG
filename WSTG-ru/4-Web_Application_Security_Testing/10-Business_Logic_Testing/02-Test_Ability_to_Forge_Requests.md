@@ -7,66 +7,66 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test Ability to Forge Requests
+# Тестирование способности подделывать запросы
 
 |ID          |
 |------------|
 |WSTG-BUSL-02|
 
-## Summary
+## Обзор
 
-Forging requests is a method that attackers use to circumvent the front end GUI application to directly submit information for back end processing. The goal of the attacker is to send HTTP POST/GET requests through an intercepting proxy with data values that is not supported, guarded against or expected by the applications business logic. Some examples of forged requests include exploiting guessable or predictable parameters or expose "hidden" features and functionality such as enabling debugging or presenting special screens or windows that are very useful during development but may leak information or bypass the business logic.
+Подделка запросов — это метод, который злоумышленники используют, чтобы обойти ограничения графического интерфейса клиентской части приложения и напрямую отправить информацию для её обработки сервером. Цель злоумышленника — передать HTTP-запросы POST/GET через перехватывающий прокси со значениями данных, которые не поддерживаются, от которых не предусмотрена защита или они не ожидаются бизнес-логикой приложения. Некоторые примеры подделки запросов включают в себя использование предполагаемых или предсказуемых параметров или раскрытие «скрытых» функций, и, например, включение отладки или представление специальных экранов или окон, которые полезны во время разработки, но могут привести к утечке информации или обходу бизнес-логики.
 
-Vulnerabilities related to the ability to forge requests is unique to each application and different from business logic data validation in that it s focus is on breaking the business logic workflow.
+Уязвимости, связанные с возможностью подделки запросов, индивидуальны для каждого приложения и отличаются от форматно-логического контроля данных тем, что они направлены на нарушение логики бизнес-процесса.
 
-Applications should have logic checks in place to prevent the system from accepting forged requests that may allow attackers the opportunity to exploit the business logic, process, or flow of the application. Request forgery is nothing new; the attacker uses an intercepting proxy to send HTTP POST/GET requests to the application. Through request forgeries attackers may be able to circumvent the business logic or process by finding, predicting and manipulating parameters to make the application think a process or task has or has not taken place.
+Приложения должны контролировать соблюдение логики, чтобы система не принимала поддельные запросы, которые могут дать злоумышленникам возможность эксплуатировать уязвимости бизнес-логики приложения или бизнес-процесса. Подделка запроса не является чем-то новым; злоумышленники используют перехватывающие прокси для передачи HTTP POST/GET-запросов приложению. С помощью подделки запросов злоумышленники могут обойти бизнес-логику или процесс, находя, прогнозируя и манипулируя параметрами, чтобы заставить приложение думать, что процесс или задача выполнены или не выполнены.
 
-Also, forged requests may allow subvention of programmatic or business logic flow by invoking "hidden" features or functionality such as debugging initially used by developers and testers sometimes referred to as an ["Easter egg"](http://en.wikipedia.org/wiki/Easter_egg_(media)). "An Easter egg is an intentional inside joke, hidden message, or feature in a work such as a computer program, movie, book, or crossword. According to game designer Warren Robinett, the term was coined at Atari by personnel who were alerted to the presence of a secret message which had been hidden by Robinett in his already widely distributed game, Adventure. The name has been said to evoke the idea of a traditional Easter egg hunt."
+Кроме того, поддельные запросы могут допускать ветвление программы или потока бизнес-логики, вызывая «скрытые» функции, исходно используемые разработчиками и тестировщиками, также иногда называемые [«пасхалками»](https://ru.wikipedia.org/wiki/%D0%9F%D0%B0%D1%81%D1%85%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D1%8F%D0%B9%D1%86%D0%BE_(%D0%B2%D0%B8%D1%80%D1%82%D1%83%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5)). «Пасхалка» — это умышленная внутренняя шутка, скрытое послание или особенность компьютерных программ, фильмов, книг, кроссвордов и пр. По словам игрового дизайнера Уоррена Робинетта, этот термин был придуман в Atari персоналом, который был предупреждён о наличии секретного сообщения, которое было скрыто Робинеттом в его уже широко распространённой игре Adventure. Говорят, что это название отсылает к идее традиционной семейной охоты за пасхальными яйцами, спрятанными на местности».
 
-### Example 1
+### Пример 1
 
-Suppose an e-commerce theater site allows users to select their ticket, apply a onetime 10% Senior discount on the entire sale, view the subtotal and tender the sale. If an attacker is able to see through a proxy that the application has a hidden field (of 1 or 0) used by the business logic to determine if a discount has been taken or not. The attacker is then able to submit the 1 or "no discount has been taken" value multiple times to take advantage of the same discount multiple times.
+Предположим, сайт онлайн-кассы театра позволяет пользователям выбрать билет, применить единовременную скидку 10% для пенсионеров на весь репертуар, просмотреть промежуточный итог и оплатить покупку. Если злоумышленник может через прокси увидеть, что в приложении есть скрытое поле (со значением 1 или 0), используемое бизнес-логикой для определения того, была получена скидка или нет, то он может передать значение 1, т.е. «скидка не применялась» несколько раз, чтобы несколько раз воспользоваться одной и той же скидкой.
 
-### Example 2
+### Пример 2
 
-Suppose an online video game pays out tokens for points scored for finding pirates treasure and pirates and for each level completed. These tokens can later be that can later be exchanged for prizes. Additionally each level's points have a multiplier value equal to the level. If an attacker was able to see through a proxy that the application has a hidden field used during development and testing to quickly get to the highest levels of the game they could quickly get to the highest levels and accumulate unearned points quickly.
+Предположим, что онлайн-видеоигра выплачивает жетоны за очки, набранные за поиск пиратских сокровищ и пиратов, а также за каждый пройденный уровень. Эти жетоны впоследствии могут быть обменены на призы. Кроме того, очки каждого уровня имеют значение множителя, равное этому уровню. Если злоумышленник через прокси увидел, что в приложении есть скрытое поле, используемое при разработке и тестировании, чтобы быстро добраться до самых высоких уровней игры, он смог бы быстро добраться до самых высоких уровней и быстро накопить незаработанные очки.
 
-Also, if an attacker was able to see through a proxy that the application has a hidden field used during development and testing to enabled a log that indicated where other online players, or hidden treasure were in relation to the attacker, they would then be able to quickly go to these locations and score points.
+Кроме того, если злоумышленник смог увидеть через прокси, что в приложении есть скрытое поле, используемое во время разработки и тестирования для включения журнала, в котором указывалось, где находятся другие онлайн-игроки или спрятанные сокровища по отношению к злоумышленнику, тогда они смогут быстро перейти к этим местоположениям и набрать очки.
 
-## Test Objectives
+## Задачи тестирования
 
 - Review the project documentation looking for guessable, predictable, or hidden functionality of fields.
 - Insert logically valid data in order to bypass normal business logic workflow.
 
-## How to Test
+## Как тестировать
 
-### Through Identifying Guessable Values
+### Через угадывание предполагаемых значений
 
-- Using an intercepting proxy observe the HTTP POST/GET looking for some indication that values are incrementing at a regular interval or are easily guessable.
-- If it is found that some value is guessable this value may be changed and one may gain unexpected visibility.
+- Используя перехватывающий прокси, понаблюдайте за POST/GET HTTP-запросами в поисках какого-либо признака того, что значения увеличиваются с регулярным интервалом или их легко угадать.
+- Если обнаружится, что какое-то значение поддаётся угадыванию, то изменив это значение, можно получить неожиданную выгоду.
 
-### Through Identifying Hidden Options
+### Через выявление скрытых опций
 
-- Using an intercepting proxy observe the HTTP POST/GET looking for some indication of hidden features such as debug that can be switched on or activated.
-- If any are found try to guess and change these values to get a different application response or behavior.
+- Используя перехватывающий прокси, наблюдайте за HTTP POST/GET в поисках каких-либо указаний на скрытые функции, такие как debug, которые можно включить или активировать.
+- Если таковые будут найдены, попробуйте угадать и изменить эти значения, чтобы получить другой ответ или поведение приложения.
 
-## Related Test Cases
+## Связанные сценарии тестирования
 
-- [Testing for Exposed Session Variables](../06-Session_Management_Testing/04-Testing_for_Exposed_Session_Variables.md)
-- [Testing for Cross Site Request Forgery (CSRF)](../06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md)
-- [Testing for Account Enumeration and Guessable User Account](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md)
+- [Тестирование незащищённых параметров сессии](../06-Session_Management_Testing/04-Testing_for_Exposed_Session_Variables.md)
+- [Тестирование подделки межсайтовых запросов (CSRF)](../06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md)
+- [Перебор и угадывание учётных записей пользователей](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md)
 
-## Remediation
+## Как исправить
 
-The application must be smart enough and designed with business logic that will prevent attackers from predicting and manipulating parameters to subvert programmatic or business logic flow, or exploiting hidden/undocumented functionality such as debugging.
+Приложение должно быть достаточно интеллектуальным и включать бизнес-логику, которая не позволит злоумышленникам прогнозировать и манипулировать параметрами для нарушения логики приложения или бизнес-процесса или использовать скрытые/недокументированные функции, такие как отладка.
 
-## Tools
+## Инструменты
 
 - [OWASP Zed Attack Proxy (ZAP)](https://www.zaproxy.org)
 - [Burp Suite](https://portswigger.net/burp)
 
-## References
+## Ссылки
 
 - [Cross Site Request Forgery - Legitimizing Forged Requests](http://www.stan.gr/2012/11/cross-site-request-forgery-legitimazing.html)
-- [Easter egg](https://en.wikipedia.org/wiki/Easter_egg_(media))
-- [Top 10 Software Easter Eggs](https://lifehacker.com/371083/top-10-software-easter-eggs)
+- [Пасхальное яйцо](https://ru.wikipedia.org/wiki/%D0%9F%D0%B0%D1%81%D1%85%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D1%8F%D0%B9%D1%86%D0%BE_(%D0%B2%D0%B8%D1%80%D1%82%D1%83%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5))
+- [Long Live Software Easter Eggs!](https://queue.acm.org/detail.cfm?id=3534857)

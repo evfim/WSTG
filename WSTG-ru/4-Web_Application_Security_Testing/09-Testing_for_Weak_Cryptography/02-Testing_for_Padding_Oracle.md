@@ -7,80 +7,80 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Padding Oracle
+# Тестирование оракула дополнений
 
 |ID          |
 |------------|
 |WSTG-CRYP-02|
 
-## Summary
+## Обзор
 
-A padding oracle is a function of an application which decrypts encrypted data provided by the client, e.g. internal session state stored on the client, and leaks the state of the validity of the padding after decryption. The existence of a padding oracle allows an attacker to decrypt encrypted data and encrypt arbitrary data without knowledge of the key used for these cryptographic operations. This can lead to leakage of sensitive data or to privilege escalation vulnerabilities, if integrity of the encrypted data is assumed by the application.
+Оракул дополнения (англ.: padding oracle) — это функция приложения, которая расшифровывает зашифрованные данные (шифротекст), предоставленные клиентом, например, внутреннее состояние сессии, хранящееся на клиенте, и выдает состояние достоверности дополнения после расшифровки. Существование оракула дополнения позволяет злоумышленнику расшифровывать шифротекст и шифровать произвольные данные, не зная ключа, используемого для этих криптографических операций. Это может привести к утечке конфиденциальных данных или к уязвимостям эскалации привилегий, если приложение полагается на целостность зашифрованных данных.
 
-Block ciphers encrypt data only in blocks of certain sizes. Block sizes used by common ciphers are 8 and 16 bytes. Data where the size doesn't match a multiple of the block size of the used cipher has to be padded in a specific manner so the decryptor is able to strip the padding. A commonly used padding scheme is PKCS#7. It fills the remaining bytes with the value of the padding length.
+Блочные шифры шифруют данные только блоками определённого размера. Размеры блоков, используемые обычными шифрами, составляют 8 и 16 байт. Данные, размер которых не кратен размеру блока используемого шифра, должны быть дополнены определённым образом, чтобы при расшифровке можно было удалить дополнение. Обычно используемая схема заполнения — PKCS#7. Она дополняет оставшиеся байты значением длины дополнения.
 
-### Example 1
+### Пример 1
 
-If the padding has the length of 5 bytes, the byte value `0x05` is repeated five times after the plain text.
+Если дополнение имеет длину 5 байтов, значение байта `0x05` повторяется пять раз после открытого текста.
 
-An error condition is present if the padding doesn't match the syntax of the used padding scheme. A padding oracle is present if an application leaks this specific padding error condition for encrypted data provided by the client. This can happen by exposing exceptions (e.g. `BadPaddingException` in Java) directly, by subtle differences in the responses sent to the client or by another side-channel like timing behavior.
+Условие ошибки возникает, если дополнение не соответствует синтаксису используемой схемы дополнения. Оракул дополнения возникает, если приложение пропускает это конкретное условие ошибки дополнения для шифротекста, предоставленного клиентом. Это может произойти посредством прямого разглашения исключений (например, `BadPaddingException` в Java); незначительных различий в ответах, отправляемых клиенту; или по другому побочному каналу, например по поведению задержек.
 
-Certain modes of operation of cryptography allow bit-flipping attacks, where flipping of a bit in the cipher text causes that the bit is also flipped in the plain text. Flipping a bit in the n-th block of CBC encrypted data causes that the same bit in the (n+1)-th block is flipped in the decrypted data. The n-th block of the decrypted cipher text is garbaged by this manipulation.
+Определённые режимы работы блочных шифров допускают атаки с инверсией битов в шифротексте, что приводит к тому, что он также инвертируется в открытом тексте. Инверсия бита в n-м блоке шифротекста CBC приводит к тому, что тот же бит в (n+1)-м блоке инвертируется в расшифрованных данных. N-й блок расшифрованного шифротекста в результате этой манипуляции искажается.
 
-The padding oracle attack enables an attacker to decrypt encrypted data without knowledge of the encryption key and used cipher by sending skillful manipulated cipher texts to the padding oracle and observing of the results returned by it. This causes loss of confidentiality of the encrypted data. E.g. in the case of session data stored on the client-side the attacker can gain information about the internal state and structure of the application.
+Атака оракула дополнения позволяет злоумышленнику расшифровывать шифротекст, не зная ключа шифрования и используемого шифра, отправляя специально подобранный шифротекст оракулу дополнения, и наблюдая за возвращаемыми им результатами. Это приводит к потере конфиденциальности зашифрованных данных. Например. в случае данных сессии, хранящихся на стороне клиента, злоумышленник может получить информацию о внутреннем состоянии и структуре приложения.
 
-A padding oracle attack also enables an attacker to encrypt arbitrary plain texts without knowledge of the used key and cipher. If the application assumes that integrity and authenticity of the decrypted data is given, an attacker could be able to manipulate internal session state and possibly gain higher privileges.
+Атака оракула дополнения также позволяет злоумышленнику шифровать произвольные открытые тексты без знания используемого ключа и шифра. Если приложение предполагает, что целостность и подлинность расшифрованных данных гарантированы, злоумышленник может иметь возможность манипулировать внутренним состоянием сессии и, возможно, получить более высокие полномочия.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify encrypted messages that rely on padding.
-- Attempt to break the padding of the encrypted messages and analyze the returned error messages for further analysis.
+- Найти зашифрованные сообщения, которые полагаются на дополнение.
+- Попытаться нарушить дополнение зашифрованных сообщений и проанализировать выданные сообщения об ошибках для дальнейшего анализа.
 
-## How to Test
+## Как тестировать
 
-### Black-Box Testing
+### Тестирование методом чёрного ящика
 
-First the possible input points for padding oracles must be identified. Generally the following conditions must be met:
+Сначала необходимо определить возможные входные точки для оракула дополнения. Как правило, должны быть соблюдены следующие условия:
 
-1. The data is encrypted. Good candidates are values which appear to be random.
-2. A block cipher is used. The length of the decoded (Base64 is used often) cipher text is a multiple of common cipher block sizes like 8 or 16 bytes. Different cipher texts (e.g. gathered by different sessions or manipulation of session state) share a common divisor in the length.
+1. Данные зашифрованы. Хорошими кандидатами являются значения, которые кажутся случайными.
+2. Используется блочный шифр. Длина декодированного (часто используется Base64) шифротекста кратна обычным размерам блоков шифра, например, 8 или 16 байт. Различные шифротексты (например, собранные в разных сессиях или изменением их состояния) имеют общий делитель для длины.
 
-#### Example 2
+#### Пример 2
 
-`Dg6W8OiWMIdVokIDH15T/A==` results after Base64 decoding in `0e 0e 96 f0 e8 96 30 87 55 a2 42 03 1f 5e 53 fc`. This seems to be random and 16 byte long.
+`Dg6W8OiWMIdVokIDH15T/A==` — результат Base64-декодирования из `0e 0e 96 f0 e8 96 30 87 55 a2 42 03 1f 5e 53 fc`. Кажется случайным и имеет длину 16 байт.
 
-If such an input value candidate is identified, the behavior of the application to bit-wise tampering of the encrypted value should be verified. Normally this Base64 encoded value will include the initialization vector (IV) prepended to the cipher text. Given a plaintext *`p`* and a cipher with a block size *`n`*, the number of blocks will be *`b = ceil( length(b) / n)`*. The length of the encrypted string will be *`y=(b+1)*n`* due to the initialization vector. To verify the presence of the oracle, decode the string, flip the last bit of the second-to-last block *`b-1`* (the least significant bit of the byte at *`y-n-1`*), re-encode and send. Next, decode the original string, flip the last bit of the block *`b-2`* (the least significant bit of the byte at *`y-2*n-1`*), re-encode and send.
+Если найден такой кандидат для входного значения, надо выяснить поведение приложения в отношении побитового вмешательства в зашифрованное значение. Обычно это значение, закодированное в Base64, будет включать вектор инициализации (IV), добавленный перед шифротекстом. Учитывая открытый текст *`p`* и шифр с размером блока *`n`*, число блоков будет *`b = ceil( length(b) / n)`*. Длина зашифрованной строки будет *`y=(b+1)*n`* из-за вектора инициализации. Чтобы убедиться в наличии оракула, декодируйте строку, инвертируйте последний бит предпоследнего блока *`b-1`* (самый младший бит байта в *`y-n-1`*), перекодируйте и отправьте. Затем декодируйте исходную строку, инвертируйте последний бит блока *`b-2`* (младший значащий бит байта в *`y-2*n-1`*), перекодируйте и отправьте.
 
-If it is known that the encrypted string is a single block (the IV is stored on the server or the application is using a bad practice hardcoded IV), several bit flips must be performed in turn. An alternative approach could be to prepend a random block, and flip bits in order to make the last byte of the added block take all possible values (0 to 255).
+Если известно, что зашифрованная строка представляет собой один блок (IV хранится на сервере или приложение применяет плохую практику жёстко закодированного IV), необходимо инвертировать несколько бит по очереди. Альтернативным вариантом может быть добавление случайного блока и инверсия битов, чтобы последний байт добавленного блока принимал все возможные значения (от 0 до 255).
 
-The tests and the base value should at least cause three different states while and after decryption:
+Тесты и базовое значение должны вызывать по крайней мере три разных состояния во время и после расшифровки:
 
-- Cipher text gets decrypted, resulting data is correct.
-- Cipher text gets decrypted, resulting data is garbled and causes some exception or error handling in the application logic.
-- Cipher text decryption fails due to padding errors.
+- Шифротекст расшифровывается, результирующие данные верны.
+- Шифротекст расшифровывается, результирующие данные искажаются и вызывают некоторое исключение или обработку ошибок в логике приложения.
+- Расшифровка шифротекста завершается неудачей из-за ошибок дополнения.
 
-Compare the responses carefully. Search especially for exceptions and messages which state that something is wrong with the padding. If such messages appear, the application contains a padding oracle. If the three different states described above are observable implicitly (different error messages, timing side-channels), there is a high probability that there is a padding oracle present at this point. Try to perform the padding oracle attack to ensure this.
+Внимательно сравните ответы. Особенно ищите исключения и сообщения, в которых говорится, что что-то не так с дополнением. Если такие сообщения появляются, приложение содержит оракул дополнения. Если три различных состояния, описанных выше, наблюдаются неявно (различные сообщения об ошибках, побочный канал по времени), существует высокая вероятность того, что в этой точке присутствует оракул дополнения. Попробуйте провести атаку, чтобы убедиться в этом.
 
-##### Example 3
+##### Пример 3
 
-- ASP.NET throws `System.Security.Cryptography.CryptographicException: Padding is invalid and cannot be removed.` if padding of a decrypted cipher text is broken.
-- In Java a `javax.crypto.BadPaddingException` is thrown in this case.
-- Decryption errors or similar can be possible padding oracles.
+- ASP.NET выдаёт `System.Security.Cryptography.CryptographicException: Padding is invalid and cannot be removed.` если нарушено дополнение расшифрованного шифротекста.
+- В таких случаях Java выдаёт `javax.crypto.BadPaddingException`.
+- Ошибки расшифровки и тому подобное могут быть признаками оракула дополнения.
 
-> A secure implementation will check for integrity and cause only two responses: `ok` and `failed`. There are no side channels which can be used to determine internal error states.
+> Безопасная реализация будет проверять целостность и вызывать только два ответа: `ok` и `failed`. Без побочных каналов, которые можно использовать для определения условия внутренней ошибки.
 
-### Gray-Box Testing
+### Тестирование методом серого ящика
 
-Verify that all places where encrypted data from the client, that should only be known by the server, is decrypted. The following conditions should be met by such code:
+Убедитесь, что все места, где зашифрованные данные от клиента, которые должны быть известны только серверу, расшифровываются. Такой код должен соответствовать следующим условиям:
 
-1. The integrity of the cipher text should be verified by a secure mechanism, like HMAC or authenticated cipher operation modes like GCM or CCM.
-2. All error states while decryption and further processing are handled uniformly.
+1. Целостность зашифрованного текста должна быть проверена с помощью защищённого механизма, такого как HMAC, или аутентифицированных режимов работы шифрования, таких как GCM или CCM.
+2. Все условия ошибок при расшифровке и дальнейшей обработке обрабатываются единообразно.
 
-### Example 4
+### Пример 4
 
-[Visualization of the decryption process](https://erlend.oftedal.no/blog/poet/)
+[Визуализация процесса расшифровки](https://erlend.oftedal.no/blog/poet/)
 
-## Tools
+## Инструменты
 
 - [Bletchley](https://code.blindspotsecurity.com/trac/bletchley)
 - [PadBuster](https://github.com/GDSSecurity/PadBuster)
@@ -88,7 +88,7 @@ Verify that all places where encrypted data from the client, that should only be
 - [Poracle](https://github.com/iagox86/Poracle)
 - [python-paddingoracle](https://github.com/mwielgoszewski/python-paddingoracle)
 
-## References
+## Ссылки
 
 - [Wikipedia - Padding Oracle Attack](https://en.wikipedia.org/wiki/Padding_oracle_attack)
 - [Juliano Rizzo, Thai Duong, "Practical Padding Oracle Attacks"](https://www.usenix.org/event/woot10/tech/full_papers/Rizzo.pdf)

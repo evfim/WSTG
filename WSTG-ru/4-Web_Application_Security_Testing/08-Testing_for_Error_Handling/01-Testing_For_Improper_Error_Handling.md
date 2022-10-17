@@ -7,85 +7,85 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Improper Error Handling
+# Тестирование некорректной обработки ошибок
 
 |ID          |
 |------------|
 |WSTG-ERRH-01|
 
-## Summary
+## Обзор
 
-All types of applications (web apps, web servers, databases, etc.) will generate errors for various reasons. Developers often ignore handling these errors, or push away the idea that a user will ever try to trigger an error purposefully (*e.g.* sending a string where an integer is expected). When the developer only consider the happy path, they forget all other possible user-input the code can receive but can't handle.
+Все типы приложений (web-приложения, web-серверы, базы данных и т.д.) по различным причинам генерируют ошибки. Разработчики часто игнорируют обработку этих ошибок или отбрасывают мысль о том, что пользователь когда-либо попытается намеренно вызвать ошибку (*например,* вводя символьную строку вместо ожидаемого целого числа). Когда разработчик рассматривает только позитивный путь, он забывает о других возможных входных данных от пользователя, которые код может получить, но не может обработать.
 
-Errors sometimes rise as:
+Ошибки иногда возникают в виде:
 
-- stack traces,
-- network timeouts,
-- input mismatch,
-- and memory dumps.
+- трассировки стека,
+- тайм-аута сети,
+- несоответствия входных данных,
+- дампа памяти.
 
-Improper error handling can allow attackers to:
+Некорректная обработка ошибок может позволить злоумышленникам:
 
-- Understand the APIs being used internally.
-- Map the various services integrating with each other by gaining insight on internal systems and frameworks used, which opens up doors to attack chaining.
-- Gather the versions and types of applications being used.
-- DoS the system by forcing the system into a deadlock or an unhandled exception that sends a panic signal to the engine running it.
-- Controls bypass where a certain exception is not restricted by the logic set around the happy path.
+- Разобраться в API, используемых внутри компании.
+- Сопоставить различные сервисы, интегрированные друг с другом, получив представление об используемых внутренних системах и фреймворках, что открывает возможности для цепочки атак.
+- Собрать сведения о версиях и типах используемых приложений.
+- Сделать систему недоступной, вызвав взаимную блокировку или необрабатываемое исключение, которое отправляет сигнал паники работающему серверу.
+- Управлять обходом, если какое-то исключение не ограничено логикой, настроенной только на позитивный путь.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify existing error output.
-- Analyze the different output returned.
+- Найти вывод по существующим ошибкам.
+- Проанализировать различные возвращаемые выходные данные.
 
-## How to Test
+## Как тестировать
 
-Errors are usually seen as benign as they provide diagnostics data and messages that could help the user understand the problem at hand, or for the developer to debug that error.
+Ошибки обычно считаются безобидными, поскольку они предоставляют диагностические данные и сообщения, которые могут помочь пользователю понять проблему или разработчику отладить эту ошибку.
 
-By trying to send unexpected data, or forcing the system into certain edge cases and scenarios, the system or application will most of the times give out a bit on what's happening internally, unless the developers turned off all possible errors and return a certain custom message.
+Пытаясь ввести неожиданные данные или заставляя систему работать с определёнными крайними случаями и сценариями, система или приложение в большинстве случаев будут выдавать какую-то информацию о том, что происходит внутри, если только разработчики не отключили все возможные ошибки и не выдают какое-то своё (нестандартное) сообщение.
 
-### Web Servers
+### Web-серверы
 
-All web apps run on a web server, whether it was an integrated one or a full fledged one. Web apps must handle and parse HTTP requests, and for that a web server is always part of the stack. Some of the most famous web servers are NGINX, Apache, and IIS.
+Все web-приложения работают на web-сервере, будь то интегрированный или полноценный. Web-приложения должны обрабатывать и анализировать HTTP-запросы, и поэтому web-сервер всегда входит в состав стека. Одними из самых известных web-серверов являются NGINX, Apache и IIS.
 
-Web servers have known error messages and formats. If one is not familiar with how they look, searching online for them would provide examples. Another way would be to look into their documentation, or simply setup a server locally and discover the errors by going through the pages that the web server uses.
+Для каждого web-сервера известны типовые сообщения об ошибках и их форматы. Если кто-то не знаком с тем, как они выглядят, поиск в Интернете даст примеры. Ещё один способ — заглянуть в документацию или просто настроить сервер локально и найти ошибки, просмотрев страницы, которые использует web-сервер.
 
-In order to trigger error messages, a tester must:
+Чтобы вызвать сообщения об ошибках, тестировщик должен:
 
-- Search for random files and folders that will not be found (404s).
-- Try to request folders that exist and see the server behavior (403s, blank page, or directory listing).
-- Try sending a request that breaks the [HTTP RFC](https://tools.ietf.org/html/rfc7231). One example would be to send a very large path, break the headers format, or change the HTTP version.
-    - Even if errors are handled on the application level, breaking the HTTP RFC may make the integrated web server show itself since it has to handle the request, and developers forget to override these errors.
+- Поискать какие-либо файлы и папки, которые нельзя найти (404-я).
+- Запросить существующие папки и посмотреть поведение сервера (403-я, пустая страница или содержание каталога).
+- Попробуйте отправить запрос, который нарушает [RFC по HTTP](https://datatracker.ietf.org/doc/html/rfc7231). Одним из примеров может быть отправка очень большого пути, нарушение формата заголовков или изменение версии HTTP.
+    - Даже если ошибки обрабатываются на уровне приложения, нарушение RFC по HTTP может заставить интегрированный web-сервер проявить себя, поскольку он должен обрабатывать запрос, а разработчики забывают переопределить эти ошибки.
 
 ### Applications
 
-Applications are the most susceptible to let out a wide variety of error messages, which include: stack traces, memory dumps, mishandled exceptions, and generic errors. This happens due to the fact that applications are custom built most of the time and the developers need to observe and handle all possible error cases (or have a global error catching mechanism), and these errors can appear from integrations with other services.
+Приложения наиболее подвержены появлению широкого спектра сообщений об ошибках, которые включают в себя: трассировки стека, дампы памяти, некорректно обработанные исключения и типовые ошибки. Это происходит из-за того, что приложения в основном создаются на заказ, поэтому разработчикам необходимо наблюдать и обрабатывать все возможные случаи ошибок (или иметь глобальный механизм обнаружения ошибок), также они могут возникать в результате интеграции с другими сервисами.
 
-In order to make an application throw these errors, a tester must:
+Чтобы заставить приложение выдавать эти ошибки, тестировщик должен:
 
-1. Identify possible input points where the application is expecting data.
-2. Analyse the expected input type (strings, integers, JSON, XML, etc.).
-3. Fuzz every input point based on the previous steps to have a more focused test scenario.
-   - Fuzzing every input with all possible injections is not the best solution unless you have unlimited testing time and the application can handle that much input.
-   - If fuzzing isn't an option, handpick viable inputs that have the highest chance to break a certain parser (*e.g.* a closing bracket for a JSON body, a large text where only a couple of characters are expected, CLRF injection with parameters that might be parsed by servers and input validation controls, special characters that aren't applicable for file names, etc.).
-   - Fuzzing with jargon data should be ran for every type as sometimes the interpreters will break outside of the developer's exception handling.
-4. Understand the service responding with the error message and try to make a more refined fuzz list to bring out more information or error details from that service (it could be a database, a standalone service, etc.).
+1. Определить возможные точки входа, в которых приложение ожидает данные.
+2. Проанализироватб ожидаемый тип входных данных (строки, целые числа, JSON, XML и т.д.).
+3. Провести фаззинг каждой точки входа на основе предыдущих шагов для получения более сфокусированного сценария тестирования.
+   - Фаззинг каждой точки входа со всеми возможными инъекциями — не лучшее решение, если у вас нет неограниченного времени на тестирование и приложение сможет обработать такой объём входных данных.
+   - Если фаззинг невозможен, выберите перспективные входные данные, которые имеют наибольшие шансы сломать данный парсер (*например,* закрывающая скобка для тела JSON, большой текст когда ожидается всего пара символов, инъекция CRLF с параметрами, которые могут быть разобраны серверами и форматно-логическим контролем, специальные символы, которые недопустимы в именах файлов и т.д.).
+   - Фаззинг с использованием такой полезной нагрузки должен проводиться для каждого типа данных, поскольку иногда интерпретаторы ломаются и вне обработки исключений, определённой разработчиком.
+4. Разберитесь с сервисом, который выдаёт сообщения об ошибках, и попытайтесь составить более точный список векторов для фаззинга, чтобы получить больше информации или подробностей об ошибках из этого сервиса (это может быть база данных, отдельный сервис и т.д.).
 
-Error messages are sometimes the main weakness in mapping out systems, especially under a microservice architecture. If services are not properly set to handle errors in a generic and uniform manner, error messages would let a tester identify which service handles which requests, and allows for a more focused attack per service.
+Сообщения об ошибках иногда являются основным недостатком проектирования систем, особенно в микросервисной архитектуре. Если сервисы должным образом не настроены на обработку ошибок единым и универсальным образом, сообщения об ошибках позволят тестировщику определить, какой сервис какие запросы обрабатывает, и провести более целенаправленную атаку на каждый сервис.
 
-> The tester needs to keep a vigilant eye for the response type. Sometimes errors are returned as success with an error body, hide the error in a 302, or simply by having a custom way of representing that error.
+> Тестировщику необходимо внимательно следить за типом ответа. Иногда ошибки возвращаются как 200-е с телом ошибки, иногда скрывают ошибку в 302-й или просто имеют свой способ представления этой ошибки.
 
-## Remediation
+## Как исправить
 
-For remediation, check out the [Proactive Controls C10](https://owasp.org/www-project-proactive-controls/v3/en/c10-errors-exceptions) and the [Error Handling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html).
+Для исправления ситуации ознакомьтесь с [мерой C10 из Top 10 мер проактивной защиты](https://owasp.org/www-project-proactive-controls/v3/en/c10-errors-exceptions) ([перевод](https://github.com/OWASP/www-project-proactive-controls/blob/master/v3/Owasp-top-10-proactive-controls-2018-russian.pdf)) и [Памяткой OWASP по обработке ошибок](https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html).
 
-## Playgrounds
+## Тестовый полигон
 
-- [Juice Shop - Error Handling](https://pwning.owasp-juice.shop/part2/security-misconfiguration.html#provoke-an-error-that-is-neither-very-gracefully-nor-consistently-handled)
+- [Juice Shop - Обработка ошибок](https://pwning.owasp-juice.shop/part2/security-misconfiguration.html#provoke-an-error-that-is-neither-very-gracefully-nor-consistently-handled)
 
-## References
+## Ссылки
 
-- [WSTG: Appendix C - Fuzz Vectors](../../6-Appendix/C-Fuzz_Vectors.md)
-- [Proactive Controls C10: Handle All Errors and Exceptions](https://owasp.org/www-project-proactive-controls/v3/en/c10-errors-exceptions)
-- [ASVS v4.1 v7.4: Error handling](https://github.com/OWASP/ASVS/blob/master/4.0/en/0x15-V7-Error-Logging.md#v74-error-handling)
+- [WSTG: Приложение C - Векторы для фаззинга](../../6-Appendix/C-Fuzz_Vectors.md)
+- [Top 10 мер проактивной защиты - C10: Обработка ошибок и исключений](https://owasp.org/www-project-proactive-controls/v3/en/c10-errors-exceptions)
+- [ASVS v4 v7.4: Обработка ошибок](https://github.com/OWASP/ASVS/blob/master/4.0/ru/0x15-V7-Error-Logging.md#v74-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA)
 - [CWE 728 - Improper Error Handling](https://cwe.mitre.org/data/definitions/728.html)
-- [Cheat Sheet Series: Error Handling](https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html)
+- [Памятка OWASP по обработке ошибок](https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html)

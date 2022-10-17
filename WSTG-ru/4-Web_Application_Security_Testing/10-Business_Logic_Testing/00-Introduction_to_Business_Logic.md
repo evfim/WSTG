@@ -7,88 +7,88 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Introduction to Business Logic
+# Введение в бизнес-логику
 
-Testing for business logic flaws in a multi-functional dynamic web application requires thinking in unconventional methods. If an application's authentication mechanism is developed with the intention of performing steps 1, 2, 3 in that specific order to authenticate a user. What happens if the user goes from step 1 straight to step 3? In this simplistic example, does the application provide access by failing open; deny access, or just error out with a 500 message?
+Тестирование на предмет нарушений в бизнес-логике в многофункциональном динамичном web-приложении требует нестандартных подходов. Предположим, что для аутентификации пользователя в приложении он должен выполнить шаги 1, 2, 3, именно в этой последовательности. Что произойдёт, если пользователь перейдет от шага 1 сразу к шагу 3? В этом упрощённом примере приложение должно дать доступ, отказать или просто выдать 500-ю ошибку?
 
-There are many examples that can be made, but the one constant lesson is "think outside of conventional wisdom". This type of vulnerability cannot be detected by a vulnerability scanner and relies upon the skills and creativity of the penetration tester. In addition, this type of vulnerability is usually one of the hardest to detect, and usually application specific but, at the same time, usually one of the most detrimental to the application, if exploited.
+Можно привести множество подобных примеров, усвоив один неизменный урок — надо нестандартно мыслить. Этот вид уязвимостей не может быть обнаружен сканерами и зависит от навыков и креативности пентестера. Кроме того, обычно он является одним из самых сложных для обнаружения и, как правило, зависит от специфики приложения, но в то же время обычно он является одним из самых опасных при эксплуатации.
 
-The classification of business logic flaws has been under-studied; although exploitation of business flaws frequently happens in real-world systems, and many applied vulnerability researchers investigate them. The greatest focus is in web applications. There is debate within the community about whether these problems represent particularly new concepts, or if they are variations of well-known principles.
+Классификация нарушений бизнес-логики изучена недостаточно; хотя эксплуатация таких уязвимостей часто происходит в реальных системах, и многие исследователи безопасности приложений изучают их. Наибольшее внимание уделяется web-приложениям. В сообществе ведутся споры о том, являются ли эти вопросы новыми или вариациями уже известных.
 
-Testing of business logic flaws is similar to the test types used by functional testers that focus on logical or finite state testing. These types of tests require that security professionals think a bit differently, develop abused and misuse cases and use many of the testing techniques embraced by functional testers. Automation of business logic abuse cases is not possible and remains a manual art relying on the skills of the tester and their knowledge of the complete business process and its rules.
+Тестирование нарушений бизнес-логики похоже на тесты, проводимые функциональными тестировщиками, которые тестируют логику или строят диаграммы состояний конечного автомата. Эти виды тестов требуют, чтобы специалисты по безопасности думали немного иначе, включали примеры злоупотреблений и неправильного использования, а также методы тестирования, применяющиеся функциональными тестировщиками. Автоматизация примеров злоупотребления бизнес-логикой пока невозможна и остаётся искусством, зависящим от опыта и навыков тестировщика и его знаний комплексного бизнес-процесса.
 
-## Business Limits and Restrictions
+## Запреты и ограничения
 
-Consider the rules for the business function being provided by the application. Are there any limits or restrictions on people's behavior? Then consider whether the application enforces those rules. It's generally pretty easy to identify the test and analysis cases to verify the application if you're familiar with the business. If you are a third-party tester, then you're going to have to use your common sense and ask the business if different operations should be allowed by the application.
+Рассмотрим правила для бизнес-функций, предоставляемых приложением. Существуют ли какие-либо ограничения или запреты на поведение людей? Затем подумайте, контролирует ли приложение соблюдение этих правил. Обычно, придумать тестовые примеры для анализа приложения довольно легко, если вы знакомы с бизнес-процессом. Если вы пришли извне, придётся включать здравый смысл и спрашивать бизнес, должны ли приложения разрешать те или иные операции.
 
-Sometimes, in very complex applications, the tester will not have a full understanding of every aspect of the application initially. In these situations, it is best to have the client walk the tester through the application, so that they may gain a better understanding of the limits and intended functionality of the application, before the actual test begins. Additionally, having a direct line to the developers (if possible) during testing will help out greatly, if any questions arise regarding the application's functionality.
+Иногда, в сложных приложениях, у тестировщика изначально не будет полного представления о каждом аспекте приложения. В таких ситуациях лучше всего, чтобы тестировщика с приложением познакомил клиент, чтобы  ещё до начала тестирования понять ограничения и предполагаемую функциональность. Кроме того, помогает прямой контакт с разработчиками (если это возможно) во время тестирования, если возникнут какие-либо вопросы относительно функциональности.
 
-## Challenges of Logic Testing
+## Проблемы с тестированием логики
 
-Automated tools find it hard to understand context, hence it's up to a person to perform these kinds of tests. The following two examples will illustrate how understanding the functionality of the application, the developer's intentions, and some creative "out-of-the-box" thinking can break the application's logic. The first example starts with a simplistic parameter manipulation, whereas the second is a real world example of a multi-step process leading to completely subvert the application.
+Автоматизированным инструментам трудно оценить контекст, поэтому такие тесты проводят вручную. Следующие два примера иллюстрируют, как понимание функциональности приложения, намерений разработчика и нестандартное мышление могут нарушить логику приложения. Первый пример начинается с упрощённой манипуляции с параметрами, второй представляет собой реальный пример многоступенчатого процесса, а третий полностью нарушает логику приложения.
 
-**Example 1**:
+**Пример 1**:
 
-Suppose an e-commerce site allows users to select items to purchase, view a summary page and then tender the sale. What if an attacker was able to go back to the summary page, maintaining their same valid session and inject a lower cost for an item and complete the transaction, and then check out?
+Предположим, сайт электронной коммерции позволяет пользователям выбирать товары для покупки, просматривать сводную страницу, а затем закрывать сделку. Что, если злоумышленник смог бы вернуться на сводную страницу, поддерживая сессию активной, ввести более низкую цену за штуку и завершить транзакцию, а затем рассчитаться?
 
-**Example 2**:
+**Пример 2**:
 
-Holding/locking resources and keeping others from purchases these items online may result in attackers purchasing items at a lower price. The countermeasure to this problem is to implement timeouts and mechanisms to ensure that only the correct price can be charged.
+Блокирование ресурсов и запрет на покупку таких товаров другими пользователями в Интернете может привести к тому, что злоумышленники приобретут товары по более низкой цене. Меры противодействия для решения этой проблемы заключаются во введении тайм-аутов и механизмов, гарантирующих, что может быть назначена только корректная цена.
 
-**Example 3**:
+**Пример 3**:
 
-What if a user was able to start a transaction linked to their club/loyalty account and then after points have been added to their account cancel out of the transaction? Will the points/credits still be applied to their account?
+Что, если бы пользователь мог начать транзакцию, связанную со своей учётной записью программы лояльности, а после того, как баллы за это добавятся к его учётной записи, отменил транзакцию? Будут ли баллы по-прежнему применяться к его учётной записи?
 
-## Tools
+## Инструменты
 
-While there are tools for testing and verifying that business processes are functioning correctly in valid situations these tools are incapable of detecting logical vulnerabilities. For example, tools have no means of detecting if a user is able to circumvent the business process flow through editing parameters, predicting resource names or escalating privileges to access restricted resources nor do they have any mechanism to help the human testers to suspect this state of affairs.
+Хотя и существуют инструменты для тестирования и проверки правильности работы бизнес-процессов в допустимых ситуациях, эти инструменты неспособны обнаруживать логические уязвимости. Например, инструменты не имеют средств для определения того, способен ли пользователь обойти логику бизнес-процесса путём редактирования параметров, прогнозирования наименований ресурсов или эскалации привилегий для доступа к ограниченным ресурсам, и нет механизма, который помог бы тестировщикам-людям догадаться о существовании таких ситуаций.
 
-The following are some common tool types that can be useful in identifying business logic issues.
+Ниже приведены некоторые распространённые типы инструментов, которые могут быть полезны для выявления проблем с бизнес-логикой.
 
-When installing addons you should always be diligent in considering the permissions they request and your browser usage habits.
+При установке дополнений вы всегда должны тщательно анализировать запрашиваемые ими разрешения и ваши привычки при использовании браузера.
 
-### Intercepting Proxy
+### Перехватывающие прокси
 
-To Observe the Request and Response Blocks of HTTP Traffic
+Для наблюдения за блоками запросов и ответов HTTP-трафика
 
 - [OWASP Zed Attack Proxy](https://www.zaproxy.org)
 - [Burp Proxy](https://portswigger.net/burp)
 
-### Web Browser Plug-ins
+### Дополнения для web-браузера
 
-To view and modify HTTP/HTTPS headers, post parameters, and observe the DOM of the Browser
+Для просмотра и изменения заголовков HTTP/HTTPS, параметров сообщений и наблюдения за DOM браузера
 
-- [Tamper Data for FF Quantum](https://addons.mozilla.org/en-US/firefox/addon/tamper-data-for-ff-quantum)
-- [Tamper Chrome (for Google Chrome)](https://chrome.google.com/webstore/detail/tamper-chrome-extension/hifhgpdkfodlpnlmlnmhchnkepplebkb)
+- [Tamper Data для FF Quantum](https://addons.mozilla.org/en-US/firefox/addon/tamper-data-for-ff-quantum)
+- [Tamper Chrome (для Google Chrome)](https://chrome.google.com/webstore/detail/tamper-chrome-extension/hifhgpdkfodlpnlmlnmhchnkepplebkb)
 
-## Miscellaneous Test Tools
+## Разные инструменты тестирования
 
-- [Web Developer toolbar](https://chrome.google.com/webstore/detail/bfbameneiokkgbdmiekhjnmfkcnldhhm)
-    - The Web Developer extension adds a toolbar button to the browser with various web developer tools. This is the official port of the Web Developer extension for Firefox.
-- [HTTP Request Maker for Chrome](https://chrome.google.com/webstore/detail/kajfghlhfkcocafkcjlajldicbikpgnp)
-- [HTTP Request Maker for Firefox](https://addons.mozilla.org/en-US/firefox/addon/http-request-maker)
-    - Request Maker is a tool for penetration testing. With it you can easily capture requests made by web pages, tamper with the URL, headers and POST data and, of course, make new requests
-- [Cookie Editor for Chrome](https://chrome.google.com/webstore/detail/fngmhnnpilhplaeedifhccceomclgfbg)
-- [Cookie Editor for Firefox](https://addons.mozilla.org/en-US/firefox/addon/cookie-editor)
-    - Cookie Editor is a cookie manager. You can add, delete, edit, search, protect, and block cookies
+- [Панель инструментов Web Developer](https://chrome.google.com/webstore/detail/bfbameneiokkgbdmiekhjnmfkcnldhhm)
+    - Расширение Web Developer добавляет в браузер кнопку панели инструментов с различными инструментами web-разработчика. Это официальный порт расширения Web Developer для Firefox.
+- [HTTP Request Maker для Chrome](https://chrome.google.com/webstore/detail/kajfghlhfkcocafkcjlajldicbikpgnp)
+- [HTTP Request Maker для Firefox](https://addons.mozilla.org/en-US/firefox/addon/http-request-maker)
+    - Request Maker — инструмент для тестирования на проникновение. С его помощью вы можете легко перехватывать запросы, сделанные web-страницами, менять URL, заголовки и данные в POST и, конечно же, делать новые запросы.
+- [Cookie Editor для Chrome](https://chrome.google.com/webstore/detail/fngmhnnpilhplaeedifhccceomclgfbg)
+- [Cookie Editor для Firefox](https://addons.mozilla.org/en-US/firefox/addon/cookie-editor)
+    - Cookie Editor — менеджер cookie. Вы можете добавлять, удалять, редактировать, искать, защищать и блокировать cookie.
 
-## References
+## Ссылки
 
-### Whitepapers
+### Технические руководства
 
 - [The Common Misuse Scoring System (CMSS): Metrics for Software Feature Misuse Vulnerabilities - NISTIR 7864](https://csrc.nist.gov/publications/detail/nistir/7864/final)
 - [Finite State testing of Graphical User Interfaces, Fevzi Belli](https://pdfs.semanticscholar.org/b57c/6c8022abfd2cb17ec785d3622027b3edfaaf.pdf)
 - [Principles and Methods of Testing Finite State Machines - A Survey, David Lee, Mihalis Yannakakis](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.380.3405&rep=rep1&type=pdf)
 - [Security Issues in Online Games, Jianxin Jeff Yan and Hyun-Jin Choi](https://www.researchgate.net/publication/220677013_Security_issues_in_online_games)
-- [Securing Virtual Worlds Against Real Attack, Dr. Igor Muttik, McAfee](https://www.info-point-security.com/open_downloads/2008/McAfee_wp_online_gaming_0808.pdf)
+- [Securing Virtual Worlds Against Real Attack, Dr. Igor Muttik, McAfee](https://www.infopoint-security.de/open_downloads/2008/McAfee_wp_online_gaming_0808.pdf)
 - [Seven Business Logic Flaws That Put Your Website At Risk – Jeremiah Grossman Founder and CTO, WhiteHat Security](https://www.slideshare.net/jeremiahgrossman/seven-business-logic-flaws-that-put-your-website-at-risk-harvard-07062008)
 - [Toward Automated Detection of Logic Vulnerabilities in Web Applications - Viktoria Felmetsger Ludovico Cavedon Christopher Kruegel Giovanni Vigna](https://www.usenix.org/legacy/event/sec10/tech/full_papers/Felmetsger.pdf)
 
-### OWASP Related
+### От OWASP
 
-- [How to Prevent Business Flaws Vulnerabilities in Web Applications, Marco Morana](http://www.slideshare.net/marco_morana/issa-louisville-2010morana)
+- [How to Prevent Business Flaws Vulnerabilities in Web Applications, Marco Morana](https://owasp.org/www-pdf-archive/OWASP_Cincinnati_Jan_2011.pdf)
 
-### Useful Web Sites
+### Полезные web-сайты
 
 - [Abuse of Functionality](http://projects.webappsec.org/w/page/13246913/Abuse-of-Functionality)
 - [Business logic](https://en.wikipedia.org/wiki/Business_logic)
@@ -97,6 +97,6 @@ To view and modify HTTP/HTTPS headers, post parameters, and observe the DOM of t
 - [Defying Logic: Theory, Design, and Implementation of Complex Systems for Testing Application Logic](https://pdfs.semanticscholar.org/d14a/18f08f6488f903f2f691a1d159e95d8ee04f.pdf)
 - [Software Testing Lifecycle](http://softwaretestingfundamentals.com/software-testing-life-cycle/)
 
-### Books
+### Книга
 
 - [The Decision Model: A Business Logic Framework Linking Business and Technology, By Barbara Von Halle, Larry Goldberg, Published by CRC Press, ISBN1420082817 (2010)](https://isbnsearch.org/isbn/1420082817)

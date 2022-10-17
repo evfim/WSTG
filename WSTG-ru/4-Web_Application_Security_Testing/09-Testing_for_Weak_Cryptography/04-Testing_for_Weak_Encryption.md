@@ -7,52 +7,53 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Weak Encryption
+# Тестирование шифрования
 
 |ID          |
 |------------|
 |WSTG-CRYP-04|
 
-## Summary
+## Обзор
 
-Incorrect uses of encryption algorithms may result in sensitive data exposure, key leakage, broken authentication, insecure session, and spoofing attacks. There are some encryption or hash algorithms known to be weak and are not suggested for use such as MD5 and RC4.
+Неправильное использование алгоритмов шифрования может привести к разглашению конфиденциальной информации, утечке ключей, нарушению аутентификации, незащищённой сессии и атакам подмены (англ.: spoofing). Существуют алгоритмы шифрования и хэширования, про которые стало известно, что они нестойкие, и поэтому теперь не рекомендуются, например, MD5 и RC4.
 
-In addition to the right choices of secure encryption or hash algorithms, the right uses of parameters also matter for the security level. For example, ECB (Electronic Code Book) mode is not suggested for use in asymmetric encryption.
+В дополнение к правильному выбору безопасных алгоритмов шифрования или хэширования, для уровня безопасности также имеет значение правильное использование параметров. Например, режим ECB (электронной кодовой книги) не рекомендуется использовать при асимметричном шифровании.
 
-## Test Objectives
+## Задачи тестирования
 
-- Provide a guideline for the identification weak encryption or hashing uses and implementations.
+- Дать рекомендации по выявлению использования и реализации нестойкого шифрования или хэширования.
 
-## How to Test
+## Как тестировать
 
-### Basic Security Checklist
+### Базовый чек-лист по безопасности
 
-- When using AES128 or AES256, the IV (Initialization Vector) must be random and unpredictable. Refer to [FIPS 140-2, Security Requirements for Cryptographic Modules](https://csrc.nist.gov/publications/detail/fips/140/2/final), section 4.9.1. random number generator tests. For example, in Java, `java.util.Random` is considered a weak random number generator. `java.security.SecureRandom` should be used instead of `java.util.Random`.
-- For asymmetric encryption, use Elliptic Curve Cryptography (ECC) with a secure curve like `Curve25519` preferred.
-    - If ECC can't be used then use RSA encryption with a minimum 2048bit key.
-- When uses of RSA in signature, PSS padding is recommended.
-- Weak hash/encryption algorithms should not be used such MD5, RC4, DES, Blowfish, SHA1. 1024-bit RSA or DSA, 160-bit ECDSA (elliptic curves), 80/112-bit 2TDEA (two key triple DES)
-- Minimum Key length requirements:
+- При использовании AES128 или AES256 IV (вектор инициализации) должен быть случайным и непредсказуемым. См. пункт Continuous random number generator tests в разделе 4.9.2 [FIPS 140-2, Требования безопасности для криптографических модулей](https://csrc.nist.gov/publications/detail/fips/140/2/final). Например, `java.util.Random` в Java считается небезопасным генератором псевдослучайных чисел (ГПСЧ); и вместо него следует использовать `java.security.SecureRandom`.
+- Для асимметричного шифрования используйте криптографию на эллиптических кривых (ECC) с безопасной кривой, например, `Curve25519`.
+    - Если использование ECC недоступно, используйте шифрование RSA с длиной ключа как минимум 2048 бит.
+- При использовании RSA в подписи рекомендуется дополнение PSS (англ.: RSA Signature Scheme with Appendix-Probabilistic Signature Scheme).
+- Не должны использоваться небезопасные алгоритмы хэширования/шифрования, такие как MD5, RC4, DES, Blowfish, SHA1. 
+- Недостаточная длина ключа: 1024 бита для RSA или DSA, 160 бит для ECDSA (на эллиптических кривых), 80/112 бит в 2TDEA (два ключа в тройном DES)
+- Требования к минимальной длине ключа:
 
 ```text
-Key exchange: Diffie–Hellman key exchange with minimum 2048 bits
-Message Integrity: HMAC-SHA2
-Message Hash: SHA2 256 bits
-Asymmetric encryption: RSA 2048 bits
-Symmetric-key algorithm: AES 128 bits
-Password Hashing: PBKDF2, Scrypt, Bcrypt
-ECDH, ECDSA: 256 bits
+Обмен ключами: обмен ключами Диффи-Хеллмана как минимум 2048 бит
+Целостность сообщения: HMAC-SHA2
+Хэш сообщения: SHA2 256 бит
+Асимметричное шифрование: RSA 2048 бит
+Алгоритм с симметричным ключом: AES 128 бит
+Хэширование пароля: PBKDF2, Scrypt, Bcrypt
+ECDH, ECDSA: 256 бит
 ```
 
-- Uses of SSH, CBC mode should not be used.
-- When symmetric encryption algorithm is used, ECB (Electronic Code Book) mode should not be used.
-- When PBKDF2 is used to hash password, the parameter of iteration is recommended to be over 10000. [NIST](https://pages.nist.gov/800-63-3/sp800-63b.html#sec5) also suggests at least 10,000 iterations of the hash function. In addition, MD5 hash function is forbidden to be used with PBKDF2 such as PBKDF2WithHmacMD5.
+- Не следует использовать режим CBC в SSH.
+- При использовании алгоритма симметричного шифрования не следует использовать режим ECB (электронной кодовой книги).
+- При использовании PBKDF2 для хэширования пароля, рекомендуется, чтобы количество итераций был больше 10000. [NIST](https://pages.nist.gov/800-63-3/sp800-63b.html#sec5) также предлагает не менее 10 тыс. итераций хэш-функции. Кроме того, в PBKDF2 запрещено использовать хэш-функцию MD5, например PBKDF2WithHmacMD5.
 
-### Source Code Review
+### Анализ исходного кода
 
-- Search for the following keywords to identify use of weak algorithms: `MD4, MD5, RC4, RC2, DES, Blowfish, SHA-1, ECB`
+- Ищите следующие ключевые слова, чтобы определить использование нестойких алгоритмов: `MD4, MD5, RC4, RC2, DES, Blowfish, SHA-1, ECB`
 
-- For Java implementations, the following API is related to encryption. Review the parameters of the encryption implementation. For example,
+- Для реализаций на Java следующий API касается шифрования. Проанализируйте параметры шифрования. Например,
 
 ```java
 SecretKeyFactory(SecretKeyFactorySpi keyFacSpi, Provider provider, String algorithm)
@@ -60,25 +61,25 @@ SecretKeySpec(byte[] key, int offset, int len, String algorithm)
 Cipher c = Cipher.getInstance("DES/CBC/PKCS5Padding");
 ```
 
-- For RSA encryption, the following padding modes are suggested.
+- Для шифрования RSA предлагаются следующие режимы дополнения:
 
 ```text
 RSA/ECB/OAEPWithSHA-1AndMGF1Padding (2048)
 RSA/ECB/OAEPWithSHA-256AndMGF1Padding (2048)
 ```
 
-- Search for `ECB`, it's not allowed to be used in padding.
-- Review if different IV (initial Vector) is used.
+- Ищите `ECB`, его нельзя использовать в дополнении.
+- Проверьте, используются ли разные IV (векторы инициализации).
 
 ```java
-// Use a different IV value for every encryption
+// для каждого шифрования используются разные значения IV
 byte[] newIv = ...;
 s = new GCMParameterSpec(s.getTLen(), newIv);
 cipher.init(..., s);
 ...
 ```
 
-- Search for `IvParameterSpec`, check if the IV value is generated differently and randomly.
+- Найдите `IvParameterSpec`, убедитесь, что каждый раз генерируется разные значение IV и они случайные.
 
 ```java
  IvParameterSpec iv = new IvParameterSpec(randBytes);
@@ -87,17 +88,17 @@ cipher.init(..., s);
  cipher.init(Cipher.ENCRYPT_MODE, skey, iv);
 ```
 
-- In Java, search for MessageDigest to check if weak hash algorithm (MD5 or CRC) is used. For example:
+- В Java найдите MessageDigest, чтобы проверить, не используется ли небезопасный алгоритм хеширования (MD5 или CRC). Например:
 
 `MessageDigest md5 = MessageDigest.getInstance("MD5");`
 
-- For signature, SHA1 and MD5 should not be used. For example:
+- Для подписи не следует использовать SHA1 и MD5. Например:
 
 `Signature sig = Signature.getInstance("SHA1withRSA");`
 
-- Search for `PBKDF2`. To generate the hash value of password, `PBKDF2` is suggested to be used. Review the parameters to generate the `PBKDF2` has value.
+- Найдите `PBKDF2`. Для генерации хэша пароля предлагается использовать `PBKDF2`. Просмотрите параметры для формирования хэша `PBKDF2`.
 
-The iterations should be over **10000**, and the **salt** value should be generated as **random value**.
+Итерации должны быть больше **10000**, и значение **salt** должно формироваться **случайным образом**.
 
 ```java
 private static byte[] pbkdf2(char[] password, byte[] salt, int iterations, int bytes)
@@ -109,39 +110,37 @@ private static byte[] pbkdf2(char[] password, byte[] salt, int iteration
    }
 ```
 
-- Hard-coded sensitive information:
+- "Зашитая" в код конфиденциальная информация:
 
 ```text
-User related keywords: name, root, su, sudo, admin, superuser, login, username, uid
-Key related keywords: public key, AK, SK, secret key, private key, passwd, password, pwd, share key, shared key, cryto, base64
-Other common sensitive keywords: sysadmin, root, privilege, pass, key, code, master, admin, uname, session, token, Oauth, privatekey, shared secret
+Ключевые слова, связанные с пользователями: name, root, su, sudo, admin, superuser, login, username, uid
+Ключевые слова, связанные с ключами: public key, AK, SK, secret key, private key, passwd, password, pwd, share key, shared key, crypto, base64
+Другие распространённые чувствительные ключевые слова: sysadmin, root, privilege, pass, key, code, master, admin, uname, session, token, Oauth, privatekey, shared secret
 ```
 
-## Tools
+## Инструменты
 
-- Vulnerability scanners such as Nessus, NMAP (scripts), or OpenVAS can scan for use or acceptance of weak encryption against protocol such as SNMP, TLS, SSH, SMTP, etc.
-- Use static code analysis tool to do source code review such as klocwork, Fortify, Coverity, CheckMark for the following cases.
+- Сканеры уязвимостей, такие как Nessus, NMAP (NSE-скрипты) или OpenVAS, могут сканировать на предмет использования нестойкого шифрования по таким протоколам, как SNMP, TLS, SSH, SMTP и т.д.
+- Используйте инструмент статического анализа кода, например klocwork, Fortify, Coverity, CheckMarx, в следующих случаях:
 
-```text
-CWE-261: Weak Cryptography for Passwords
-CWE-323: Reusing a Nonce, Key Pair in Encryption
-CWE-326: Inadequate Encryption Strength
-CWE-327: Use of a Broken or Risky Cryptographic Algorithm
-CWE-328: Reversible One-Way Hash
-CWE-329: Not Using a Random IV with CBC Mode
-CWE-330: Use of Insufficiently Random Values
-CWE-347: Improper Verification of Cryptographic Signature
-CWE-354: Improper Validation of Integrity Check Value
-CWE-547: Use of Hard-coded, Security-relevant Constants
-CWE-780: Use of RSA Algorithm without OAEP
-```
+    - [CWE-261: Weak Encoding for Password](https://cwe.mitre.org/data/definitions/261.html)
+    - [CWE-323: Reusing a Nonce, Key Pair in Encryption](https://cwe.mitre.org/data/definitions/323.html)
+    - [CWE-326: Inadequate Encryption Strength](https://cwe.mitre.org/data/definitions/326.html)
+    - [CWE-327: Use of a Broken or Risky Cryptographic Algorithm](https://cwe.mitre.org/data/definitions/327.html)
+    - [CWE-328: Reversible One-Way Hash](https://cwe.mitre.org/data/definitions/328.html)
+    - [CWE-329: Not Using a Random IV with CBC Mode](https://cwe.mitre.org/data/definitions/329.html)
+    - [CWE-330: Use of Insufficiently Random Values](https://cwe.mitre.org/data/definitions/330.html)
+    - [CWE-347: Improper Verification of Cryptographic Signature](https://cwe.mitre.org/data/definitions/347.html)
+    - [CWE-354: Improper Validation of Integrity Check Value](https://cwe.mitre.org/data/definitions/354.html)
+    - [CWE-547: Use of Hard-coded, Security-relevant Constants](https://cwe.mitre.org/data/definitions/547.html)
+    - [CWE-780: Use of RSA Algorithm without OAEP](https://cwe.mitre.org/data/definitions/780.html)
 
-## References
+## Ссылки
 
 - [NIST FIPS Standards](https://csrc.nist.gov/publications/fips)
 - [Wikipedia: Initialization Vector](https://en.wikipedia.org/wiki/Initialization_vector)
 - [Secure Coding - Generating Strong Random Numbers](https://www.securecoding.cert.org/confluence/display/java/MSC02-J.+Generate+strong+random+numbers)
-- [Optimal Asymmetric Encryption Padding](https://en.wikipedia.org/wiki/Optimal_asymmetric_encryption_padding)
+- [Оптимальное асимметричное шифрование с дополнением](https://ru.wikipedia.org/wiki/%D0%9E%D0%BF%D1%82%D0%B8%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B0%D1%81%D0%B8%D0%BC%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D1%88%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D1%81_%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%D0%BC)
 - [Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)
 - [Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
 - [Secure Coding - Do not use insecure or weak cryptographic algorithms](https://www.securecoding.cert.org/confluence/display/java/MSC61-J.+Do+not+use+insecure+or+weak+cryptographic+algorithms)
@@ -150,6 +149,10 @@ CWE-780: Use of RSA Algorithm without OAEP
 - [Insufficient Session-ID Length](https://owasp.org/www-community/vulnerabilities/Insufficient_Session-ID_Length)
 - [Using a broken or risky cryptographic algorithm](https://owasp.org/www-community/vulnerabilities/Using_a_broken_or_risky_cryptographic_algorithm)
 - [Javax.crypto.cipher API](https://docs.oracle.com/javase/8/docs/api/javax/crypto/Cipher.html)
-- ISO 18033-1:2015 – Encryption Algorithms
-- ISO 18033-2:2015 – Asymmetric Ciphers
-- ISO 18033-3:2015 – Block Ciphers
+- ISO/IEC 18033-1:2021 – Encryption Algorithms
+- ISO/IEC 18033-2: Asymmetric ciphers
+- ISO/IEC 18033-3: Block ciphers
+- ISO/IEC 18033-4: Stream ciphers
+- ISO/IEC 18033-5: Identity-based ciphers
+- ISO/IEC 18033-6: Homomorphic encryption
+- ISO/IEC 18033-7: Tweakable block ciphers

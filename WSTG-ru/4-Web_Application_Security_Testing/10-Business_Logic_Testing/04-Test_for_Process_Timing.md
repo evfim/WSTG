@@ -7,59 +7,59 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test for Process Timing
+# Тестирование времени обработки
 
 |ID          |
 |------------|
 |WSTG-BUSL-04|
 
-## Summary
+## Обзор
 
-It is possible that attackers can gather information on an application by monitoring the time it takes to complete a task or give a respond. Additionally, attackers may be able to manipulate and break designed business process flows by simply keeping active sessions open and not submitting their transactions in the "expected" time frame.
+Вполне возможно, что злоумышленники могут собирать информацию о приложении, отслеживая время, необходимое для выполнения задачи или предоставления ответа. Кроме того, они могут манипулировать информационными потоками бизнес-процессов и нарушать их, просто оставляя сессии открытыми, и не передавая свои транзакции в «ожидаемые» сроки.
 
-Process timing logic vulnerabilities is unique in that these manual misuse cases should be created considering execution and transaction timing that are application/system specific.
+Уязвимости логики синхронизации процесса уникальны тем, что эти случаи неправильного использования должны создаваться вручную с учётом времени выполнения и транзакций, которые зависят от конкретного приложения/системы.
 
-Processing timing may give/leak information on what is being done in the application/system background processes. If an application allows users to guess what the particulate next outcome will be by processing time variations, users will be able to adjust accordingly and change behavior based on the expectation and "game the system".
+Время обработки может раскрыть информацию о том, что делается в фоновых процессах приложения/системы. Если приложение позволяет пользователям угадывать, каким будет следующий результат, обрабатывая задержки во времени, пользователи смогут соответствующим образом корректировать и изменять своё поведение на основе ожиданий и «играть с системой».
 
-### Example 1
+### Пример 1
 
-Video gambling/slot machines may take longer to process a transaction just prior to a large payout. This would allow astute gamblers to gamble minimum amounts until they see the long process time which would then prompt them to bet the maximum.
+Видеоиграм/игровым автоматам может требоваться немного больше времени для обработки транзакции с крупным выигрышем. Проницательные игроки используют это, чтобы ставить минимальные суммы, пока они не заметят более длительное время обработки, которое побудит их сделать максимальную ставку.
 
-### Example 2
+### Пример 2
 
-Many system log on processes ask for the username and password. If you look closely you may be able to see that entering an invalid username and invalid user password takes more time to return an error than entering a valid username and invalid user password. This may allow the attacker to know if they have a valid username and not need to rely on the GUI message.
+Многие процессы входа в систему запрашивают имя пользователя и пароль. Если вы присмотритесь повнимательнее, то, возможно, заметите, что ввод неверного имени пользователя и неверного пароля занимает больше времени для выдачи ошибки, чем ввод допустимого имени и неверного пароля. Это даёт возможность злоумышленнику узнать, существует ли в системе такое имя пользователя, и уже не нужно полагаться на сообщение графического интерфейса пользователя.
 
 ![Example Control Flow of Login Form](images/Control_Flow_of_Login_Form.jpg)\
-*Figure 4.10.4-1: Example Control Flow of Login Form*
+*Рисунок 4.10.4-1: Пример потока управления для формы входа в систему*
 
-### Example 3
+### Пример 3
 
-Most Arenas or travel agencies have ticketing applications that allow users to purchase tickets and reserve seats. When the user requests the tickets seats are locked or reserved pending payment. What if an attacker keeps reserving seats but not checking out? Will the seats be released, or will no tickets be sold? Some ticket vendors now only allow users 5 minutes to complete a transaction or the transaction is invalidated.
+У большинства стадионов или туристических агентств есть приложения для продажи билетов, которые позволяют пользователям приобретать билеты и резервировать места. Когда пользователь запрашивает билеты, места блокируются или резервируются в ожидании оплаты. Что, если злоумышленник продолжает бронировать места не расплачиваясь? Места будут освобождаться или билеты на них уже не продаются? Некоторые продавцы теперь дают только 5 минут на проведение оплаты, в противном случае транзакция будет признана несостоявшейся.
 
-### Example 4
+### Пример 4
 
-Suppose a precious metals e-commerce site allows users to make purchases with a price quote based on market price at the time they log on. What if an attacker logs on and places an order but does not complete the transaction until later in the day only of the price of the metals goes up? Will the attacker get the initial lower price?
+Предположим, что сайт для торговли драгоценными металлами позволяет пользователям совершать покупки по цене рыночной котировки на момент входа в систему. Что, если злоумышленник войдёт в систему и разместит заявку, но не завершит транзакцию до тех пор, пока позже в тот же день цена не вырастет? Получит ли злоумышленник первоначальную (т.е. более низкую) цену?
 
-## Test Objectives
+## Задачи тестирования
 
-- Review the project documentation for system functionality that may be impacted by time.
-- Develop and execute misuse cases.
+- Проанализировать проектную документацию на предмет функциональности системы, на которую может влиять время.
+- Придумать и реализовать примеры неправильного использования.
 
-## How to Test
+## Как тестировать
 
-The tester should identify which processes are dependent on time, whether it was a window for a task to be completed, or if it was execution time between two processes that could allow the bypass of certain controls.
+Тестировщик должен определить, какие процессы зависят от времени, будь то «окно» для завершения задачи или время выполнения между двумя процессами, которое могло позволить обойти определённые меры контроля.
 
-Following that, it is best to automate the requests that will abuse the above discovered processes, as tools are better fit to analyze the timing and are more precise than manual testing. If this is not possible, manual testing could still be used.
+Для этого лучше всего автоматизировать запросы, которые будут «использовать не по назначению» обнаруженные выше процессы, поскольку инструменты лучше подходят для анализа времени и являются более точными, чем ручное тестирование. Если это невозможно, то придётся тестировать вручную.
 
-The tester should draw a diagram of how the process flows, the injection points, and prepare the requests before hand to launch them at the vulnerable processes. Once done, close analysis should be done to identify differences in the process execution, and if the process is misbehaving against the agreed upon business logic.
+Тестировщик должен нарисовать схему того, как протекает процесс, точки для инъекции и заранее подготовить запросы для запуска их в уязвимых процессах. После этого необходимо провести тщательный анализ, чтобы выявить различия в выполнении процесса и определить, не нарушает ли процесс согласованную бизнес-логику.
 
-## Related Test Cases
+## Связанные сценарии тестирования
 
-- [Testing for Cookies Attributes](../06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md)
-- [Test Session Timeout](../06-Session_Management_Testing/07-Testing_Session_Timeout.md)
+- [Тестирование атрибутов Cookie](../06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md)
+- [Тестирование тайм-аута сессии](../06-Session_Management_Testing/07-Testing_Session_Timeout.md)
 
-## Remediation
+## Как исправить
 
-Develop applications with processing time in mind. If attackers could possibly gain some type of advantage from knowing the different processing times and results add extra steps or processing so that no matter the results they are provided in the same time frame.
+Разрабатывайте приложения с учётом времени обработки. Если злоумышленники могут получить какое-то преимущество, зная различия во времени обработки и получаемых результатах, добавьте дополнительные шаги или такую обработку, чтобы независимо от результатов они предоставлялись в одном и том же временном интервале.
 
-Additionally, the application/system must have mechanism in place to not allow attackers to extend transactions over an "acceptable" amount of time. This may be done by canceling or resetting transactions after a specified amount of time has passed like some ticket vendors are now using.
+Кроме того, в приложении/системе должен быть предусмотрен механизм, не позволяющий злоумышленникам продлевать транзакции в течение «приемлемого» периода времени. Это можно сделать путем отмены или сброса транзакций по прошествии определённого времени, как это сейчас делают некоторые продавцы билетов.

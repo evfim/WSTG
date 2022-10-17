@@ -13,46 +13,46 @@ tags: WSTG
 |------------|
 |WSTG-CRYP-03|
 
-## Summary
+## Обзор
 
-Sensitive data must be protected when it is transmitted through the network. If data is transmitted over HTTPS or encrypted in another way the protection mechanism must not have limitations or vulnerabilities, as explained in the broader article [Testing for Weak Transport Layer Security](01-Testing_for_Weak_Transport_Layer_Security.md) and in other OWASP documentation:
+Конфиденциальные данные должны быть защищены при их передаче по сети. Если данные передаются по протоколу HTTPS или зашифрованы другим способом, механизм защиты не должен иметь ограничений или уязвимостей, как поясняется в статье [Тестирование безопасности транспортного уровня](01-Testing_for_Weak_Transport_Layer_Security.md) и в другой документации OWASP:
 
-- [OWASP Top 10 2017 A3-Sensitive Data Exposure](https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure).
-- [OWASP ASVS - Verification V9](https://github.com/OWASP/ASVS/blob/master/4.0/en/0x17-V9-Communications.md).
+- [OWASP Top 10 2017 A3-Разглашение конфиденциальной информации](https://wiki.owasp.org/?title=Special:Redirect/file/OWASP%20Top%2010-2017-ru.pdf) > [A02:2021 – Cryptographic Failures](https://owasp.org/Top10/A02_2021-Cryptographic_Failures/).
+- [OWASP ASVS - V9. Передача данных](https://github.com/OWASP/ASVS/blob/master/4.0/ru/0x17-V9-Communications.md).
 - [Transport Layer Protection Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html).
 
-As a rule of thumb if data must be protected when it is stored, this data must also be protected during transmission. Some examples for sensitive data are:
+Как правило, если информация должна быть защищена при хранении, то эта информация также должна быть защищена и при передаче. Вот некоторые примеры чувствительной информации:
 
-- Information used in authentication (e.g. Credentials, PINs, Session identifiers, Tokens, Cookies…)
-- Information protected by laws, regulations or specific organizational policy (e.g. Credit Cards, Customers data)
+- Информация, используемая при аутентификации (например, учётные данные, PIN-коды, идентификаторы сессии, токены, cookie…)
+- Информация, защищаемая законами, нормативными актами или конкретной политикой организации (например, банковские карты, данные клиентов)
 
-If the application transmits sensitive information via unencrypted channels - e.g. HTTP - it is considered a security risk. Attackers can take over accounts by [sniffing network traffic](https://owasp.org/www-community/attacks/Manipulator-in-the-middle_attack). Some examples are Basic authentication which sends authentication credentials in plain-text over HTTP, form based authentication credentials sent via HTTP, or plain-text transmission of any other information considered sensitive due to regulations, laws, organizational policy or application business logic.
+Если приложение передаёт конфиденциальную информацию по незашифрованным каналам, например. через HTTP, — это считается угрозой безопасности. Злоумышленники могут завладеть учётными записями, [прослушивая сетевой трафик](https://owasp.org/www-community/attacks/Manipulator-in-the-middle_attack). Некоторыми примерами являются базовая аутентификация по протоколу HTTP, при которой учётные данные передаются в виде открытого текста; аутентификации на основе форм, передающихся по HTTP; или передача в виде открытого текста любой другой информации, которая считается конфиденциальной вследствие правил, законов, политики организации или бизнес-логики приложения.
 
-Examples for Personal Identifying Information (PII) are:
+Примеры информации, позволяющей установить личность (англ.: Personal Identifying Information, PII):
 
-- Social security numbers
-- Bank account numbers
-- Passport information
-- Healthcare related information
-- Medical insurance information
-- Student information
-- Credit and debit card numbers
-- Driver's license and State ID information
+- Индивидуальные номера лицевых счетов (СНИЛС, ИНН)
+- Номера банковских счетов и карт
+- Паспортные данные
+- Медицинские карты
+- Полисы обязательного медицинского страхования
+- Студенческие или военные билеты
+- Номера мобильных телефонов
+- Водительские удостоверения и др.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify sensitive information transmitted through the various channels.
-- Assess the privacy and security of the channels used.
+- Определить категории конфиденциальности информации, передаваемой по различным каналам.
+- Оценить степень защищённости используемых каналов.
 
-## How to Test
+## Как тестировать
 
-Various types of information that must be protected, could be transmitted by the application in clear text. To check if this information is transmitted over HTTP instead of HTTPS, capture traffic between a client and web application server that needs credentials. For any message containing sensitive data, verify the exchange occurred using HTTPS. See more information about insecure transmission of credentials [OWASP Top 10 2017 A3-Sensitive Data Exposure](https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure) or [Transport Layer Protection Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html).
+Различные категории информации, которые должны быть защищены, могут передаваться приложением открытым текстом. Чтобы проверить, передаётся ли эта информация по протоколу HTTP вместо HTTPS, перехватите трафик между клиентом и сервером web-приложений, которому требуются учётные данные. Для любого сообщения, содержащего конфиденциальную информацию, убедитесь, что обмен произошёл с использованием HTTPS. Узнать больше о незащищённой передаче учётных данных можно в [OWASP Top 10 A02:2021 – Cryptographic Failures](https://owasp.org/Top10/A02_2021-Cryptographic_Failures/) или [Памятке по безопасности транспортного уровня](https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html).
 
-### Example 1: Basic Authentication over HTTP
+### Пример 1: Базовая аутентификация через HTTP
 
-A typical example is the usage of Basic Authentication over HTTP. When using Basic Authentication, user credentials are encoded rather than encrypted, and are sent as HTTP headers. In the example below the tester uses [curl](https://curl.haxx.se/) to test for this issue. Note how the application uses Basic authentication, and HTTP rather than HTTPS.
+Типичным примером является использование базовой аутентификации по протоколу HTTP. При использовании базовой аутентификации учётные данные пользователя кодируются, а не шифруются, и передаются в виде HTTP-заголовков. В приведённом ниже примере тестировщик использует [curl](https://curl.se/) для выявления этой проблемы. Обратите внимание, как приложение использует базовую аутентификацию и HTTP, а не HTTPS.
 
-```bash
+```http
 $ curl -kis http://example.com/restricted/
 HTTP/1.1 401 Authorization Required
 Date: Fri, 01 Aug 2013 00:00:00 GMT
@@ -65,9 +65,9 @@ Content-Type: text/html
 <body bgcolor=white> <h1>401 Authorization Required</h1>  Invalid login credentials!  </body></html>
 ```
 
-### Example 2: Form-Based Authentication Performed over HTTP
+### Пример 2: Аутентификация на основе форм через HTTP
 
-Another typical example is authentication forms which transmit user authentication credentials over HTTP. In the example below one can see HTTP being used in the `action` attribute of the form. It is also possible to see this issue by examining the HTTP traffic with an interception proxy.
+Другим типичным примером являются формы аутентификации, которые передают учётные данные пользователя по протоколу HTTP. В приведённом ниже примере можно видеть, что HTTP используется в атрибуте `action` формы. Также можно увидеть эту проблему, изучая HTTP-трафик с помощью перехватывающего прокси.
 
 ```html
 <form action="http://example.com/login">
@@ -77,9 +77,9 @@ Another typical example is authentication forms which transmit user authenticati
 </form>
 ```
 
-### Example 3: Cookie Containing Session ID Sent over HTTP
+### Пример 3: Cookie с Session ID передаётся по HTTP
 
-The Session ID Cookie must be transmitted over protected channels. If the cookie does not have the [secure flag](../06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md) set, it is permitted for the application to transmit it unencrypted. Note below the setting of the cookie is done without the Secure flag, and the entire log in process is performed in HTTP and not HTTPS.
+Cookie, содержащий идентификатор сессии, должен передаваться по защищённым каналам. Если для cookie не установлен [атрибут Secure](../06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md), то приложению разрешено передавать его в незашифрованном виде. Обратите внимание, что cookie устанавливается без атрибута Secure, и весь процесс входа идёт по протоколу HTTP, а не HTTPS.
 
 ```http
 https://secure.example.com/login
@@ -115,39 +115,39 @@ Content-Length: 730
 Date: Tue, 25 Dec 2013 00:00:00 GMT
 ```
 
-### Example 4: Password Reset, Change Password or Other Account Manipulation over HTTP
+### Пример 4: Сброс и изменение пароля или другие манипуляции с учётной записью через HTTP
 
-If the web application has features that allow a user to change an account or call a different service with credentials, verify all of those interactions use HTTPS. The interactions to test include the following:
+Если у web-приложения есть функции, позволяющие пользователю изменять учётную запись или вызывать другой сервис с учётными данными, убедитесь, что все эти взаимодействия идут по HTTPS. Взаимодействия, подлежащие тестированию, включают:
 
-- Forms that allow users to handle a forgotten password or other credentials
-- Forms that allow users to edit credentials
-- Forms that require the user to authenticate with another provider (for example, payment processing)
+- формы, позволяющие пользователям восстановить забытый пароль или другие учётные данные;
+- формы, позволяющие пользователям редактировать учётные данные;
+- формы, требующие аутентификации пользователя у третьей стороны (например, проведение платежей).
 
-### Example 5: Testing Password Sensitive Information in Source Code or Logs
+### Пример 5: Поиск чувствительной информации в исходном коде или журналах
 
-Use one of the following techniques to search for sensitive information.
+Используйте один из следующих методов для поиска информации.
 
-Checking if password or encryption key is hardcoded in the source code or configuration files.
+Проверьте, не зашит ли пароль или ключ шифрования в исходный код или файлы конфигурации:
 
-`grep -r –E "Pass | password | pwd |user | guest| admin | encry | key | decrypt | sharekey " ./PathToSearch/`
+`grep -r –E "Pass | password | pwd |user | guest| admin | encrypt | key | decrypt | sharekey " ./PathToSearch/`
 
-Checking if logs or source code may contain phone number, email address, ID or any other PII. Change the regular expression based on the format of the PII.
+Проверьте, могут ли журналы или исходный код содержать номер телефона, адрес электронной почты, идентификатор или другие персональные данные (ПДн). Измените регулярное выражение в соответствии с форматом ПДн.
 
 `grep -r " {2\}[0-9]\{6\} "  ./PathToSearch/`
 
-## Remediation
+## Как исправить
 
-Use HTTPS for the whole web site and redirect any HTTP requests to HTTPS.
+Используйте HTTPS на всём web-сайта и перенаправляйте любые HTTP-запросы на HTTPS.
 
-## Tools
+## Инструменты
 
-- [curl](https://curl.haxx.se/)
+- [curl](https://curl.se/)
 - [grep](http://man7.org/linux/man-pages/man1/egrep.1.html)
 - [Wireshark](https://www.wireshark.org/)
 - [TCPDUMP](https://www.tcpdump.org/)
 
-## References
+## Ссылки
 
 - [OWASP Insecure Transport](https://owasp.org/www-community/vulnerabilities/Insecure_Transport)
-- [OWASP HTTP Strict Transport Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html)
+- [Памятка OWASP по HTTP Strict Transport Security](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html)
 - [Let's Encrypt](https://letsencrypt.org)

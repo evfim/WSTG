@@ -7,10 +7,10 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Stack Traces
+# Тестирование трассировки стека
 
 |ID          |
 |------------|
 |WSTG-ERRH-02|
 
-This content has been merged into: [Testing for Improper Error Handling](01-Testing_For_Improper_Error_Handling.md).
+Этот контент был объединен с разделом [Тестирование некорректной обработки ошибок](01-Testing_For_Improper_Error_Handling.md).
