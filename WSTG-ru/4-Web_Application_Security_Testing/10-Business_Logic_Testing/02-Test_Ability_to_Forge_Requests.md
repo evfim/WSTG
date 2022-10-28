@@ -35,8 +35,8 @@ tags: WSTG
 
 ## Задачи тестирования
 
-- Review the project documentation looking for guessable, predictable, or hidden functionality of fields.
-- Insert logically valid data in order to bypass normal business logic workflow.
+- Проанализировать проектную документацию в поисках угадываемой, предсказуемой или скрытой функциональности полей.
+- Вставить логически допустимые данные, чтобы обойти стандартную логику бизнес-процесса.
 
 ## Как тестировать
 

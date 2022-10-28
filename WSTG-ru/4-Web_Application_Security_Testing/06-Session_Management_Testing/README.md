@@ -23,7 +23,7 @@ tags: WSTG
 
 4.6.7 [Тестирование тайм-аута сессии](07-Testing_Session_Timeout.md)
 
-4.6.8 [Тестирование пазла сессии](08-Testing_for_Session_Puzzling.md)
+4.6.8 [Тестирование "пазла" сессии](08-Testing_for_Session_Puzzling.md)
 
 4.6.9 [Тестирование перехвата сессии](09-Testing_for_Session_Hijacking.md)
 

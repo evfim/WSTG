@@ -7,63 +7,63 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test Payment Functionality
+# Тестирование платёжных функций
 
 |ID          |
 |------------|
 |WSTG-BUSL-10|
 
-## Summary
+## Обзор
 
-Many applications implement payment functionality, including e-commerce sites, subscriptions, charities, donation sites and currency exchanges. The security of this functionality is critical, as vulnerabilities could allow attackers to steal from the organization, make fraudulent purchases, or even to steal payment card details from other users. These issue could result in not only reputational damage to the organization, but also significant financial losses, both from direct losses and fines from industry regulators.
+Многие приложения реализуют платежные функции, включая сайты электронной коммерции, подписки, благотворительные организации, сайты пожертвований и обмена валюты. Безопасность этой функциональности имеет решающее значение, поскольку уязвимости могут позволить злоумышленникам совершать кражи из организации, мошеннические покупки или даже данные платёжных карт у других пользователей. Эти проблемы могут привести не только к репутационному ущербу для организации, но и к значительным финансовым потерям, как от прямых убытков, так и от штрафов со стороны отраслевых регуляторов.
 
-## Test Objectives
+## Задачи тестирования
 
-- Determine whether the business logic for the e-commerce functionality is robust.
-- Understand how the payment functionality works.
-- Determine whether the payment functionality is secure.
+- Определить, надёжна ли бизнес-логика для функций электронной коммерции.
+- Понять, как работают функции оплаты.
+- Определить, защищены ли платёжные функции.
 
-## How to Test
+## Как тестировать
 
-### Payment Gateway Integration Methods
+### Способы интеграции с платёжным шлюзом
 
-There are several different ways that applications can integrate payment functionality, and the testing approach will vary depending on which one is used. The most common methods are:
+Существует несколько различных способов интеграции платёжных функций в приложения, и подход к тестированию будет различаться в зависимости от того, какой из них используется. Наиболее распространённые методы:
 
-- Redirecting the user to a third-party payment gateway.
-- Loading a third-party payment gateway in an IFRAME on the application.
-- Having a HTML form that makes a cross-domain POST request to a third-party payment gateway.
-- Accepting the card details directly, and then making a POST from the application backend to the payment gateway's API.
+- Перенаправление пользователя на сторонний платёжный шлюз.
+- Загрузка стороннего платёжного шлюза в IFRAME приложения.
+- HTML-форма, которая отправляет междоменный POST-запрос стороннему платёжному шлюзу.
+- Приём данных карты напрямую, а затем POST-запрос из серверной части приложения в API платёжного шлюза.
 
 ### PCI DSS
 
-The Payment Card Industry Data Security Standard (PCI DSS) is a standard that organizations are required to follow in order process debit and card payments (although it's important to note that it is not a law). A full discussion of this standard is outside of the scope of this guide (and of most penetration tests) - but it's useful for testers to understand a few key points.
+Стандарт безопасности данных индустрии платёжных карт (англ.: Payment Card Industry Data Security Standard, PCI DSS) — это стандарт, которому организации обязаны следовать при обработке дебетовых и карточных платежей (хотя важно отметить, что это не закон). Полное обсуждение этого стандарта выходит за рамки данного Руководства (и большинства тестов на проникновение), но тестировщикам полезно знать несколько ключевых моментов.
 
-The most common misconception about PCI DSS is that it only applies to systems that store cardholder data (i.e, debit or credit card details). This is incorrect: it applies to any system that "stores, processes or transmits" this information. Exactly which requirements need to be followed depends on how which of the payment gateway integration methods are used. The [Visa Processing E-Commerce Payments guidance](https://www.visa.co.uk/dam/VCOM/regional/ve/unitedkingdom/PDF/risk/processing-e-commerce-payments-guide-73-17337.pdf) provides further details on this, but as a brief summary:
+Наиболее распространённое заблуждение относительно PCI DSS заключается в том, что он применим только к системам, в которых хранятся данные о держателях карт (т.е. данные дебетовых или кредитных карт). Это неверно: он относится к любой системе, которая «хранит, обрабатывает или передаёт» эту информацию. Какие именно требования необходимо соблюдать, зависит от того, какой из методов интеграции с платёжным шлюзом используется. [Руководство Visa по обработке платежей в электронной торговле](https://www.visa.co.uk/dam/VCOM/regional/ve/unitedkingdom/PDF/risk/processing-e-commerce-payments-guide-73-17337.pdf) содержит более подробную информацию об этом, но в виде краткого резюме:
 
-| Integration Method | Self Assessment Questionnaire (SAQ) |
+| Метод интеграции | Анкета для самооценки (SAQ) |
 |--------------------|-------------------------------------|
-| Redirect | [SAQ A](https://www.pcisecuritystandards.org/documents/PCI-DSS-v3_2_1-SAQ-A.pdf) |
+| Перенаправление | [SAQ A](https://www.pcisecuritystandards.org/documents/PCI-DSS-v3_2_1-SAQ-A.pdf) |
 | IFRAME | [SAQ A](https://www.pcisecuritystandards.org/documents/PCI-DSS-v3_2_1-SAQ-A.pdf) |
-| Cross-domain POST | [SAQ A-EP](https://www.pcisecuritystandards.org/documents/PCI-DSS-v3_2-SAQ-A_EP-rev1_1.pdf) |
-| Backend API | [SAQ D](https://www.pcisecuritystandards.org/documents/PCI-DSS-v3_2_1-SAQ-D_Merchant.pdf) |
+| Междоменный POST | [SAQ A-EP](https://www.pcisecuritystandards.org/documents/PCI-DSS-v3_2-SAQ-A_EP-rev1_1.pdf) |
+| API | [SAQ D](https://www.pcisecuritystandards.org/documents/PCI-DSS-v3_2_1-SAQ-D_Merchant.pdf) |
 
-As well as the differences in the attack surface and risk profile of each approach, there is also a significant difference in the number of requirements between SAQ A (22 requirements) and SAQ D (329 requirements) that the organization needs to meet. As such, it's worth highlighting applications that are not using an redirect or IFRAME, as they are represent increased technical and compliance risks.
+Помимо различий в поверхности атаки и профиле риска каждого подхода, существует также значительная разница в количестве требований между SAQ A (22 требования) и SAQ D (329 требований), которым организация должна соответствовать. Таким образом, стоит выделить приложения, которые не используют перенаправление или IFRAME, поскольку они представляют повышенные технические риски и риски несоответствия требованиям.
 
-### Quantity Tampering
+### Подделка количества
 
-Most e-commerce websites allow users to add items to a basket before they start the checkout process. This basket should keep track of which items that have been added, and the quantity of each item. The quantity should normally be a positive integer, but if the website does not properly validate this then it may be possible to specify a decimal quantity of an item (such as `0.1`), or a negative quantity (such as `-1`). Depending on the backend processing, adding negative quantities of an item may result in a negative value, reducing the overall cost of the basket.
+Большинство web-сайтов электронной коммерции позволяют пользователям добавлять покупки в корзину до начала процесса оплаты заказа. Корзина помогает отслеживать, какие продукты или услуги были добавлены, и в каком количестве. Количество обычно должно быть положительным целым числом, но если web-сайт это должным образом не контролирует, то можно указать дробное (например, `0,1`) и/или отрицательное (например, `-1`) количество. В зависимости от обработки в серверной части добавление отрицательного количества товара может привести к отрицательной сумме, уменьшая общую стоимость корзины.
 
-There are usually multiple ways to modify the contents of the basket that should be tested, such as:
+Обычно существует несколько способов изменения содержимого корзины, которые следует протестировать, например:
 
-- Adding a negative quantity of an item.
-- Repeatedly removing items until the quantity is negative.
-- Updating the quantity to a negative value.
+- Добавление отрицательного количества товара.
+- Многократное удаление товара, пока его количество не станет отрицательным.
+- Изменение количества на отрицательное значение.
 
-Some sites may also provide a drop-down menu of valid quantities (such as items that must be bought in packs of 10), and it may be possible to tamper these requests to add other quantities of items.
+Некоторые сайты могут также предоставлять выпадающее меню с указанием допустимых количеств (например, товаров, которые необходимо покупать в упаковках по 10 штук), и можно подделать эти запросы, чтобы добавить другие количества товаров.
 
-If the full basket details are passed to the payment gateway (rather than simply passing a total value), it may also be possible to tamper the values at that stage.
+Если платёжному шлюзу передаётся полная информация о корзине (а не только её общая стоимость), на этом этапе также возможно подделать значения.
 
-Finally, if the application is vulnerable to [HTTP parameter pollution](../07-Input_Validation_Testing/04-Testing_for_HTTP_Parameter_Pollution.md) then it may be possible to cause unexpected behavior by passing a parameter multiple times, such as:
+Наконец, если приложение уязвимо к [загрязнению HTTP-параметров](../07-Input_Validation_Testing/04-Testing_for_HTTP_Parameter_Pollution.md), то можно вызвать неожиданное поведение, передавая параметр несколько раз, например:
 
 ```http
 POST /api/basket/add
@@ -72,11 +72,11 @@ Host: example.org
 item_id=1&quantity=5&quantity=4
 ```
 
-### Price Tampering
+### Подделка цен
 
-#### On the Application
+#### В приложении
 
-When adding an item to the basket, the application should only include the item and a quantity, such as the example request below:
+При добавлении товара в корзину приложение должно включать в запрос только товар и количество, как в примере ниже:
 
 ```http
 POST /api/basket/add HTTP/1.1
@@ -85,7 +85,7 @@ Host: example.org
 item_id=1&quantity=5
 ```
 
-However, in some cases the application may also include the price, meaning that it may be possible to tamper it:
+Однако в некоторых случаях запрос может также включать цену, что означает, что её можно подделать:
 
 ```http
 POST /api/basket/add HTTP/1.1
@@ -94,15 +94,15 @@ Host: example.org
 item_id=1&quantity=5&price=2.00
 ```
 
-Different types of items may have different validation rules, so each type needs to be separately tested. Some applications also allow users to add an optional donation to charity as part of their purchase, and this donation can usually be an arbitrary amount. If this amount is not validated, it may be possible to add a negative donation amount, which would then reduce the total value of the basket.
+Разные типы товаров могут иметь разные правила контроля, поэтому каждый тип необходимо тестировать отдельно. Некоторые приложения также позволяют пользователям включать дополнительное пожертвование на благотворительность в рамках своей покупки, и его сумма обычно может быть произвольной. Если эта сумма не контролируется, то можно указать отрицательное значение, что уменьшит общую стоимость корзины.
 
-#### On the Payment Gateway
+#### На платёжном шлюзе
 
-If the checkout process is performed on an third-party payment gateway, then it may be possible to tamper with the prices between the application and the gateway.
+Если процесс оплаты заказа проводится на стороннем платёжном шлюзе, возможна подделка цены между приложением и шлюзом.
 
-The transfer to the gateway may be performed using a cross-domain POST to the gateway, as shown in the HTML example below.
+Передача на шлюз может быть выполнена с помощью междоменного POST-запроса, как показано в примере HTML ниже.
 
-> Note: The card details are not included in this request - the user will be prompted for them on the payment gateway:
+> Примечание. Данные карты не включаются в этот запрос — пользователю будет предложено ввести их на платёжном шлюзе:
 
 ```html
 <form action="https://example.org/process_payment" method="POST">
@@ -118,142 +118,142 @@ The transfer to the gateway may be performed using a cross-domain POST to the ga
 </form>
 ```
 
-By modifying the HTML form or intercepting the POST request, it may be possible to modify the prices of items, and to effectively purchase them for less. Note that many payment gateways will reject a transaction with a value of zero, so a total of 0.01 is more likely to succeed. However, some payment gateways may accept negative values (used to process refunds). Where there are multiple values (such as item prices, a shipping cost, and the total basket cost), all of these should be tested.
+Изменяя HTML-форму или перехватив POST-запрос, можно изменить цены на товары и с успехом покупать их дешевле. Обратите внимание, что многие платёжные шлюзы отклоняют транзакцию с нулевым значением, поэтому итоговая сумма 0,01 с большей вероятностью будет успешной. Однако некоторые платёжные шлюзы могут принимать отрицательные значения (используются для обработки возвратов). Там, где есть несколько значений (например, цены товаров, стоимость доставки и общая стоимость корзины), все они должны быть протестированы.
 
-If the payment gateway uses an IFRAME instead, it may be possible to perform a similar type of attack by modifying the IFRAME URL:
+Если вместо этого платёжный шлюз использует IFRAME, можно провести аналогичный тип атаки, изменив его URL:
 
 ```html
 <iframe src="https://example.org/payment_iframe?merchant_id=123&basket_total=22.00" />
 ```
 
-> Note: Payment gateways are usually run by a third-parties, and as such may not be included in the scope of testing. This means that while price tampering may be acceptable, other types of attacks (such as SQL injection) should not be performed without explicit written approval).
+> Примечание: Платёжные шлюзы обычно принадлежат сторонним организациям и поэтому не могут входить в область тестирования. Это означает, что, хотя подделка цены может быть приемлемой, другие типы атак (например, SQL-инъекция) не должны проводиться без явного письменного разрешения владельца шлюза).
 
-#### Encrypted Transaction Details
+#### Зашифрованные сведения о транзакциях
 
-In order to prevent the transaction being tampered with, some payment gateways will encrypt the details of the request that is made to them. For example, [Paypal](https://developer.paypal.com/api/nvp-soap/paypal-payments-standard/integration-guide/encryptedwebpayments/#link-usingewptoprotectmanuallycreatedpaymentbuttons) do this using public key cryptography.
+Чтобы предотвратить подделку транзакции, некоторые платежные шлюзы шифруют детали запроса, который им направляется. Например, [Paypal](https://developer.paypal.com/api/nvp-soap/paypal-payments-standard/integration-guide/encryptedwebpayments/#link-usingewptoprotectmanuallycreatedpaymentbuttons) делает это с помощью криптографии с открытым ключом.
 
-The first thing to try is making an unencrypted request, as some payment gateways allow insecure transactions unless they have been specifically configured to reject them.
+Первое, что нужно попробовать, — сделать незашифрованный запрос, так как некоторые платёжные шлюзы допускают незащищённые транзакции, если они не были специально настроены, чтобы их отклонять.
 
-If this doesn't work, then you need to find the public key that is used to encrypt the transaction details, which could be exposed in a backup of the application, or if you can find a directory traversal vulnerability.
+Если это не сработает, нужно найти открытый ключ, который используется для шифрования сведений о транзакции, который можно найти в резервной копии приложения, или если сможете найти уязвимость обхода каталогов.
 
-Alternatively, it's possible that the application re-uses the same public/private key pair for the payment gateway and its digital certificate. You can obtain the public key from the server with the following command:
+В качестве альтернативы возможно, что приложение переиспользует одну и ту же пару открытого и закрытого ключей для платёжного шлюза и его сертификата. Вы можете получить открытый ключ с сервера с помощью следующей команды:
 
 ```bash
 echo -e '\0' | openssl s_client -connect example.org:443 2>/dev/null | openssl x509 -pubkey -noout
 ```
 
-Once you have this key, you can then try and create an encrypted request (based on the payment gateway's documentation), and submit it to the gateway to see if it's accepted.
+Получив этот ключ, вы можете попытаться создать зашифрованный запрос (на основе документации платёжного шлюза) и передать его на шлюз, чтобы узнать, принят ли он.
 
-#### Secure Hashes
+#### Защищённый хэш
 
-Other payment gateways use a secure hash (or a HMAC) of the transaction details to prevent tampering. The exact details of how this is done will vary between providers (for example, [Adyen](https://docs.adyen.com/online-payments/classic-integrations/hosted-payment-pages/hmac-signature-calculation) use HMAC-SHA256), but it will normally include the details of the transaction and a secret value. For example, a hash may be calculated as:
+Другие платежные шлюзы используют защищённый хэш (или HMAC) сведений о транзакциях для предотвращения несанкционированного доступа. Детали реализации у разных поставщиков будут различаться (например, [Adyen](https://docs.adyen.com/online-payments/classic-integrations/hosted-payment-pages/hmac-signature-calculation) использует HMAC-SHA256), но обычно они включают в себя сведения о транзакции и секретное значение. Например, хэш может быть вычислен как:
 
 ```php
 $secure_hash = md5($merchant_id . $transaction_id . $items . $total_value . $secret)
 ```
 
-This value is then added to the POST request that is sent to the payment gateway, and verified to ensure that the transaction hasn't been tampered with.
+Затем это значение добавляется к POST-запросу, который отправляется платёжному шлюзу, и сверяется, чтобы убедиться, что транзакция не была подделана.
 
-The first thing to try is removing the secure hash, as some payment gateways allow insecure transactions unless a specific configuration option has been set.
+Первое, что нужно попробовать, — удалить это хэш, поскольку некоторые платёжные шлюзы допускают незащищённые транзакции, если не установлен определённый параметр конфигурации.
 
-The POST request should contain all of the values required to calculate this hash, other than the secret key. This means that if you know how the hash is calculated (which should be included in the payment gateway's documentation), then you can attempt to brute-force the secret. Alternatively, if the website is running an off-the-shelf application, there may be a default secret in the configuration files or source code. Finally, if you can find a backup of the website, or otherwise gain access to the configuration files, you may be able to find the secret there.
+POST-запрос должен содержать все значения, необходимые для вычисления хэша, кроме секретного ключа. Это означает, что если вы знаете, как вычисляется хэш (что должно быть описано в документации платёжного шлюза), то вы можете попытаться взломать этот секрет методом перебора. В качестве альтернативы, если на web-сайте запущено готовое приложение, секрет по умолчанию может находиться в файлах конфигурации или в исходном коде. Наконец, если вы сможете найти резервную копию web-сайта или иным образом получить доступ к файлам конфигурации, вы можете найти секрет там.
 
-If you can obtain this secret, you can then tamper the transaction details, and then generate your own secure hash which will be accepted by the payment gateway.
+Если вам удастся получить этот секрет, вы сможете подделать сведения о транзакции, а затем сгенерировать свой собственный защищённый хэш, который будет приниматься платёжным шлюзом.
 
-#### Currency Tampering
+#### Подделка валюты
 
-If it's not possible to tamper with the actual prices, it may be possible to change the currency that is used, especially where applications support multiple currencies. For example, the application may validate that the price is 10, but if you can change the currency so that you pay 10 USD rather than 10 GBP, this would allow you to purchase items more cheaply.
+Если невозможно изменить фактические цены, возможно, удастся изменить используемую валюту, особенно если приложения поддерживают несколько валют. Например, приложение может проверить, что цена равна 10, но если вы можете изменить валюту так, чтобы платить 10 долларов США, а не 10 фунтов стерлингов, это позволит вам приобретать товары дешевле.
 
-#### Time Delayed Requests
+#### Запросы с задержкой по времени
 
-If the value of items on the site changes over time (for example on a currency exchange), then it may be possible to buy or sell at an old price by intercepting requests using a local proxy and delaying them. In order for this to be exploitable, the price would need to either be included in the request, or linked to something in the request (such as session or transaction ID). The example below shows how this could potentially be exploited on a application that allows users to buy and sell gold:
+Если стоимость товаров на сайте меняется с течением времени (например, при обмене валюты), то можно купить или продать по старой цене, перехватывая запросы с использованием локального прокси и задерживая их. Для того, чтобы это можно было эксплуатировать, цена должна быть либо включена в запрос, либо связана с чем-то в запросе (например, с идентификатором сессии или транзакции). Приведённый ниже пример показывает, как это потенциально можно эксплуатировать в приложении, которое позволяет пользователям покупать и продавать золото:
 
-- View the current price of gold on the website.
-- Initiate a buy request for 1oz of gold.
-- Intercept and freeze the request.
-- Wait one minutes to check the price of gold again:
-    - If it increases, allow the transaction to complete, and buy the gold for less than it's current value.
-    - If it decreases, drop the request request.
+- Посмотреть текущую цену золота на сайте.
+- Инициировать запрос на покупку одной унции золота.
+- Перехватить и зафиксировать запрос.
+- Подождать одну минуту, чтобы снова проверить цену на золото:
+    - Если она увеличится, завершить транзакцию и купить золото дешевле, чем его текущая стоимость.
+    - Если она уменьшится, отменить запрос.
 
-If the website allows the user to make payments using cryptocurrencies (which are usually far more volatile), it may be possible to exploit this by obtaining a fixed price in that cryptocurrency, and then waiting to see if the value rises or falls compared to the main currency used by the website.
+Если сайт позволяет пользователю совершать платежи в криптовалютах (которые обычно гораздо более волатильны), то можно попробовать получить фиксированную цену в этой криптовалюте, а затем подождать наблюдая, увеличится или упадёт стоимость по сравнению с основной валютой, используемой сайтом.
 
-### Discount Codes
+### Промокоды
 
-If the application supports discount codes, then there are various checks that should be carried out:
+Если приложение поддерживает промокоды, то необходимо провести различные проверки:
 
-- Are the codes easily guessable (TEST, TEST10, SORRY, SORRY10, company name, etc)?
-    - If a code has a number in, can more codes be found by increasing the number?
-- Is there any brute-force protection?
-- Can multiple discount codes be applied at once?
-- Can discount codes be applied multiple times?
-- Can you [inject wildcard characters](../07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md#sql-wildcard-injection) such as `%` or `*`?
-- Are discount codes exposed in the HTML source or hidden `<input>` fields anywhere on the application?
+- Легко ли угадать код (TEST, TEST10, SORRY, SORRY10, название компании, праздника и т.д.)?
+    - Если в коде есть номер, можно ли найти другие коды, меняя номер?
+- Есть ли защита от перебора?
+- Можно ли применить сразу несколько промокодов?
+- Можно ли применять промокоды несколько раз?
+- Можно ли [вставить символы подстановки](../07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md#SQL-инъекция-с-символами-подстановки), например, `%` или `*`?
+- Нет ли промокодов в исходном HTML или в скрытых полях формы `<input>` где-либо в приложении?
 
-In addition to these, the usual vulnerabilities such as SQL injection should be tested for.
+Кроме того следует проверить наличие обычных уязвимостей, таких как SQL-инъекции.
 
-### Breaking Payment Flows
+### Нарушение процесса оплаты
 
-If the checkout or payment process on an application involves multiple stages (such as adding items to a basket, entering discount codes, entering shipping details, and entering billing information), then it may be possible to cause unintended behavior by performing these steps outside of the expected sequence. For example, you could try:
+Если процесс оформления заказа или оплаты в приложении включает в себя несколько этапов (например, добавление товаров в корзину, ввод промокодов, ввод сведений о доставке и платёжной информации), то проведение этих этапов вне ожидаемой последовательности может привести к неожиданному поведению. Например, можно попробовать:
 
-- Modifying the shipping address after the billing details have been entered to reduce shipping costs.
-- Removing items after entering shipping details, to avoid a minimum basket value.
-- Modifying the contents of the basket after applying a discount code.
-- Modifying the contents of a basket after completing the checkout process.
+- Изменить адрес доставки после ввода платёжных реквизитов для снижения стоимости доставки.
+- Удалить товары после ввода сведений о доставке, чтобы избежать ограничения на минимальную стоимость корзины.
+- Изменить содержимое корзины после применения промокода.
+- Изменить содержимое корзины после завершения процесса оформления заказа.
 
-It may also be possible to skip the entire payment process for the transaction. For example, if the application redirects to a third-party payment gateway, the payment flow may be:
+Также можно пропустить весь процесс оплаты транзакции. Например, если приложение перенаправляет на сторонний платёжный шлюз, то последовательность операций может быть следующей:
 
-- The user enters details on the application.
-- The user is redirected to the third-party payment gateway.
-- The user enters their card details.
-    - If the payment is successful, they are redirected to `success.php` on the application.
-    - If the payment is unsuccessful, they are redirected to `failure.php` on the application
-- The application updates its order database, and processes the order if it was successful.
+- Пользователь вводит данные в приложение.
+- Пользователь перенаправляется на сторонний платёжный шлюз.
+- Пользователь вводит данные своей карты.
+    - Если платёж прошел успешно, он перенаправляется на `success.php` в приложении.
+    - Если платеж не прошёл, он перенаправляется на `failure.php` в приложении.
+- Приложение обновляет свою базу данных заказов и обрабатывает заказ, если он был выполнен успешно.
 
-Depending on whether the application actually validates that the payment on the gateway was successful, it may be possible to force-browse to the `success.php` page (possibly including a transaction ID if one is required), which would cause the website to process the order as though the payment was successful. Additionally, it may be possible to make repeated requests to the `success.php` page to cause an order to be processed multiple times.
+В зависимости от того, подтверждает ли приложение, что платёж на шлюзе был успешным, можно принудительно заставить перейти на страницу `success.php` (с идентификатором транзакции, если он требуется), что приведёт к тому, что сайт обработает заказ, как если бы оплата прошла успешно. Кроме того, можно сделать повторные запросы к странице `success.php`, чтобы заставить заказ обрабатываться несколько раз.
 
-### Exploiting Transaction Processing Fees
+### Комиссии за обработку транзакций
 
-Merchants normally have to pay fees for every transaction processed, which are typically made up of a small fixed fee, and a percentage of the total value. This means that receiving very small payments (such as $0.01) may result in the merchant actually losing money, as the transaction processing fees are greater than the total value of the transaction.
+Продавцы обычно должны платить комиссию за каждую обработанную транзакцию, которая как правило состоит из небольшой фиксированной суммы и процента от общей стоимости. Это означает, что получение минимальных платежей (например, $0,01) может привести к фактической потере денег продавцом, поскольку плата за обработку транзакции превышает её общую стоимость.
 
-This issue is rarely exploitable on e-commerce sites, as the price of the cheapest item is usually high enough to prevent it. However, if the website allows customers to make payments with arbitrary amounts (such as donations), check that it enforces a sensible minimum value.
+Эта уязвимость редко эксплуатируется на сайтах электронной коммерции, поскольку цена самого дешёвого товара обычно достаточно велика, чтобы её предотвратить. Однако, если сайт позволяет клиентам совершать платежи с произвольными суммами (например, пожертвования), убедитесь, что он ограничивает их разумной минимальной суммой.
 
-### Test Payment Cards
+### Номера тестовых карт
 
-Most payment gateways have a set of defined test card details, which can be used by developers during testing and debugging. These should only be usable on development or sandbox versions of the gateways, but may be accepted on live sites if they have been misconfigured.
+У большинства платежных шлюзов определён набор реквизитов для тестовой карты, которые могут использоваться разработчиками во время тестирования и отладки. Они должны использоваться только в версиях шлюзов для разработки или в изолированной среде (англ.: sandbox), но могут быть приняты на действующих сайтах, если они неправильно сконфигурированы.
 
-Examples of these test details for various payment gateways are listed below:
+Примеры тестовых карт для различных платёжных шлюзов перечислены ниже:
 
 - [Adyen - Test Card Numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers)
 - [Globalpay - Test Cards](https://developer.globalpay.com/resources/test-card-numbers)
 - [Stripe - Basic Test Card Numbers](https://stripe.com/docs/testing#cards)
 - [Worldpay - Test Card Numbers](http://support.worldpay.com/support/kb/bg/testandgolive/tgl5103.html)
 
-### Testing Logistics
+### Логистика тестирования
 
-Testing payment functionality on applications can introduce additional complexity, especially if a live site is being tested. Areas that need to be considered include:
+Тестирование функций оплаты в приложениях может привести к дополнительным сложностям, особенно если тестируется работающий сайт. Действия, которые необходимо учитывать, включают:
 
-- Obtaining test card payment details for the application.
-    - If these are not available, then it may be possible to obtain a pre-paid card or an alternative.
-- Keeping a record of any orders that are made so that they can be cancelled and refunded.
-- Not placing orders that can't be cancelled, or that will cause other actions (such as goods being immediately dispatched from a warehouse).
+- Получить платёжные реквизиты тестовой карты для приложения.
+    - Если их нет, то можно получить предоплаченную и т.п. карту.
+- Вести журнал всех сделанных заказов, чтобы их можно было отменить и вернуть деньги.
+- Не размещать заказы, которые нельзя отменить или которые повлекут за собой другие действия (например, немедленную отправку товаров со склада).
 
-## Related Test Cases
+## Связанные сценарии тестирования
 
-- [Testing for HTTP Parameter Pollution](../07-Input_Validation_Testing/04-Testing_for_HTTP_Parameter_Pollution.md)
-- [Testing for SQL Injection](../07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md)
-- [Testing for the Circumvention of Work Flows](06-Testing_for_the_Circumvention_of_Work_Flows.md)
+- [Тестирование загрязнения параметров HTTP](../07-Input_Validation_Testing/04-Testing_for_HTTP_Parameter_Pollution.md)
+- [Тестирование SQL-инъекций](../07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md)
+- [Тестирование обхода потока операций](06-Testing_for_the_Circumvention_of_Work_Flows.md)
 
-## Remediation
+## Как исправить
 
-- Avoid storing, transmitting or processing card details wherever possible.
-    - Use a redirect or IFRAME for the payment gateway.
-- Review payment gateway documentation and use all available security features (such as encryption and secure hashes).
-- Handle all pricing related information on server-side:
-    - The only things included in client-side requests should be item IDs and quantities.
-- Implement appropriate input validation and business logic constraints (such as checking for negative item numbers or values).
-- Ensure that application payment flow is robust and that steps can't be performed out of sequence.
+- По возможности избегайте хранения, передачи или обработки данных карты.
+    - Используйте перенаправление или IFRAME для платёжного шлюза.
+- Ознакомьтесь с документацией платёжного шлюза и используйте все имеющиеся функции безопасности (такие как шифрование и защищённый хэш).
+- Обрабатывайте всю информацию, относящуюся к ценам, на стороне сервера:
+    - На стороне клиента запросы должны включать только идентификаторы товаров и их количество.
+- Реализуйте соответствующий контроль входных данных и ограничения бизнес-логики (например, проверку на отрицательное количество товара или сумму оплаты).
+- Убедитесь, что процесс оплаты в приложении является надёжным и что его этапы не могут выполняться не по порядку.
 
-## References
+## Ссылки
 
-- [Payment Card Industry Data Security Standard (PCI DSS)](https://www.pcisecuritystandards.org/documents/PCI_DSS_v3-2-1.pdf)
+- [Payment Card Industry Data Security Standard (PCI DSS)](https://docs-prv.pcisecuritystandards.org/PCI%20DSS/Standard/PCI_DSS_v3-2-1_RU.pdf)
 - [Visa Processing E-Commerce Payments guidance](https://www.visa.co.uk/dam/VCOM/regional/ve/unitedkingdom/PDF/risk/processing-e-commerce-payments-guide-73-17337.pdf)

@@ -11,7 +11,7 @@ tags: WSTG
 
 4.7.1 [Тестирование отражённого межсайтового скриптинга](01-Testing_for_Reflected_Cross_Site_Scripting.md)
 
-4.7.2 [Testing for Stored Cross Site Scripting](02-Testing_for_Stored_Cross_Site_Scripting.md)
+4.7.2 [Тестирование хранимых межсайтовых скриптов](02-Testing_for_Stored_Cross_Site_Scripting.md)
 
 4.7.3 [Тестирование фальсификации методов HTTP](03-Testing_for_HTTP_Verb_Tampering.md)
 

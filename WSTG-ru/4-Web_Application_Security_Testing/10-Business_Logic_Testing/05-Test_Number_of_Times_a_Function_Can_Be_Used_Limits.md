@@ -7,44 +7,44 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test Number of Times a Function Can Be Used Limits
+# Тестирование ограничений на количество раз, которое функция может быть вызвана
 
 |ID          |
 |------------|
 |WSTG-BUSL-05|
 
-## Summary
+## Обзор
 
-Many of the problems that applications are solving require limits to the number of times a function can be used or action can be executed. Applications must be "smart enough" to not allow the user to exceed their limit on the use of these functions since in many cases each time the function is used the user may gain some type of benefit that must be accounted for to properly compensate the owner. For example: an eCommerce site may only allow a users apply a discount once per transaction, or some applications may be on a subscription plan and only allow users to download three complete documents monthly.
+Многие проблемы, решаемые приложениями, требуют ограничений на количество раз, которое может быть использована функция или какое действие может быть выполнено. Приложения должны быть «достаточно интеллектуальными», чтобы не позволить пользователю превысить свой лимит на использование этих функций, поскольку во многих случаях каждый раз, когда функция используется, пользователь может получить некоторую выгоду, которую необходимо учитывать, чтобы должным образом компенсировать владельцу. Например: сайт электронной коммерции может разрешать пользователям применять скидку только один раз за транзакцию, или некоторые приложения согласно тарифному плану пользователя могут позволять загружать только три полных документа в месяц.
 
-Vulnerabilities related to testing for the function limits are application specific and misuse cases must be created that strive to exercise parts of the application/functions/ or actions more than the allowable number of times.
+Уязвимости, связанные с тестированием ограничений функций, зависят от конкретного приложения, и необходимо придумать примеры некорректного использования, которые стремятся выполнить приложение/функцию/или действие больше допустимого количества раз.
 
-Attackers may be able to circumvent the business logic and execute a function more times than "allowable" exploiting the application for personal gain.
+Злоумышленники могут обойти бизнес-логику и выполнить функцию больше раз, чем это «допустимо», используя приложение для личной выгоды.
 
-### Example
+### Пример
 
-Suppose an eCommerce site allows users to take advantage of any one of many discounts on their total purchase and then proceed to checkout and tendering. What happens of the attacker navigates back to the discounts page after taking and applying the one "allowable" discount? Can they take advantage of another discount? Can they take advantage of the same discount multiple times?
+Предположим, сайт электронной коммерции позволяет пользователям воспользоваться любой из множества скидок на общую сумму покупки, а затем перейти к оплате и получению заказа. Что произойдёт, когда злоумышленник возвратится на страницу скидок после получения и применения одной из «допустимых» скидок? Сможет ли он воспользоваться другой скидкой? Сможет ли он воспользоваться одной и той же скидкой несколько раз?
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify functions that must set limits to the times they can be called.
-- Assess if there is a logical limit set on the functions and if it is properly validated.
+- Найти функции, для которых должны быть установлены ограничения на количество раз, которое их можно вызвать.
+- Оценить, установлено ли логическое ограничение для функций и корректно ли оно контролируется.
 
-## How to Test
+## Как тестировать
 
-- Review the project documentation and use exploratory testing looking for functions or features in the application or system that should not be executed more that a single time or specified number of times during the business logic workflow.
-- For each of the functions and features found that should only be executed a single time or specified number of times during the business logic workflow, develop abuse/misuse cases that may allow a user to execute more than the allowable number of times. For example, can a user navigate back and forth through the pages multiple times executing a function that should only execute once? or can a user load and unload shopping carts allowing for additional discounts.
+- Проанализируйте проектную документацию и проведите ознакомительное тестирование для поиска функций или возможностей в приложении или системе, которые не должны выполняться более одного раза (или заданного количества раз) в течение бизнес-процесса.
+- Для каждой из найденных функций и возможностей, которые должны выполняться только один (или заданное количество) раз в ходе бизнес-процесса, придумайте примеры злоупотребления/некорректного использования, которые могут позволить пользователю выполнить их больше допустимого количества раз. Например, может ли пользователь  несколько раз перемещаться вперед и назад по страницам, вызывая функцию, которая должна выполняться только один раз? Или он может наполнять и освобождать корзину для покупок, что позволяет получать дополнительные скидки?
 
-## Related Test Cases
+## Связанные сценарии тестирования
 
-- [Testing for Account Enumeration and Guessable User Account](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md)
-- [Testing for Weak lock out mechanism](../04-Authentication_Testing/03-Testing_for_Weak_Lock_Out_Mechanism.md)
+- [Перебор и угадывание учётных записей пользователей](../03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account.md)
+- [Тестирование механизма блокировки](../04-Authentication_Testing/03-Testing_for_Weak_Lock_Out_Mechanism.md)
 
-## Remediation
+## Как исправить
 
-The application should set hard controls to prevent limit abuse. This can be achieved by setting a coupon to be no longer valid on the database level, to set a counter limit per user on the back end or database level, as all users should be identified through a session, whichever is better to the business requirement.
+Приложение должно применять жёсткие меры для предотвращения злоупотреблений ограничениями. Этого можно добиться в зависимости от того, что лучше соответствует бизнес-требованиям. Например, установив ограничение на уровне базы данных, что скидочный купон больше не действителен; или установив в серверной части предел для счётчика по каждому пользователю, т.к. все пользователи должны быть идентифицированы по их сессии.
 
-## References
+## Ссылки
 
 - [InfoPath Forms Services business logic exceeded the maximum limit of operations Rule](http://mpwiki.viacode.com/default.aspx?g=posts&t=115678)
 - [Gold Trading Was Temporarily Halted On The CME This Morning](https://www.businessinsider.com/gold-halted-on-cme-for-stop-logic-event-2013-10)

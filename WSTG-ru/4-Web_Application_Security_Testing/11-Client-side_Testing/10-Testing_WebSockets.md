@@ -7,84 +7,85 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing WebSockets
+# Тестирование WebSockets
 
 |ID          |
 |------------|
 |WSTG-CLNT-10|
 
-## Summary
+## Обзор
 
-Traditionally, the HTTP protocol only allows one request/response per TCP connection. Asynchronous JavaScript and XML (AJAX) allows clients to send and receive data asynchronously (in the background without a page refresh) to the server, however, AJAX requires the client to initiate the requests and wait for the server responses (half-duplex).
+Обычно протокол HTTP допускает только один запрос/ответ на каждое TCP-соединение. Асинхронный JavaScript и XML (AJAX) позволяет клиентам отправлять и получать данные асинхронно (в фоновом режиме без обновления страницы) на сервер, однако AJAX требует, чтобы клиент инициировал запросы и ожидал ответов сервера (полудуплексный режим).
 
-[WebSockets](https://html.spec.whatwg.org/multipage/web-sockets.html#network) allow the client or server to create a 'full-duplex' (two-way) communication channel, allowing the client and server to truly communicate asynchronously. WebSockets conduct their initial *upgrade* handshake over HTTP and from then on all communication is carried out over TCP channels by use of frames. For more, see the [WebSocket Protocol](https://tools.ietf.org/html/rfc6455).
+Протокол [WebSockets](https://websockets.spec.whatwg.org/) позволяет клиенту или серверу создавать «полнодуплексный» (двусторонний) канал обмена, позволяя клиенту и серверу общаться действительно асинхронно. WebSockets проводит первоначальное рукопожатие через HTTP, где предлагает сменить протокол (*upgrade*), и с этого момента весь обмен осуществляется по каналам TCP с использованием текстовых или бинарных фреймов. Дополнительную информацию см. в [RFC 6455](https://tools.ietf.org/html/rfc6455).
 
 ### Origin
 
-It is the server’s responsibility to verify the [`Origin` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin) in the initial HTTP WebSocket handshake. If the server does not validate the origin header in the initial WebSocket handshake, the WebSocket server may accept connections from any origin. This could allow attackers to communicate with the WebSocket server cross-domain allowing for CSRF-like issues. See also [Top 10-2017 A5-Broken Access Control](https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control).
+Сервер несёт ответственность за проверку заголовка [`Origin`](https://developer.mozilla.org/ru/docs/Web/HTTP/Headers/Origin) при первоначальном HTTP-рукопожатии протокола WebSocket. Если он его не проверит, то может принимать соединения из любого источника. Это может позволить злоумышленникам взаимодействовать с сервером WebSocket из разных доменов, что создаёт проблемы, подобные CSRF. См. также [OWASP Top 10 A01:2021 – Нарушения контроля доступа](https://owasp.org/Top10/A01_2021-Broken_Access_Control/).
 
-### Confidentiality and Integrity
+### Конфиденциальность и целостность
 
-WebSockets can be used over unencrypted TCP or over encrypted TLS. To use unencrypted WebSockets the `ws://` URI scheme is used (default port 80), to use encrypted (TLS) WebSockets the `wss://` URI scheme is used (default port 443). See also [Top 10-2017 A3-Sensitive Data Exposure](https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure).
+WebSockets можно использовать по незашифрованному протоколу TCP или по зашифрованному протоколу TLS. Для незашифрованных WebSockets используется URI-схема `ws://` (80-й порт по умолчанию), для зашифрованных (TLS) URI-схема `wss://` (443-й порт по умолчанию). См. также [Top 10 A02:2021 – Cryptographic Failures](https://owasp.org/Top10/A02_2021-Cryptographic_Failures/).
 
-### Input Sanitization
+### Нейтрализация входных данных
 
-As with any data originating from untrusted sources, the data should be properly sanitized and encoded. See also [Top 10-2017 A1-Injection](https://owasp.org/www-project-top-ten/2017/A1_2017-Injection) and [Top 10-2017 A7-Cross-Site Scripting (XSS)](https://owasp.org/www-project-top-ten/2017/A7_2017-Cross-Site_Scripting_(XSS)).
+Как и в случае с любыми данными, полученными из недоверенных источников, эти данные должны быть надлежащим образом нейтрализованы и закодированы. См. также [Top 10 A03:2021 – Injection](https://owasp.org/Top10/A03_2021-Injection/) и [Top 10-2017 A7-Cross-Site Scripting (XSS)](https://owasp.org/www-project-top-ten/2017/A7_2017-Cross-Site_Scripting_(XSS)).
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify the usage of WebSockets.
-- Assess its implementation by using the same tests on normal HTTP channels.
+- Определить использование WebSockets.
+- Оценить реализацию протокола, используя те же тесты, что и на обычных HTTP-каналах.
 
-## How to Test
+## Как тестировать
 
-### Black-Box Testing
+### Тестирование методом чёрного ящика
 
-1. Identify that the application is using WebSockets.
-   - Inspect the client-side source code for the `ws://` or `wss://` URI scheme.
-   - Use Google Chrome's Developer Tools to view the Network WebSocket communication.
-   - Use [ZAP's](https://www.zaproxy.org) WebSocket tab.
-2. Origin.
-   - Using a WebSocket client (one can be found in the [Tools](#Tools) section below) attempt to connect to the remote WebSocket server. If a connection is established the server may not be checking the origin header of the WebSocket handshake.
-3. Confidentiality and Integrity.
-   - Check that the WebSocket connection is using SSL to transport sensitive information `wss://`.
-   - Check the SSL Implementation for security issues (Valid Certificate, BEAST, CRIME, RC4, etc). Refer to the [Testing for Weak Transport Layer Security](../09-Testing_for_Weak_Cryptography/01-Testing_for_Weak_Transport_Layer_Security.md) section of this guide.
-4. Authentication.
-   - WebSockets do not handle authentication, normal black-box authentication tests should be carried out. Refer to the [Authentication Testing](../04-Authentication_Testing/README.md) sections of this guide.
-5. Authorization.
-   - WebSockets do not handle authorization, normal black-box authorization tests should be carried out. Refer to the [Authorization Testing](../05-Authorization_Testing/README.md) sections of this guide.
-6. Input Sanitization.
-   - Use [ZAP's](https://www.zaproxy.org) WebSocket tab to replay and fuzz WebSocket request and responses. Refer to the [Testing for Data Validation](../07-Input_Validation_Testing/README.md) sections of this guide.
+1. Определите, что приложение использует WebSockets:
+   - В исходном коде на стороне клиента найдите URI-схему `ws://` или `wss://`.
+   - Используйте фильтр WS на вкладке Сеть в Инструментах разработчика браузера для просмотра сетевого соединения WebSocket.
+   - Используйте закладку WebSocket в [ZAP](https://www.zaproxy.org).
+2. Origin:
+   - С помощью клиента WebSocket (его можно найти в разделе [Инструменты](#инструменты) ниже) попытайтесь подключиться к удалённому серверу WebSocket. Если соединение установлено, убедитесь проверяет ли сервер заголовок origin при рукопожатии WebSocket.
+3. Конфиденциальность и целостность:
+   - Убедитесь, что подключение к WebSocket использует TLS для передачи конфиденциальной информации `wss://`.
+   - Проверьте реализацию TLS на наличие проблем безопасности (действительный сертификат, BEAST, CRIME, RC4 и т.д.). Обратитесь к разделу [Тестирование безопасности транспортного уровня](../09-Testing_for_Weak_Cryptography/01-Testing_for_Weak_Transport_Layer_Security.md).
+4. Аутентификация:
+   - WebSockets не обеспечивает аутентификацию, следует провести обычные тесты аутентификации методом чёрного ящика. Обратитесь к разделу [Тестирование аутентификации](../04-Authentication_Testing/README.md).
+5. Авторизация:
+   - WebSockets не обеспечивает авторизацию, следует провести обычные тесты авторизации методом чёрного ящика. Обратитесь к разделу [Тестирование авторизации](../05-Authorization_Testing/README.md).
+6. Нейтрализация ввода:
+   - На закладке WebSocket в [ZAP](https://www.zaproxy.org) следует провести фаззинг запросов и ответов WebSocket. Обратитесь к разделу [Тестирование контроля входных данных](../07-Input_Validation_Testing/README.md).
 
-#### Example 1
+#### Пример 1
 
-Once we have identified that the application is using WebSockets (as described above) we can use the [OWASP Zed Attack Proxy (ZAP)](https://www.zaproxy.org) to intercept the WebSocket request and responses. ZAP can then be used to replay and fuzz the WebSocket request/responses.
+Как только мы определим, что приложение использует WebSockets (как описано выше), мы можем использовать [OWASP ZAP](https://www.zaproxy.org) для перехвата запросов и ответов. Затем ZAP можно применять для воспроизведения и фаззинга запросов/ответов WebSocket.
 
 ![ZAP WebSockets](images/OWASP_ZAP_WebSockets.png)\
-*Figure 4.11.10-1: ZAP WebSockets*
+*Рисунок 4.11.10-1: ZAP WebSockets*
 
-#### Example 2
+#### Пример 2
 
-Using a WebSocket client (one can be found in the [Tools](#Tools) section below) attempt to connect to the remote WebSocket server. If the connection is allowed the WebSocket server may not be checking the WebSocket handshake's origin header. Attempt to replay requests previously intercepted to verify that cross-domain WebSocket communication is possible.
+Используя клиент WebSocket (его можно найти в разделе [Инструменты](#инструменты) ниже), попытайтесь подключиться к удалённому серверу WebSocket. Если соединение разрешено, сервер WebSocket может не проверять заголовок origin рукопожатия WebSocket. Попытайтесь воспроизвести ранее перехваченные запросы, чтобы убедиться, что возможен обмен по WebSocket между разными доменами.
 
 ![WebSocket Client](images/WebSocket_Client.png)\
-*Figure 4.11.10-2: WebSocket Client*
+*Рисунок 4.11.10-2: Клиент WebSocket*
 
-### Gray-Box Testing
+### Тестирование методом серого ящика
 
-Gray-box testing is similar to black-box testing. In gray-box testing, the pen-tester has partial knowledge of the application. The only difference here is that you may have API documentation for the application being tested which includes the expected WebSocket request and responses.
+Тестирование методом серого ящика похоже на тестирование методом черного. При этом пентестер частично знает приложение. Единственная разница здесь в том, что у вас может быть документация по API для тестируемого приложения, которая включает ожидаемые запросы и ответы WebSocket.
 
-## Tools
+## Инструменты
 
 - [OWASP Zed Attack Proxy (ZAP)](https://www.zaproxy.org)
-- [WebSocket Client](https://github.com/ethicalhack3r/scripts/blob/master/WebSockets.html)
-- [Google Chrome Simple WebSocket Client](https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilpfeibdedpjgfnlcodoo?hl=en)
+- [Клиент WebSocket](https://github.com/ethicalhack3r/scripts/blob/master/WebSockets.html)
+- [Google Chrome Simple WebSocket Client](https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilpfeibdedpjgfnlcodoo)
 
-## References
+## Ссылки
 
-- [HTML5 Rocks - Introducing WebSockets: Bringing Sockets to the Web](https://www.html5rocks.com/en/tutorials/websockets/basics/)
-- [W3C - The WebSocket API](https://html.spec.whatwg.org/multipage/web-sockets.html#network)
+- [web.dev - Introducing WebSockets: Bringing Sockets to the Web](https://web.dev/websockets-basics/)
+- [WHATWG - The WebSocket API](https://websockets.spec.whatwg.org/#websocket)
 - [IETF - The WebSocket Protocol](https://tools.ietf.org/html/rfc6455)
 - [Christian Schneider - Cross-Site WebSocket Hijacking (CSWSH)](http://www.christian-schneider.net/CrossSiteWebSocketHijacking.html)
 - [Robert Koch- On WebSockets in Penetration Testing](http://www.ub.tuwien.ac.at/dipl/2013/AC07815487.pdf)
 - [DigiNinja - OWASP ZAP and Web Sockets](http://www.digininja.org/blog/zap_web_sockets.php)
+- [Протокол WebSocket](https://learn.javascript.ru/websocket)

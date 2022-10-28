@@ -15,36 +15,36 @@ tags: WSTG
 
 ## Обзор
 
-Browsers provide the following client-side storage mechanisms for developers to store and retrieve data:
+Браузеры предоставляют разработчикам следующие механизмы хранения данных на стороне клиента для хранения и извлечения данных:
 
-- Local Storage
-- Session Storage
+- Локальное хранилище
+- Сессионное хранилище
 - IndexedDB
-- Web SQL (Deprecated)
-- Cookies
+- Web SQL (устарел)
+- Cookie
 
-These storage mechanisms can be viewed and edited using the browser's developer tools, such as [Google Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/storage/localstorage) or [Firefox's Storage Inspector](https://developer.mozilla.org/en-US/docs/Tools/Storage_Inspector).
+Эти механизмы хранения можно просматривать и редактировать с помощью инструментов разработчика браузера, таких как [DevTools в Google Chrome](https://developer.chrome.com/docs/devtools/), [Storage Inspector в Firefox](https://developer.mozilla.org/ru/docs/Tools/Storage_Inspector) или [Web Inspector в Safari](https://support.apple.com/ru-ru/guide/safari-developer/devdf5596c56/mac).
 
-Note: While cache is also a form of storage it is covered in a [separate section](../04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md) covering its own peculiarities and concerns.
+Примечание: хотя кэш также является формой хранилища, он рассматривается в [отдельном разделе](../04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md), охватывающем его особенности и проблемы.
 
 ## Задачи тестирования
 
-- Determine whether the website is storing sensitive data in client-side storage.
-- The code handling of the storage objects should be examined for possibilities of injection attacks, such as utilizing unvalidated input or vulnerable libraries.
+- Выяснить, хранит ли web-сайт чувствительные данные в хранилище на стороне клиента.
+- Проверить обработку в коде объектов хранилища на наличие возможностей атак инъекции, таких как использование непроверенных входных данных или уязвимых библиотек.
 
 ## Как тестировать
 
-### Local Storage
+### Локальное хранилище
 
-`window.localStorage` is a global property that implements the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) and provides **persistent** key-value storage in the browser.
+`window.localStorage` — это глобальное свойство, которое реализует [API web-хранилища](https://developer.mozilla.org/ru/docs/Web/API/Web_Storage_API) и обеспечивает **постоянное** хранение пар ключ-значение в браузере.
 
-Both the keys and values can only be strings, so any non-string values must be converted to strings first before storing them, usually done via [JSON.stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
+И ключи, и значения могут быть только строками, поэтому любые нестроковые значения перед сохранением должны быть преобразованы в строки, что обычно делается с помощью [JSON.stringify](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
 
-Entries to `localStorage` persist even when the browser window closes, with the exception of windows in Private/Incognito mode.
+Записи в `localStorage` сохраняются даже при закрытии окна браузера, за исключением окон в режиме частного доступа/инкогнито.
 
-The maximum storage capacity of `localStorage` varies between browsers.
+Максимальная ёмкость хранилища `localStorage` зависит от браузера.
 
-#### List All Key-Value Entries
+#### Вывод всех записей ключ-значение локального хранилища
 
 ```javascript
 for (let i = 0; i < localStorage.length; i++) {
@@ -54,17 +54,17 @@ for (let i = 0; i < localStorage.length; i++) {
 }
 ```
 
-### Session Storage
+### Сессионное хранилище
 
-`window.sessionStorage` is a global property that implements the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) and provides **ephemeral** key-value storage in the browser.
+`window.sessionStorage`  — это глобальное свойство, которое реализует [API web-хранилища](https://developer.mozilla.org/ru/docs/Web/API/Web_Storage_API) и обеспечивает **эфемерное** хранение пар ключ-значение в браузере.
 
-Both the keys and values can only be strings, so any non-string values must be converted to strings first before storing them, usually done via [JSON.stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
+И ключи, и значения могут быть только строками, поэтому любые нестроковые значения перед сохранением должны быть преобразованы в строки, что обычно делается с помощью [JSON.stringify](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
 
-Entries to `sessionStorage` are ephemeral because they are cleared when the browser tab/window is closed.
+Записи в `sessionStorage` называются эфемерными, поскольку они удаляются при закрытии вкладки/окна браузера.
 
-The maximum storage capacity of `sessionStorage` varies between browsers.
+Максимальная ёмкость хранилища `sessionStorage` зависит от браузера.
 
-#### List All Key-Value Entries
+#### Вывод всех записей ключ-значение сессионного хранилища
 
 ```javascript
 for (let i = 0; i < sessionStorage.length; i++) {
@@ -76,15 +76,15 @@ for (let i = 0; i < sessionStorage.length; i++) {
 
 ### IndexedDB
 
-IndexedDB is a transactional, object-oriented database intended for structured data. An IndexedDB database can have multiple object stores and each object store can have multiple objects.
+IndexedDB — это транзакционная объектно-ориентированная база данных, предназначенная для структурированных данных. База данных IndexedDB может иметь несколько хранилищ объектов, и в каждом из них может быть несколько объектов.
 
-In contrast to Local Storage and Session Storage, IndexedDB can store more than just strings. Any objects supported by the [structured clone algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm) can be stored in IndexedDB.
+В отличие от локального и сессионного хранилищ, IndexedDB может хранить больше, чем просто строки. Любые объекты, поддерживаемые [алгоритмом структурированного клонирования](https://developer.mozilla.org/ru/docs/Web/API/Web_Workers_API/Structured_clone_algorithm), могут храниться в IndexedDB.
 
-An example of a complex JavaScript object that can be stored in IndexedDB, but not in Local/Session Storage are [CryptoKeys](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey).
+Примером сложного объекта JavaScript, который может храниться в IndexedDB, но не в локальном/сессионном хранилище, является [CryptoKey](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey).
 
-W3C recommendation on [Web Crypto API](https://www.w3.org/TR/WebCryptoAPI/) [recommends](https://www.w3.org/TR/WebCryptoAPI/#concepts-key-storage) that CryptoKeys that need to be persisted in the browser, to be stored in IndexedDB. When testing a web page, look for any CryptoKeys in IndexedDB and check if they are set as `extractable: true` when they should have been set to `extractable: false` (i.e. ensure the underlying private key material is never exposed during cryptographic operations.)
+Из [рекомендации](https://www.w3.org/TR/WebCryptoAPI/) W3C по Web Crypto API [следует](https://www.w3.org/TR/WebCryptoAPI/#concepts-key-storage), что CryptoKey, который необходимо сохранить в браузере, хранился в IndexedDB. При тестировании web-страницы найдите CryptoKeys в IndexedDB и проверьте, не установлено ли для них значение `extractable: true`, тогда как должно быть `extractable: false` (т.е. убедитесь, что материал базового закрытого ключа во время криптографических операций не раскрывается.)
 
-#### Print All the Contents of IndexedDB
+#### Вывод содержимого IndexedDB
 
 ```javascript
 const dumpIndexedDB = dbName => {
@@ -102,7 +102,7 @@ const dumpIndexedDB = dbName => {
 
       console.log(`\t[+] ObjectStore: ${storeName}`);
 
-      // Print all entries in objectStore with name `storeName`
+      // Вывести все записи в objectStore с именем `storeName`
       objectStore.getAll().onsuccess = event => {
         const items = event.target.result || [];
         items.forEach(item => console.log(`\t\t[-] `, item));
@@ -116,23 +116,23 @@ indexedDB.databases().then(dbs => dbs.forEach(db => dumpIndexedDB(db.name)));
 
 ### Web SQL
 
-Web SQL is deprecated since November 18, 2010 and it's recommended that web developers do not use it.
+Web-SQL с 18 ноября 2010 г. признан устаревшим, поэтому разработчикам его использовать не рекомендуется.
 
-### Cookies
+### Cookie
 
-Cookies are a key-value storage mechanism that is primarily used for session management but web developers can still use it to store arbitrary string data.
+Cookies — это механизм хранения пар ключ-значение, который в основном используется для управления сессией, но web-разработчики могут использовать его для хранения произвольных строковых данных.
 
-Cookies are covered extensively in the [testing for Cookies attributes](../06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md) scenario.
+Cookies подробно рассматриваются в сценарии [тестирования атрибутов Cookies](../06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md).
 
-#### List All Cookies
+#### Вывести все Cookie
 
 ```javascript
 console.log(window.document.cookie);
 ```
 
-### Global Window Object
+### Глобальный объект Window
 
-Sometimes web developers initialize and maintain global state that is available only during the runtime life of the page by assigning custom attributes to the global `window` object. For example:
+Иногда web-разработчики инициализируют и поддерживают глобальное состояние, доступное только во время выполнения страницы, путём назначения настраиваемых атрибутов глобальному объекту `window`. Например:
 
 ```javascript
 window.MY_STATE = {
@@ -141,50 +141,50 @@ window.MY_STATE = {
 };
 ```
 
-Any data attached on the `window` object will be lost when the page is refreshed or closed.
+Любые данные, прикрепленные к объекту `window` будут потеряны при обновлении или закрытии страницы.
 
-#### List All Entries on the Window Object
+#### Вывести все записи в объекте Window
 
 ```javascript
 (() => {
-  // create an iframe and append to body to load a clean window object
+  // создаём iframe и добавляем его к телу, чтобы загрузить чистый объект window
   const iframe = document.createElement('iframe');
   iframe.style.display = 'none';
   document.body.appendChild(iframe);
 
-  // get the current list of properties on window
+  // получаем текущий список свойств window
   const currentWindow = Object.getOwnPropertyNames(window);
 
-  // filter the list against the properties that exist in the clean window
+  // фильтруем список по свойствам, которые существуют в чистом window
   const results = currentWindow.filter(
     prop => !iframe.contentWindow.hasOwnProperty(prop)
   );
 
-  // remove iframe
+  // удаляем iframe
   document.body.removeChild(iframe);
 
-  // log key-value entries that are different
+  // записи ключ-значение, которые отличаются, пишем в журнал
   results.forEach(key => console.log(`${key}: ${window[key]}`));
 })();
 ```
 
-_(Modified version of this [snippet](https://stackoverflow.com/a/17246535/3099132))_
+_(Это модифицированная версия данного [фрагмента](https://stackoverflow.com/a/17246535/3099132))_
 
-### Attack Chain
+### Цепочка атаки
 
-Following the identification any of the above attack vectors, an attack chain can be formed with different types of client-side attacks, such as [DOM based XSS](01-Testing_for_DOM-based_Cross_Site_Scripting.md) attacks.
+После выявления любого из перечисленных выше векторов атаки может быть сформирована цепочка из различных типов атак на стороне клиента, например, [XSS на основе DOM](01-Testing_for_DOM-based_Cross_Site_Scripting.md).
 
-## Remediation
+## Как исправить
 
-Applications should be storing sensitive data on the server-side, and not on the client-side, in a secured manner following best practices.
+Приложения должны хранить чувствительные данные на стороне сервера, а не клиента, безопасным образом и в соответствии с рекомендациями.
 
-## References
+## Ссылки
 
-- [Local Storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
-- [Session Storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
-- [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
-- [Web Crypto API: Key Storage](https://www.w3.org/TR/WebCryptoAPI/#concepts-key-storage)
+- [Локальное хранилище](https://developer.mozilla.org/ru/docs/Web/API/Window/localStorage)
+- [Сессионное хранилище](https://developer.mozilla.org/ru/docs/Web/API/Window/sessionStorage)
+- [IndexedDB](https://developer.mozilla.org/ru/docs/Web/API/IndexedDB_API)
+- [Web Crypto API: хранилище ключей](https://www.w3.org/TR/WebCryptoAPI/#concepts-key-storage)
 - [Web SQL](https://www.w3.org/TR/webdatabase/)
-- [Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)
+- [Cookie](https://developer.mozilla.org/ru/docs/Web/HTTP/Cookies)
 
-For more OWASP resources on the HTML5 Web Storage API, see the [Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html#html5-web-storage-api).
+Дополнительные ресурсы OWASP по API Web-хранилища HTML5 см. в [Памятке по управлению сессиями](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html#html5-web-storage-api).

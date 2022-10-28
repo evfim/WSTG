@@ -7,21 +7,21 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for JavaScript Execution
+# Тестирование выполнения JavaScript
 
 |ID          |
 |------------|
 |WSTG-CLNT-02|
 
-## Summary
+## Обзор
 
-A JavaScript injection vulnerability is a subtype of cross site scripting (XSS) that involves the ability to inject arbitrary JavaScript code that is executed by the application inside the victim's browser. This vulnerability can have many consequences, like the disclosure of a user's session cookies that could be used to impersonate the victim, or, more generally, it can allow the attacker to modify the page content seen by the victims or the application's behavior.
+Уязвимость инъекции JavaScript — подтип межсайтового скриптинга (XSS), который предполагает возможность инъекции произвольного кода JavaScript, который выполняется приложением в браузере жертвы. Эта уязвимость может иметь множество последствий, таких как раскрытие сессионных cookie пользователя, которые могут использоваться для выдачи себя за жертву, или, в более общем смысле, она может позволить злоумышленнику изменить содержимое страницы, которую видят жертвы, или изменить поведение приложения.
 
-JavaScript injection vulnerabilities can occur when the application lacks proper user-supplied input and output validation. As JavaScript is used to dynamically populate web pages, this injection occurs during this content processing phase and consequently affects the victim.
+Уязвимости инъекции JavaScript могут возникать, когда в приложении отсутствует надлежащая проверка входных и выходных данных, предоставляемых пользователем. Поскольку JavaScript используется для динамического заполнения web-страниц, эта инъекция происходит на этапе обработки контента и, следовательно, влияет на жертву.
 
-When testing for this vulnerability, consider that some characters are treated differently by different browsers. For reference, see [DOM-based XSS](https://owasp.org/www-community/attacks/DOM_Based_XSS).
+При тестировании на наличие этой уязвимости учитывайте, что некоторые символы обрабатываются разными браузерами по-разному. Для справки см. [XSS на основе DOM](https://owasp.org/www-community/attacks/DOM_Based_XSS).
 
-Here is an example of a script that does not perform any validation of the variable `rr`. The variable contains user-supplied input via the query string, and additionally does not apply any form of encoding:
+Вот пример скрипта, который никак не проверяет переменную `rr`. Переменная в строке запроса содержит пользовательский ввод и, кроме того, не применяет какой-либо кодировки:
 
 ```js
 var rr = location.search.substring(1);
@@ -30,17 +30,17 @@ if(rr) {
 }
 ```
 
-This implies that an attacker could inject JavaScript code simply by submitting the following query string: `www.victim.com/?javascript:alert(1)`.
+Это означает, что злоумышленник может ввести код JavaScript, просто отправив следующую строку запроса `www.victim.com/?javascript:alert(1)`.
 
-## Test Objectives
+## Задача тестирования
 
-- Identify sinks and possible JavaScript injection points.
+- Найти приёмники и возможные точки инъекции JavaScript.
 
-## How to Test
+## Как тестировать
 
-Consider the following: [DOM XSS exercise](http://www.domxss.com/domxss/01_Basics/04_eval.html)
+Рассмотрим следующее [упражнение на DOM XSS](http://www.domxss.com/domxss/01_Basics/04_eval.html)
 
-The page contains the following script:
+Страница содержит следующий скрипт:
 
 ```html
 <script>
@@ -57,4 +57,4 @@ if(window.location.hash.indexOf('message')==-1) {
 </script>
 ```
 
-The above code contains a source `location.hash` that is controlled by the attacker that can inject directly in the `message` value a JavaScript Code to take the control of the user browser.
+Приведённый выше код содержит [источник](https://github.com/wisec/domxsswiki/wiki/location,-documentURI-and-URL-sources) `location.hash`, который контролируется злоумышленником, который может вставить код JavaScript непосредственно в значение `message`, чтобы получить контроль над браузером пользователя.

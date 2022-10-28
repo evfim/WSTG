@@ -7,58 +7,58 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test Upload of Malicious Files
+# Тестирование загрузки вредоносных файлов
 
 |ID          |
 |------------|
 |WSTG-BUSL-09|
 
-## Summary
+## Обзор
 
-Many application’s business processes allow users to upload data to them. Although input validation is widely understood for text-based input fields, it is more complicated to implement when files are accepted. Although many sites implement simple restrictions based on a list of permitted (or blocked) extensions, this is not sufficient to prevent attackers from uploading legitimate file types that have malicious contents.
+Многие бизнес-процессы приложений позволяют пользователям загружать в них данные. Хотя проверка входных данных широко применяется для текстовых полей ввода, её сложнее реализовать, когда принимаются файлы. Хотя многие сайты накладывают простые ограничения, на основе списка разрешённых (или заблокированных) расширений, этого недостаточно, чтобы помешать злоумышленникам загружать вредоносное содержимое с допустимым типом файла.
 
-Vulnerabilities related to the uploading of malicious files is unique in that these "malicious" files can easily be rejected through including business logic that will scan files during the upload process and reject those perceived as malicious. Additionally, this is different from uploading unexpected files in that while the file type may be accepted the file may still be malicious to the system.
+Уязвимости, связанные с загрузкой вредоносных файлов, уникальны тем, что эти «вредоносные» файлы можно легко отклонить, включив бизнес-логику, которая будет сканировать файлы в процессе загрузки и отклонять те, что воспринимаются как вредоносные. Кроме того, это отличается от загрузки непредусмотренных файлов тем, что, хотя его тип и может быть принят, файл всё ещё может оставаться вредоносным.
 
-Finally, "malicious" means different things to different systems, for example malicious files that may exploit SQL server vulnerabilities may not be considered as "malicious" in an environment using a NoSQL data store.
+Наконец, «вредоносный» означает разное для разных систем, например, вредоносные файлы, которые могут эксплуатировать уязвимости SQL-сервера, могут не считаться таковыми в хранилище данных NoSQL.
 
-The application may allow the upload of malicious files that include exploits or shellcode without submitting them to malicious file scanning. Malicious files could be detected and stopped at various points of the application architecture such as: IPS/IDS, application server anti-virus software or anti-virus scanning by application as files are uploaded (perhaps offloading the scanning using SCAP).
+Приложение может разрешать загрузку вредоносных файлов, содержащих уязвимости или шелл-код, не подвергая их проверке на наличие вредоносных файлов. Вредоносные файлы могут быть обнаружены и остановлены в различных точках архитектуры приложения, таких как: IPS/IDS, антивирусное программное обеспечение сервера приложений или антивирусное сканирование приложением по мере загрузки файлов (возможно, при помощи [SCAP](https://csrc.nist.gov/Projects/Security-Content-Automation-Protocol/)).
 
-### Example
+### Пример
 
-A common example of this vulnerability is an application such as a blog or forum that allows users to upload images and other media files. While these are considered safe, if an attacker is able to upload executable code (such as a PHP script), this could allow them to execute operating system commands, read and modify information in the filesystem, access the back end database and fully compromise the server.
+Типичным примером этой уязвимости является блог или форум, которые позволяют пользователям загружать изображения и другие медиафайлы. Хотя они считаются безопасными, если злоумышленник может загрузить исполняемый код (например, PHP-скрипт), это может позволить ему выполнять команды операционной системы, читать и изменять информацию в файловой системе, получать доступ к базе данных сервера и полностью скомпрометировать сервер.
 
-## Test Objectives
+## Задачи тестирования
 
-- Identify the file upload functionality.
-- Review the project documentation to identify what file types are considered acceptable, and what types would be considered dangerous or malicious.
-    - If documentation is not available then consider what would be appropriate based on the purpose of the application.
-- Determine how the uploaded files are processed.
-- Obtain or create a set of malicious files for testing.
-- Try to upload the malicious files to the application and determine whether it is accepted and processed.
+- Найти функцию загрузки файлов.
+- Проанализировать документацию по проекту, чтобы определить, какие типы файлов считаются приемлемыми, а какие — опасными или вредоносными.
+    - Если документация недоступна, то определить, что было бы уместно, исходя из назначения приложения.
+- Определить, как обрабатываются загруженные файлы.
+- Найти или создать набор вредоносных файлов для тестирования.
+- Попробовать загрузить вредоносные файлы в приложение и определить, принимаются ли, и обрабатываются ли они.
 
-## How to Test
+## Как тестировать
 
-### Malicious File Types
+### Вредоносные типы файлов
 
-The simplest checks that an application can do are to determine that only trusted types of files can be uploaded.
+Простейшие проверки, которые может выполнить приложение, — определить, что могут быть загружены только доверенные типы файлов.
 
-#### Web Shells
+#### Web-оболочки
 
-If the server is configured to execute code, then it may be possible to obtain command execution on the server by uploading a file known as a web shell, which allows you to execute arbitrary code or operating system commands. In order for this attack to be successful, the file needs to be uploaded inside the webroot, and the server must be configured to execute the code.
+Если сервер настроен на выполнение кода, то можно добиться выполнения команды на сервере, загрузив файл, известный как web-оболочка, который позволяет выполнять произвольный код или команды операционной системы. Чтобы эта атака была успешной, файл необходимо загрузить в каталог webroot, а сервер должен быть настроен для выполнения кода.
 
-Uploading this kind of shell onto an Internet facing server is dangerous, because it allows anyone who knows (or guesses) the location of the shell to execute code on the server. A number of techniques can be used to protect the shell from unauthorised access, such as:
+Загружать такую оболочку на сервер с выходом в Интернет опасно, потому что это позволяет любому, кто знает (или догадывается) о местонахождении оболочки, выполнять код на сервере. Для защиты оболочки от несанкционированного доступа можно использовать ряд методов, таких как:
 
-- Uploading the shell with a randomly generated name.
-- Password protecting the shell.
-- Implementing IP based restrictions on the shell.
+- Загрузка оболочки со случайно сгенерированным именем.
+- Защита оболочки паролем.
+- Ограничение подключений к оболочке по IP-адресам.
 
-**Remember to remove the shell when you are done.**
+**Не забудьте удалить оболочку, когда закончите!**
 
-The example below shows a simple PHP based shell, that executes operating system commands passed to it in a GET parameter, and can only be accessed from a specific IP address:
+В приведённом ниже примере показана простая оболочка на PHP, которая выполняет команды операционной системы, переданные ей в параметре GET, и доступ к ней возможен только с определённого IP-адреса:
 
 ```php
 <?php
-    if ($_SERVER['REMOTE_HOST'] === "FIXME") { // Set your IP address here
+    if ($_SERVER['REMOTE_HOST'] === "FIXME") { // Укажите свой IP-адрес here
         if(isset($_REQUEST['cmd'])){
             $cmd = ($_REQUEST['cmd']);
             echo "<pre>\n";
@@ -69,93 +69,93 @@ The example below shows a simple PHP based shell, that executes operating system
 ?>
 ```
 
-Once the shell is uploaded (with a random name), you can execute operating system commands by passing them in the `cmd` GET parameter:
+Как только оболочка загружена (со случайным именем), вы можете выполнять команды операционной системы, передавая их в параметре GET `cmd`:
 
 `https://example.org/7sna8uuorvcx3x4fx.php?cmd=cat+/etc/passwd`
 
-#### Filter Evasion
+#### Уклонение от фильтра
 
-The first step is to determine what the filters are allowing or blocking, and where they are implemented. If the restrictions are performed on the client-side using JavaScript, then they can be trivially bypassed with an intercepting proxy.
+Первым делом надо определить, что фильтры разрешают или блокируют, и где они реализованы. Если ограничения применяются на стороне клиента с помощью JavaScript, то их можно банально обойти с помощью перехватывающего прокси.
 
-If the filtering is performed on the server-side, then various techniques can be attempted to bypass it, including:
+Если фильтрация выполняется на стороне сервера, то могут быть предприняты различные способы ее обхода, в том числе:
 
-- Change the value of `Content-Type` as `image/jpeg` in HTTP request.
-- Change the extensions to a less common extension, such as `file.php5`, `file.shtml`, `file.asa`, `file.jsp`, `file.jspx`, `file.aspx`, `file.asp`, `file.phtml`, `file.cshtml`
-- Change the capitalisation of the extension, such as `file.PhP` or `file.AspX`
-- If the request includes multiple file names, change them to different values.
-- Using special trailing characters such as spaces, dots or null characters such as `file.asp...`, `file.php;jpg`, `file.asp%00.jpg`, `1.jpg%00.php`
-- In badly configured versions of nginx, uploading a file as `test.jpg/x.php` may allow it to be executed as `x.php`.
+- Измените значение `Content-Type` на `image/jpeg` в HTTP-запросе.
+- Измените расширения на менее распространённые, например, `file.php5`, `file.shtml`, `file.asa`, `file.jsp`, `file.jspx`, `file.aspx`, `file.asp`, `file.phtml`, `file.cshtml`
+- Измените некоторые буквы в расширении на заглавные, например, `file.PhP` или `file.AspX`
+- Если в запросе содержится несколько наименований файлов, замените их разными значениями.
+- Используйте специальные завершающие символы, например, пробелы, точки или пустые (null), например, `file.asp...`, `file.php;jpg`, `file.asp%00.jpg`, `1.jpg%00.php`
+- В плохо настроенных версиях nginx при загрузке файла, например, `test.jpg/x.php` может разрешаться его выполнение как `x.php`.
 
-### Malicious File Contents
+### Вредоносное содержимое файла
 
-Once the file type has been validated, it is important to also ensure that the contents of the file are safe. This is significantly harder to do, as the steps required will vary depending on the types of file that are permitted.
+После проверки типа файла важно также убедиться, что безопасно его содержимое. Это значительно сложнее, так как необходимые этапы будут разными в зависимости от разрешённых типов файлов.
 
-#### Malware
+#### Вредоносный код
 
-Applications should generally scan uploaded files with anti-malware software to ensure that they do not contain anything malicious. The easiest way to test for this is using the [EICAR test file](https://www.eicar.org/?page_id=3950), which is an safe file that is flagged as malicious by all anti-malware software.
+Обычно приложения должны сканировать загружаемые файлы с помощью антивирусного программного обеспечения, чтобы убедиться, что они не содержат ничего вредоносного. Самый простой способ проверить это — использовать [тестовый файл EICAR](https://www.eicar.org/?page_id=3950), который представляет собой безопасный файл, помечаемый как вредоносный всеми антивирусными программами.
 
-Depending on the type of application, it may be necessary to test for other dangerous file types, such as Office documents containing malicious macros. Tools such as the [Metasploit Framework](https://github.com/rapid7/metasploit-framework) and the [Social Engineer Toolkit (SET)](https://github.com/trustedsec/social-engineer-toolkit) can be used to generate malicious files for various formats.
+В зависимости от типа приложения может потребоваться проверка на наличие других опасных типов файлов, таких как документы Office, содержащие вредоносные макросы. Для создания вредоносных файлов различных форматов можно использовать такие инструменты, как [Metasploit Framework](https://github.com/rapid7/metasploit-framework) и [Social Engineer Toolkit (SET)](https://github.com/trustedsec/social-engineer-toolkit).
 
-When this file is uploaded, it should be detected and quarantined or deleted by the application. Depending on how the application processes the file, it may not be obvious whether this has taken place.
+Когда этот файл загружен, он должен быть обнаружен и помещён в карантин или удалён приложением. В зависимости от того, как приложение обрабатывает файл, может быть неочевидно, произошло ли это.
 
-#### Archive Directory Traversal
+#### Обход каталогов через архивы (Zip Slip)
 
-If the application extracts archives (such as Zip files), then it may be possible to write to unintended locations using directory traversal. This can be exploited by uploading a malicious zip file that contains paths that traverse the file system using sequences such as `..\..\..\..\shell.php`. This technique is discussed further in the [snyk advisory](https://snyk.io/research/zip-slip-vulnerability).
+Если приложение извлекает архивы (например, Zip-файлы), может быть возможна запись в непредусмотренные места с использованием обхода каталога. Это можно эксплуатировать, загружая вредоносный zip-файл, содержащий пути перемещения по файловой системе, например, последовательности `..\..\..\..\shell.php`. Этот метод обсуждается в [snyk advisory](https://snyk.io/research/zip-slip-vulnerability).
 
-#### Zip Bombs
+#### Zip-бомбы
 
-A [Zip bomb](https://en.wikipedia.org/wiki/Zip_bomb) (more generally known as a decompression bomb) is an archive file that contains a large volume of data. It's intended to cause a denial of service by exhausting the disk space or memory of the target system that tries to extract the archive. Note that although the Zip format is the most example of this, other formats are also affected, including gzip (which is frequently used to compress data in transit).
+[Zip-бомба](https://ru.wikipedia.org/wiki/Zip-%D0%B1%D0%BE%D0%BC%D0%B1%D0%B0) (более известная как декомпрессионная бомба) — это архивный файл, содержащий большой объём данных. Он предназначен для вызова отказа в обслуживании путём исчерпания дискового пространства или памяти целевой системы, которая пытается извлечь архив. Обратите внимание, что хотя формат Zip является наиболее ярким примером этого, другие форматы также подвержены влиянию, включая gzip (который часто используется для сжатия данных при передаче).
 
-At its simplest level, a Zip bomb can be created by compressing a large file consisting of a single character. The example below shows how to create a 1MB file that will decompress to 1GB:
+На простейшем уровне Zip-бомбу можно создать, сжав большой файл, состоящий из одного символа. В приведенном ниже примере показано, как создать файл размером 1 МБ, который будет распаковываться до 1 ГБ:
 
 ```bash
 dd if=/dev/zero bs=1M count=1024 | zip -9 > bomb.zip
 ```
 
-There are a number of methods that can be used to achieve much higher compression ratios, including multiple levels of compression, [abusing the Zip format](https://www.bamsoftware.com/hacks/zipbomb/) and [quines](https://research.swtch.com/zip) (which are archives that contain a copy of themselves, causing infinite recursion).
+Существует ряд методов, которые можно использовать для достижения гораздо более высоких коэффициентов сжатия, в том числе несколько степеней сжатия, [злоупотребление форматом Zip](https://www.bamsoftware.com/hacks/zipbomb/) и [квайнами](https://research.swtch.com/zip) (которые представляют собой архивы, содержащие копию самих себя, вызывающими бесконечную рекурсию).
 
-A successful Zip bomb attack will result in a denial of service, and can also lead to increased costs if an auto-scaling cloud platform is used. **Do not carry out this kind of attack unless you have considered these risks and have written approval to do so.**
+Успешная атака Zip-бомбы приводит к отказу в обслуживании, а также может привести к увеличению расходов, если используется облачная платформа с автоматическим масштабированием. **Не проводите такого рода атаки, если вы не учли эти риски и не получили на это письменного разрешения.**
 
-#### XML Files
+#### XML-файлы
 
-XML files have a number of potential vulnerabilities such as XML eXternal Entities (XXE) and denial of service attacks such as the [billion laughs attack](https://en.wikipedia.org/wiki/Billion_laughs_attack).
+XML-файлы имеют ряд потенциальных уязвимостей, например, внешние сущности (англ.: eXternal Entities, XXE) и атаки типа «отказ в обслуживании», такие как атака [миллиард смайликов](https://en.wikipedia.org/wiki/Billion_laughs_attack).
 
-These are discussed further in the [Testing for XML Injection](../07-Input_Validation_Testing/07-Testing_for_XML_Injection.md) guide.
+Они подробно обсуждаются в разделе [Тестирование XML-инъекций](../07-Input_Validation_Testing/07-Testing_for_XML_Injection.md).
 
-#### Other File Formats
+#### Другие форматы файлов
 
-Many other file formats also have specific security concerns that need to be taken into account, such as:
+Многие другие форматы файлов также имеют определённые проблемы безопасности, которые необходимо учитывать, например:
 
-- CSV files may allow [CSV injection attacks](https://owasp.org/www-community/attacks/CSV_Injection).
-- Office files may contain malicious macros or PowerShell code.
-- PDFs may contain malicious JavaScript.
+- CSV-файлы могут допускать [атаки CSV-инъекций](https://owasp.org/www-community/attacks/CSV_Injection).
+- Файлы Office могут содержать вредоносные макросы или код PowerShell.
+- PDF-файлы могут содержать вредоносный код JavaScript (ECMAScript).
 
-The permitted file formats should be carefully reviewed for potentially dangerous functionality, and where possible attempts should be made to exploit this during testing.
+Разрешённые форматы файлов должны быть тщательно проверены на предмет потенциально опасной функциональности, и, по возможности, должны быть предприняты попытки эксплуатировать это во время тестирования.
 
-### Source Code Review
+### Анализ исходного кода
 
-When there is file upload feature supported, the following API/methods are common to be found in the source code.
+Если поддерживается функция загрузки файлов, в исходном коде обычно используются следующие API/методы:
 
 - Java: `new file`, `import`, `upload`, `getFileName`, `Download`, `getOutputString`
 - C/C++: `open`, `fopen`
 - PHP: `move_uploaded_file()`, `Readfile`, `file_put_contents()`, `file()`, `parse_ini_file()`, `copy()`, `fopen()`, `include()`, `require()`
 
-## Related Test Cases
+## Связанные сценарии тестирования
 
-- [Test File Extensions Handling for Sensitive Information](../02-Configuration_and_Deployment_Management_Testing/03-Test_File_Extensions_Handling_for_Sensitive_Information.md)
-- [Testing for XML Injection](../07-Input_Validation_Testing/07-Testing_for_XML_Injection.md)
-- [Test Upload of Unexpected File Types](08-Test_Upload_of_Unexpected_File_Types.md)
+- [Тестирование обработки расширений файлов на наличие чувствительной информации](../02-Configuration_and_Deployment_Management_Testing/03-Test_File_Extensions_Handling_for_Sensitive_Information.md)
+- [Тестирование XML-инъекций](../07-Input_Validation_Testing/07-Testing_for_XML_Injection.md)
+- [Тестирование загрузки файлов непредусмотренных типов](08-Test_Upload_of_Unexpected_File_Types.md)
 
-## Remediation
+## Как исправить
 
-Fully protecting against malicious file upload can be complex, and the exact steps required will vary depending on the types files that are uploaded, and how the files are processed or parsed on the server. This is discussed more fully in the [File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html).
+Полностью защитить от загрузки вредоносных файлов может оказаться сложной задачей, и конкретные требуемые действия в зависимости от типов загружаемых файлов будут различаться, а также от того, как файлы обрабатываются или анализируются на сервере. Более подробно это обсуждается в [Памятке по загрузке файлов](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html).
 
-## Tools
+## Инструменты
 
-- Metasploit's payload generation functionality
-- Intercepting proxy
+- Функциональность генерации полезной нагрузки в Metasploit
+- Перехватывающий прокси
 
-## References
+## Ссылки
 
 - [OWASP - File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html)
 - [OWASP - Unrestricted File Upload](https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload)

@@ -32,7 +32,7 @@ tags: WSTG
 
 - Хранят учётные данные в закодированном виде в хранилищах браузера, в чём можно удостовериться в сценариях [тестирования хранилищ браузера](../11-Client-side_Testing/12-Testing_Browser_Storage.md) и [анализа сессии](../06-Session_Management_Testing/01-Testing_for_Session_Management_Schema.md#session-analysis). Учётные данные никоим образом не должны храниться в клиентском приложении и должны быть заменены токенами, сгенерированными на стороне сервера.
 - Автоматически вводят учётные данные пользователя в формы, чем могут злоупотреблять:
-    - Атаки [перехвата клика (тапа)](../11-Client-side_Testing/09-Testing_for_Clickjacking.md).
+    - Атаки [перехвата клика](../11-Client-side_Testing/09-Testing_for_Clickjacking.md).
     - Атаки [CSRF](../06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md).
 - Следует анализировать срок действия токенов, поскольку некоторые делают их вечными, чем подвергают опасности пользователей в случае, если такие токены будут украдены. Обязательно протестируйте сценарий [тайм-аута сессии](../06-Session_Management_Testing/07-Testing_Session_Timeout.md).
 

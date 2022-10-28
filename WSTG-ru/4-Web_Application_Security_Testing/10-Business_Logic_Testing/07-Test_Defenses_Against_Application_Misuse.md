@@ -7,84 +7,84 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Test Defenses Against Application Misuse
+# Тестирование защиты от нецелевого использования приложений
 
 |ID          |
 |------------|
 |WSTG-BUSL-07|
 
-## Summary
+## Обзор
 
-The misuse and invalid use of valid functionality can identify attacks attempting to enumerate the web application, identify weaknesses, and exploit vulnerabilities. Tests should be undertaken to determine whether there are application-layer defensive mechanisms in place to protect the application.
+Злоупотребление и нецелевое использование допустимой функциональности может выявить атаки, пытающиеся просканировать web-приложение, выявить слабые места и эксплуатировать уязвимости. Следует провести тесты, чтобы определить, существуют ли механизмы на уровне приложений для защиты приложения.
 
-The lack of active defenses allows an attacker to hunt for vulnerabilities without any recourse. The application's owner will thus not know their application is under attack.
+Отсутствие активной защиты позволяет злоумышленнику искать уязвимости, не боясь быть обнаруженным. Таким образом, владелец приложения не будет знать, что его приложение подвергается атаке.
 
-### Example
+### Пример
 
-An authenticated user undertakes the following (unlikely) sequence of actions:
+Аутентифицированный пользователь выполняет следующую (маловероятную) последовательность действий:
 
-1. Attempt to access a file ID their roles is not permitted to download
-2. Substitutes a single tick `'` instead of the file ID number
-3. Alters a GET request to a POST
-4. Adds an extra parameter
-5. Duplicates a parameter name/value pair
+1. Пытается получить доступ к идентификатору файла, загрузка которого не разрешена его роли.
+2. Вместо идентификатора файла вставляет одинарную кавычку `'`.
+3. Изменяет запрос GET на POST.
+4. Вставляет дополнительный параметр.
+5. Дублирует пару имя/значение параметра.
 
-The application is monitoring for misuse and responds after the 5th event with extremely high confidence the user is an attacker. For example the application:
+Приложение отслеживает случаи некорректного использования и после 5-го такого события реагирует, будучи абсолютно уверенным в том, что пользователь является злоумышленником. Например, приложение:
 
-- Disables critical functionality
-- Enables additional authentication steps to the remaining functionality
-- Adds time-delays into every request-response cycle
-- Begins to record additional data about the user's interactions (e.g. sanitized HTTP request headers, bodies and response bodies)
+- Отключает критичные функции.
+- Включает дополнительные этапы аутентификации для остальных функций.
+- Добавляет временные задержки в каждый цикл запроса-ответа.
+- Начинает фиксировать дополнительные данные о взаимодействии пользователя (например, нейтрализованные заголовки и тела HTTP-запросов и ответов).
 
-If the application does not respond in any way and the attacker can continue to abuse functionality and submit clearly malicious content at the application, the application has failed this test case. In practice the discrete example actions in the example above are unlikely to occur like that. It is much more probable that a fuzzing tool is used to identify weaknesses in each parameter in turn. This is what a security tester will have undertaken too.
+Если приложение никоим образом не отвечает, а злоумышленник может продолжать злоупотреблять функциональностью и отправлять явно вредоносный контент в приложение, то оно не прошло этот тест. На практике указанные в приведённом выше примере действия вряд ли будут выполняться подобным образом. Гораздо более вероятно, что для выявления слабых мест в каждом параметре по очереди будет использоваться инструмент фаззинга. Этим же следует заниматься и тестировщику безопасности.
 
-## Test Objectives
+## Задачи тестирования
 
-- Generate notes from all tests conducted against the system.
-- Review which tests had a different functionality based on aggressive input.
-- Understand the defenses in place and verify if they are enough to protect the system against bypassing techniques.
+- Записывать заметки обо всех тестах, проводимых с системой.
+- Проверить, для каких тестов в результате фаззинга функциональность отличалась от целевой.
+- Изучить существующие меры защиты и проверить, достаточно ли их для защиты системы от методов обхода.
 
-## How to Test
+## Как тестировать
 
-This test is unusual in that the result can be drawn from all the other tests performed against the web application. While performing all the other tests, take note of measures that might indicate the application has in-built self-defense:
+Этот тест необычен тем, что его результат может быть получен из других тестов, проведённых над web-приложением. При проведении этих тестов обращайте внимание на меры, которые могут указывать на то, что приложение имеет встроенную самозащиту:
 
-- Changed responses
-- Blocked requests
-- Actions that log a user out or lock their account
+- модифицированные ответы;
+- заблокированные запросы;
+- действия, которые приводят к выходу пользователя из системы или блокировке его учётной записи.
 
-These may only be localized. Common localized (per function) defenses are:
+Они могут быть только локальными. Распространёнными локальными (для каждой функции) мерами защиты являются:
 
-- Rejecting input containing certain characters
-- Locking out an account temporarily after a number of authentication failures
+- отклонение входных данных, содержащих определённые символы;
+- временная блокировка учетной записи после ряда сбоев аутентификации.
 
-Localized security controls are not sufficient. There are often no defenses against general mis-use such as:
+Локальных мер недостаточно. Часто нет никакой защиты от нецелевого использования общего характера, например:
 
-- Forced browsing
-- Bypassing presentation layer input validation
-- Multiple access control errors
-- Additional, duplicated or missing parameter names
-- Multiple input validation or business logic verification failures with values that cannot be the result user mistakes or typos
-- Structured data (e.g. JSON, XML) of an invalid format is received
-- Blatant cross-site scripting or SQL injection payloads are received
-- Utilizing the application faster than would be possible without automation tools
-- Change in continental geo-location of a user
-- Change of user agent
-- Accessing a multi-stage business process in the wrong order
-- Large number of, or high rate of use of, application-specific functionality (e.g. voucher code submission, failed credit card payments, file uploads, file downloads, log outs, etc).
+- Принудительный просмотр (т.е. перебор web-ресурсов).
+- Обход форматно-логического контроля входных данных приложения.
+- Многократные ошибки управления доступом.
+- Дополнительные, дублирующиеся или отсутствующие наименования параметров.
+- Многократные ошибки контроля ввода или бизнес-логики со значениями, которые не могут быть результатом ошибок или опечаток пользователя.
+- Получение структурированных данных (например, JSON, XML) недопустимого формата.
+- Получение полезной нагрузки в виде очевидных межсайтовых скриптов или SQL-инъекций.
+- Использование приложения быстрее, чем это было бы возможно без средств автоматизации.
+- Изменение геолокации (континента) пользователя.
+- Изменение агента пользователя (например, браузера).
+- Доступ к этапам бизнес-процесса в неправильном порядке.
+- Большое количество или высокая частота использования функций, специфичных для конкретного приложения (например, отправка кода ваучера, неудачные платежи по кредитной карте, загрузка файлов, выход из системы и т.д.).
 
-These defenses work best in authenticated parts of the application, although rate of creation of new accounts or accessing content (e.g. to scrape information) can be of use in public areas.
+Эти меры защиты лучше всего работают в аутентифицированной зоне приложения, хотя частота создания новых учётных записей или доступа к контенту (например, парсинга сайта) может быть полезна и в публичной зоне.
 
-Not all the above need to be monitored by the application, but there is a problem if none of them are. By testing the web application, doing the above type of actions, was any response taken against the tester? If not, the tester should report that the application appears to have no application-wide active defenses against misuse. Note it is sometimes possible that all responses to attack detection are silent to the user (e.g. logging changes, increased monitoring, alerts to administrators and and request proxying), so confidence in this finding cannot be guaranteed. In practice, very few applications (or related infrastructure such as a web application firewall) are detecting these types of misuse.
+Приложению не обязательно контролировать всё вышеперечисленное, но, если ни одно из действий не отслеживается, то это проблема. Был ли какой-либо ответ на вышеуказанные действия при тестировании web-приложения? Если нет, тестировщик должен сообщить, что приложение, по-видимому, не имеет активных мер защиты от нецелевого использования. Примечание. Иногда возможно, что все ответы на обнаружение атаки остаются незаметными для пользователя (например, внесение изменений в журнал, усиление мониторинга, оповещения администраторов и проксирование запросов), поэтому уверенности в этом обнаружении гарантировать нельзя. На практике очень немногие приложения (или связанная с ними инфраструктура, например, WAF) обнаруживают такие виды некорректного использования.
 
-## Related Test Cases
+## Связанные сценарии тестирования
 
-All other test cases are relevant.
+Применимы все остальные сценарии тестирования.
 
-## Remediation
+## Как исправить
 
-Applications should implement active defenses to fend off attackers and abusers.
+Приложения должны реализовывать активную защиту для отражения атак злоумышленников.
 
-## References
+## Ссылки
 
 - [Software Assurance](https://www.cisa.gov/uscert/sites/default/files/publications/infosheet_SoftwareAssurance.pdf), US Department Homeland Security
 - [IR 7684](https://csrc.nist.gov/publications/detail/nistir/7864/final) Common Misuse Scoring System (CMSS), NIST

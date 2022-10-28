@@ -7,25 +7,25 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for Reverse Tabnabbing
+# Тестирование Reverse Tabnabbing
 
 |ID          |
 |------------|
 |WSTG-CLNT-14|
 
-## Summary
+## Обзор
 
-[Reverse Tabnabbing](https://owasp.org/www-community/attacks/Reverse_Tabnabbing) is an attack which can be used to redirect users to phishing pages. This usually becomes possible due to the `target` attribute of the `<a>` tag being set to `_blank` which causes the link to be opened in a new tab. When the attribute `rel='noopener noreferrer'` is not used in the same `<a>` tag, the newly opened page can influence the original page and redirect it to a domain controlled by the attacker.
+[Обратный редирект на захваченную вкладку (англ.: Reverse Tabnabbing)](https://owasp.org/www-community/attacks/Reverse_Tabnabbing) — это атака, которая может использоваться для перенаправления пользователей на фишинговые страницы. Обычно это становится возможным из-за того, что атрибут `target` у тега `<a>` установлен в значение `_blank`, что приводит к открытию ссылки в новой вкладке. Если в том же теге `<a>` нет атрибута `rel='noopener noreferrer'`, то открываемая страница может повлиять на исходную и перенаправить её на домен, контролируемый злоумышленником.
 
-Since the user was on the original domain when the new tab opened, they are less likely to notice that the page has changed, especially if the phishing page is identical to the original domain. Any credentials entered on the attacker-controlled domain will thus end up in the attacker's possession.
+Поскольку при открытии новой вкладки пользователь находился в исходном домене, он с меньшей вероятностью заметит, что страница изменилась, особенно, если фишинговая страница похожа на страницу в исходном домене. Таким образом, учётные данные, введённые жертвой в домене, контролируемом злоумышленником, окажутся в его владении.
 
-Links opened via the `window.open` JavaScript function are also vulnerable to this attack.
+Ссылки, открываемые с помощью функции JavaScript `window.open`, также уязвимы для этой атаки.
 
-_NOTE: This is a legacy issue that does not affect [modern browsers](https://caniuse.com/mdn-html_elements_a_implicit_noopener). Older versions of popular browsers (For example, versions prior to Google Chrome 88) as well as Internet Explorer are vulnerable to this attack._
+_ПРИМЕЧАНИЕ. Это устаревшая проблема, которая не влияет на [современные браузеры](https://caniuse.com/mdn-html_elements_a_implicit_noopener). Этой атаке подвержены старые версии популярных браузеров (например, версии Google Chrome до 88), а также Internet Explorer._
 
-### Example
+### Пример
 
-Imagine a web application where users are allowed to insert a URL in their profile. If the application is vulnerable to reverse tabnabbing, a malicious user will be able to provide a link to a page that has the following code:
+Представьте себе web-приложение, в котором пользователям разрешено вставлять URL в свой профиль. Если приложение уязвимо к Reverse tabnabbing, злоумышленник сможет дать ссылку на страницу со следующим кодом:
 
 ```html
 <html>
@@ -33,26 +33,27 @@ Imagine a web application where users are allowed to insert a URL in their profi
   <script>
     window.opener.location = "https://example.org";
   </script>
-<b>Error loading...</b>
+<b>Ошибка загрузки...</b>
  </body>
 </html>
 ```
 
-Clicking on the link will open up a new tab while the original tab will redirect to "example.org". Suppose "example.org" looks similar to the vulnerable web application, the user is less likely to notice the change and is more likely to enter sensitive information on the page.
+При переходе по ссылке откроется новая вкладка, а исходная будет перенаправлена на "example.org". Предположим, что "example.org" выглядит похоже на уязвимое web-приложение, тогда пользователь с меньшей вероятностью заметит подмену и с большей вероятностью введёт чувствительную информацию на странице.
 
-## How to Test
+## Как тестировать
 
-- Check the HTML source of the application to see if links with `target="_blank"` are using the `noopener` and `noreferrer` keywords in the `rel` attribute. If not, it is likely that the application is vulnerable to reverse tabnabbing. Such a link becomes exploitable if it either points to a third-party site that has been compromised by the attacker, or if it is user-controlled.
-- Check for areas where an attacker can insert links, i.e. control the `href` argument of an `<a>` tag. Try to insert a link to a page which has the source code given in the above example, and see if the original domain redirects. This test can be done in IE if other browsers don't work.
+- Проверьте HTML-код приложения, чтобы узнать, используются ли в ссылках с `target="_blank"` в атрибуте `rel` ключевые слова `noopener` и `noreferrer`. Если нет, вполне вероятно, что приложение уязвимо для Reverse tabnabbing. Такая ссылка становится пригодной для эксплуатации, если она либо указывает на сторонний сайт, скомпрометированный злоумышленником, либо находится под контролем пользователя.
+- Проверьте те области, куда злоумышленник может вставлять ссылки, т.е. контролировать аргумент `href` тега `<a>`. Попробуйте вставить ссылку на страницу с исходным кодом в приведённом выше примере, и посмотрите, есть ли перенаправление с исходного домена. Этот тест можно провести в IE, если не получится в других браузерах.
 
-## Remediation
+## Как исправить
 
-It is recommended to make sure that the `rel` HTML attribute is set with the `noreferrer` and `noopener` keywords for all links.
+Убедиться, что для всех ссылок HTML-атрибут `rel` применяется с ключевыми словами `noreferrer` и `noopener`.
 
-## References
+## Ссылки
 
-- [Tabnabbing - HTML5 Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html#tabnabbing)
-- [The target="_blank" vulnerability by example](https://dev.to/ben/the-targetblank-vulnerability-by-example)
-- [About rel=noopener](https://mathiasbynens.github.io/rel-noopener/)
-- [Target=”_blank” — the most underestimated vulnerability ever](https://medium.com/@jitbit/target-blank-the-most-underestimated-vulnerability-ever-96e328301f4c)
-- [Reverse tabnabbing vulnerability affects IBM Business Automation Workflow and IBM Business Process Manager](https://www.ibm.com/support/pages/security-bulletin-reverse-tabnabbing-vulnerability-affects-ibm-business-automation-workflow-and-ibm-business-process-manager-bpm-cve-2020-4490-0)
+- [Tabnabbing - Памятка по HTML5](https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html#tabnabbing)
+- [Уязвимость на примере target="_blank"](https://dev.to/ben/the-targetblank-vulnerability-by-example)
+- [О rel=noopener](https://mathiasbynens.github.io/rel-noopener/)
+- [Target=”_blank” — самая недооцененная уязвимость](https://medium.com/@jitbit/target-blank-the-most-underestimated-vulnerability-ever-96e328301f4c)
+- [Уязвимость Reverse tabnabbing затрагивает IBM Business Automation Workflow и IBM Business Process Manager](https://www.ibm.com/support/pages/security-bulletin-reverse-tabnabbing-vulnerability-affects-ibm-business-automation-workflow-and-ibm-business-process-manager-bpm-cve-2020-4490-0)
+- [Опасный target="_blank"](https://habr.com/ru/post/282880/)

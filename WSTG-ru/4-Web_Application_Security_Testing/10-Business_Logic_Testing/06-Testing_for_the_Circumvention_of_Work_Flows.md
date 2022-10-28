@@ -7,68 +7,68 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for the Circumvention of Work Flows
+# Тестирование обхода потока операций
 
 |ID          |
 |------------|
 |WSTG-BUSL-06|
 
-## Summary
+## Обзор
 
-Workflow vulnerabilities involve any type of vulnerability that allows the attacker to misuse an application/system in a way that will allow them to circumvent (not follow) the designed/intended workflow.
+Уязвимости потока операций (англ.: workflow) включают в себя все виды уязвимостей, которые позволяют злоумышленнику ненадлежащим образом использовать приложение/систему так, чтобы он мог обойти (не следовать) предусмотренному/предполагаемому потоку операций.
 
-[Definition of a workflow on Wikipedia](https://en.wikipedia.org/wiki/Workflow):
+[Определение потока операций в Wikipedia](https://en.wikipedia.org/wiki/Workflow):
 
-> A workflow consists of a sequence of connected steps where each step follows without delay or gap and ends just before the subsequent step may begin. It is a depiction of a sequence of operations, declared as work of a person or group, an organization of staff, or one or more simple or complex mechanisms. Workflow may be seen as any abstraction of real work.
+> Поток операций состоит из последовательности связанных этапов, где каждый этап идёт без задержек или промежутков и заканчивается непосредственно перед началом следующего. Это описание последовательности операций, которыми могут являться работа человека, группы или организации, а также одного или нескольких простых или сложных механизмов. Поток операций можно рассматривать как абстракцию реальной работы.
 
-The application’s business logic must require that the user complete specific steps in the correct/specific order and if the workflow is terminated without correctly completing, all actions and spawned actions are "rolled back" or canceled. Vulnerabilities related to the circumvention of workflows or bypassing the correct business logic workflow are unique in that they are very application/system specific and careful manual misuse cases must be developed using requirements and use cases.
+Бизнес-логика приложения должна требовать, чтобы пользователь выполнял предусмотренные этапы в правильном/заданном порядке, и если поток операций завершается некорректно, то все порождённые им события и действия «откатываются» или отменяются. Уязвимости, связанные с обходом заданного потока операций или нарушением логики бизнес-процесса, уникальны тем, что они очень специфичны для приложения/системы, и приходится разрабатывать сценарии некорректного использования вручную, с учётом требований и целевых сценариев использования.
 
-The applications business process must have checks to ensure that the user's transactions/actions are proceeding in the correct/acceptable order and if a transaction triggers some sort of action, that action will be "rolled back" and removed if the transaction is not successfully completed.
+В бизнес-процессе приложения должны быть проверки, гарантирующие, что транзакции/действия пользователя выполняются в правильном/допустимом порядке, и если транзакция инициирует какое-то действие, это действие будет «откатываться» и отменяться, если она не будет успешно завершена.
 
-### Example 1
+### Пример 1
 
-Many of us receive so type of "club/loyalty points" for purchases from grocery stores and gas stations. Suppose a user was able to start a transaction linked to their account and then after points have been added to their club/loyalty account cancel out of the transaction or remove items from their "basket" and tender. In this case the system either should not apply points/credits to the account until it is tendered or points/credits should be "rolled back" if the point/credit increment does not match the final tender. With this in mind, an attacker may start transactions and cancel them to build their point levels without actually buy anything.
+Многие из нас получают так называемые «баллы программы лояльности» за покупки в продуктовых магазинах и на автозаправочных станциях. Предположим, пользователь смог начать транзакцию, а затем, после того как к его учётной записи были начислены баллы, отменил её или удалил товары из «корзины» и вышел. В этом случае система либо не должна начислять баллы на его счёт до тех пор, пока он не будет оплачен, либо баллы должны быть «отменены», если их прирост не соответствует окончательному расчёту. Имея это в виду, злоумышленник может начинать транзакции и отменять её, чтобы поднять свой уровень в программе, ничего фактически не покупая.
 
-### Example 2
+### Пример 2
 
-An electronic bulletin board system may be designed to ensure that initial posts do not contain profanity based on a list that the post is compared against. If a word on a deny list is found in the user entered text the submission is not posted. But, once a submission is posted the submitter can access, edit, and change the submission contents to include words included on the profanity/deny list since on edit the posting is never compared again. Keeping this in mind, attackers may open an initial blank or minimal discussion then add in whatever they like as an update.
+Система электронной доски объявлений может быть спроектирована таким образом, чтобы первоначальные сообщения не содержали ненормативной лексики из списка, с которым сравнивается сообщение. Если в тексте, введённом пользователем, найдено слово из списка запрещённых, его сообщение не публикуется. Но после того, как сообщение опубликовано, его автор может получить к нему доступ, отредактировать и что-то изменить, чтобы добавить запрещённые слова из списка, поскольку при редактировании публикация уже не модерируется. Помня об этом, злоумышленник может начать исходно пустое или минимальное обсуждение, а затем добавить всё, что ему нравится, в качестве обновления.
 
-## Test Objectives
+## Задачи тестирования
 
-- Review the project documentation for methods to skip or go through steps in the application process in a different order from the intended business logic flow.
-- Develop a misuse case and try to circumvent every logic flow identified.
+- Проанализировать проектную документацию, чтобы найти способы пропустить или выполнить этапы процесса в порядке, отличном от предполагаемой приложением логики потока операций.
+- Разработать сценарии нецелевого использования и попытаться обойти каждый найденный поток операций.
 
-## How to Test
+## Как тестировать
 
-### Testing Method 1
+### Метод тестирования 1
 
-- Start a transaction going through the application past the points that triggers credits/points to the users account.
-- Cancel out of the transaction or reduce the final tender so that the point values should be decreased and check the points/ credit system to ensure that the proper points/credits were recorded.
+- Вызовите транзакцию в приложении, которая, например, начисляет баллы на учётную запись пользователя.
+- Отмените транзакцию или сократите её сумму, чтобы уменьшить количество баллов, и проверьте счёт в программе лояльности, чтобы убедиться, что баллы учтены правильно.
 
-### Testing Method 2
+### Метод тестирования 2
 
-- On a content management or bulletin board system enter and save valid initial text or values.
-- Then try to append, edit and remove data that would leave the existing data in an invalid state or with invalid values to ensure that the user is not allowed to save the incorrect information. Some "invalid" data or information may be specific words (profanity) or specific topics (such as political issues).
+- В системе управления контентом или на доске объявлений введите и сохраните допустимый первоначальный текст или значения.
+- Затем попробуйте добавить, отредактировать или удалить данные, которые переведут уже имеющиеся данные в категорию недопустимых или с недопустимыми значениями, чтобы убедиться, что пользователю не разрешено сохранять некорректную информацию. Под категорию недопустимых могут подпадать те или иные слова (например, ненормативная лексика) или определённые темы (например, политические).
 
-## Related Test Cases
+## Связанные сценарии тестирования
 
-- [Testing Directory Traversal/File Include](../05-Authorization_Testing/01-Testing_Directory_Traversal_File_Include.md)
-- [Testing for Bypassing Authorization Schema](../05-Authorization_Testing/02-Testing_for_Bypassing_Authorization_Schema.md)
-- [Testing for Bypassing Session Management Schema](../06-Session_Management_Testing/01-Testing_for_Session_Management_Schema.md)
-- [Test Business Logic Data Validation](01-Test_Business_Logic_Data_Validation.md)
-- [Test Ability to Forge Requests](02-Test_Ability_to_Forge_Requests.md)
-- [Test Integrity Checks](03-Test_Integrity_Checks.md)
-- [Test for Process Timing](04-Test_for_Process_Timing.md)
-- [Test Number of Times a Function Can be Used Limits](05-Test_Number_of_Times_a_Function_Can_Be_Used_Limits.md)
-- [Test Defenses Against Application Mis-use](07-Test_Defenses_Against_Application_Misuse.md)
-- [Test Upload of Unexpected File Types](08-Test_Upload_of_Unexpected_File_Types.md)
-- [Test Upload of Malicious Files](09-Test_Upload_of_Malicious_Files.md)
+- [Тестирование включения файлов при обходе каталогов](../05-Authorization_Testing/01-Testing_Directory_Traversal_File_Include.md)
+- [Тестирование обхода схемы авторизации](../05-Authorization_Testing/02-Testing_for_Bypassing_Authorization_Schema.md)
+- [Тестирование схемы управления сессиями](../06-Session_Management_Testing/01-Testing_for_Session_Management_Schema.md)
+- [Тестирование форматно-логического контроля данных](01-Test_Business_Logic_Data_Validation.md)
+- [Тестирование способности подделывать запросы](02-Test_Ability_to_Forge_Requests.md)
+- [Тестирование проверки целостности](03-Test_Integrity_Checks.md)
+- [Тестирование времени обработки](04-Test_for_Process_Timing.md)
+- [Тестирование ограничений на количество раз, которое функция может быть вызвана](05-Test_Number_of_Times_a_Function_Can_Be_Used_Limits.md)
+- [Тестирование защиты от нецелевого использования приложений](07-Test_Defenses_Against_Application_Misuse.md)
+- [Тестирование загрузки файлов непредусмотренных типов](08-Test_Upload_of_Unexpected_File_Types.md)
+- [Тестирование загрузки вредоносных файлов](09-Test_Upload_of_Malicious_Files.md)
 
-## Remediation
+## Как исправить
 
-The application must be self-aware and have checks in place ensuring that the users complete each step in the work flow process in the correct order and prevent attackers from circumventing/skipping/or repeating any steps/processes in the workflow. Test for workflow vulnerabilities involves developing business logic abuse/misuse cases with the goal of successfully completing the business process while not completing the correct steps in the correct order.
+Приложение должно уметь контролировать, что пользователи выполняют каждый этап предусмотренного его логикой потока операций в правильном порядке, не допуская, чтобы злоумышленники могли обойти/пропустить/или повторять какие-либо этапы/процессы в потоке операций. Тестирование уязвимостей потока операций включает в себя разработку сценариев злоупотребления/нецелевого использования бизнес-логики с целью успешного завершения процесса, не выполняя предусмотренных этапов и не соблюдая их правильный порядок.
 
-## References
+## Ссылки
 
 - [OWASP Abuse Case Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Abuse_Case_Cheat_Sheet.html)
 - [CWE-840: Business Logic Errors](https://cwe.mitre.org/data/definitions/840.html)

@@ -7,21 +7,21 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Testing for HTML Injection
+# Тестирование HTML-инъекции
 
 |ID          |
 |------------|
 |WSTG-CLNT-03|
 
-## Summary
+## Обзор
 
-HTML injection is a type of injection vulnerability that occurs when a user is able to control an input point and is able to inject arbitrary HTML code into a vulnerable web page. This vulnerability can have many consequences, like disclosure of a user's session cookies that could be used to impersonate the victim, or, more generally, it can allow the attacker to modify the page content seen by the victims.
+HTML-инъекция — вид уязвимости, который возникает, когда пользователь может контролировать точку входа и вставлять произвольный HTML-код на уязвимую web-страницу. Эта уязвимость может иметь множество последствий, таких как раскрытие сессионных cookie пользователя, которые могут быть использованы для выдачи себя за жертву, или, в более общем плане, она может позволить злоумышленнику изменять содержимое страницы, которую видят жертвы.
 
-This vulnerability occurs when user input is not correctly sanitized and the output is not encoded. An injection allows the attacker to send a malicious HTML page to a victim. The targeted browser will not be able to distinguish (trust) legitimate parts from malicious parts of the page, and consequently will parse and execute the whole page in the victim's context.
+Эта уязвимость возникает, когда вводимые пользователем данные некорректно нейтрализуются, а выходные — не кодируются. Инъекция позволяет злоумышленнику отправить вредоносную HTML-страницу жертве. Целевой браузер не может отличить легитимные части страницы от вредоносных (т.е. доверять им) и, следовательно, будет парсить и выполнять всю страницу в контексте жертвы.
 
-There is a wide range of methods and attributes that could be used to render HTML content. If these methods are provided with an untrusted input, then there is an high risk of HTML injection vulnerability. For example, malicious HTML code can be injected via the `innerHTML` JavaScript method, usually used to render user-inserted HTML code. If strings are not correctly sanitized, the method can enable HTML injection. A JavaScript function that can be used for this purpose is `document.write()`.
+Для отображения HTML-контента можно использовать широкий ассортимент методов и атрибутов. Если в этих методах обрабатываются недоверенные входные данные, существует высокий риск уязвимости HTML-инъекций. Например, можно вставить вредоносный HTML-код с помощью метода JavaScript `innerHTML`. Если строки должным образом не нейтрализуются, этот метод может допускать HTML-инъекцию. Для этой цели можно применять функцию JavaScript `document.write()`.
 
-The following example shows a snippet of vulnerable code that allows an unvalidated input to be used to create dynamic HTML in the page context:
+В следующем примере показан фрагмент уязвимого кода, который позволяет использовать недоверенные входные данные для создания динамического HTML-кода в контексте страницы:
 
 ```js
 var userposition=location.href.indexOf("user=");
@@ -29,7 +29,7 @@ var user=location.href.substring(userposition+5);
 document.getElementById("Welcome").innerHTML=" Hello, "+user;
 ```
 
-The following example shows vulnerable code using the `document.write()` function:
+В данном примере показан уязвимый код, использующий функцию `document.write()`:
 
 ```js
 var userposition=location.href.indexOf("user=");
@@ -37,23 +37,23 @@ var user=location.href.substring(userposition+5);
 document.write("<h1>Hello, " + user +"</h1>");
 ```
 
-In both examples, this vulnerability can be exploited with an input such as:
+В обоих случаях эту уязвимость можно эксплуатировать с помощью таких входных данных, как:
 
 ```text
 http://vulnerable.site/page.html?user=<img%20src='aaa'%20onerror=alert(1)>
 ```
 
-This input will add an image tag to the page that will execute arbitrary JavaScript code inserted by the malicious user in the HTML context.
+При вводе добавляется на страницу тег изображения, который будет выполнять произвольный код JavaScript, вставленный злоумышленником в контекст HTML.
 
-## Test Objectives
+## Задача тестирования
 
-- Identify HTML injection points and assess the severity of the injected content.
+- Найти точки инъекции HTML и оценить возможные последствия от вставленного контента.
 
-## How to Test
+## Как тестировать
 
-Consider the following DOM XSS exercise <http://www.domxss.com/domxss/01_Basics/06_jquery_old_html.html>
+Рассмотрим следующее [упражнение](http://www.domxss.com/domxss/01_Basics/06_jquery_old_html.html) на DOM XSS.
 
-The HTML code contains the following script:
+HTML-код содержит следующий скрипт:
 
 ```html
 <script src="../js/jquery-1.7.1.js"></script>
@@ -73,4 +73,4 @@ $(window).bind("hashchange",setMessage)
 </body>
 ```
 
-It is possible to inject HTML code.
+Можно вводить HTML-код.
