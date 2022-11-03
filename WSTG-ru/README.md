@@ -15,43 +15,43 @@ tags: WSTG
 
 ## 2. [Введение](2-Introduction/)
 
-### 2.1 [Проект OWASP по тестированию](2-Introduction/README.md#Проект-OWASP-по-тестированию)
+### 2.1 [Проект OWASP по тестированию](2-Introduction/README.md#проект-owasp-по-тестированию)
 
-### 2.2 [Принципы тестирования](2-Introduction/README.md#Принципы-тестирования)
+### 2.2 [Принципы тестирования](2-Introduction/README.md#принципы-тестирования)
 
-### 2.3 [Методы тестирования](2-Introduction/README.md#Testing-Techniques-Explained)
+### 2.3 [Методы тестирования](2-Introduction/README.md#методы-тестирования)
 
-### 2.4 [Ручные проверки](2-Introduction/README.md#Manual-Inspections-and-Reviews)
+### 2.4 [Ручные проверки](2-Introduction/README.md#ручные-проверки)
 
-### 2.5 [Моделирование угроз](2-Introduction/README.md#Threat-Modeling)
+### 2.5 [Моделирование угроз](2-Introduction/README.md#моделирование-угроз)
 
-### 2.6 [Анализ исходного кода](2-Introduction/README.md#Source-Code-Review)
+### 2.6 [Анализ исходного кода](2-Introduction/README.md#анализ-исходного-кода)
 
-### 2.7 [Тестирование на проникновение](2-Introduction/README.md#Penetration-Testing)
+### 2.7 [Тестирование на проникновение](2-Introduction/README.md#тестирование-на-проникновение)
 
-### 2.8 [Нужен сбалансированный подход](2-Introduction/README.md#The-Need-for-a-Balanced-Approach)
+### 2.8 [Нужен сбалансированный подход](2-Introduction/README.md#нужен-сбалансированный-подход)
 
-### 2.9 [Определение требований к тестированию безопасности](2-Introduction/README.md#Deriving-Security-Test-Requirements)
+### 2.9 [Определение требований к тестированию безопасности](2-Introduction/README.md#определение-требований-к-тестированию-безопасности)
 
-### 2.10 [Включение тестов безопасности в процесс разработки и тестирования](2-Introduction/README.md#Security-Tests-Integrated-in-Development-and-Testing-Workflows)
+### 2.10 [Включение тестов безопасности в процессы разработки и тестирования](2-Introduction/README.md#включение-тестов-безопасности-в-процессы-разработки-и-тестирования)
 
-### 2.11 [Анализ данных по тестированию безопасности и отчётность](2-Introduction/README.md#Security-Test-Data-Analysis-and-Reporting)
+### 2.11 [Анализ данных по тестированию безопасности и отчётность](2-Introduction/README.md#анализ-данных-по-тестированию-безопасности-и-отчётность)
 
 ## 3. [Методика тестирования OWASP](3-The_OWASP_Testing_Framework/)
 
 ### 3.1 [Методика тестирования безопасности web-приложений](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md)
 
-### 3.2 [Этап 1. До начала разработки](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#Phase-1-Before-Development-Begins)
+### 3.2 [Этап 1. До начала разработки](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#этап-1-до-начала-разработки)
 
-### 3.3 [Этап 2. В процессе определения и проектирования](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#Phase-2-During-Definition-and-Design)
+### 3.3 [Этап 2. В процессе определения и проектирования](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#этап-2-в-процессе-определения-и-проектирования)
 
-### 3.4 [Этап 3. В процессе разработки](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#Phase-3-During-Development)
+### 3.4 [Этап 3. В процессе разработки](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#этап-3-в-процессе-разработки)
 
-### 3.5 [Этап 4. В процессе развёртывания](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#Phase-4-During-Deployment)
+### 3.5 [Этап 4. В процессе развёртывания](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#этап-4-в-процессе-развёртывания)
 
-### 3.6 [Этап 5. В процессах сопровождения и эксплуатации](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#Phase-5-During-Maintenance-and-Operations)
+### 3.6 [Этап 5. В процессах сопровождения и эксплуатации](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#этап-5-в-процессах-сопровождения-и-эксплуатации)
 
-### 3.7 [Типичный процесс тестирования в SDLC](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#A-Typical-SDLC-Testing-Workflow)
+### 3.7 [Типичный процесс тестирования в SDLC](3-The_OWASP_Testing_Framework/0-The_Web_Security_Testing_Framework.md#типичный-процесс-тестирования-в-SDLC)
 
 ### 3.8 [Методологии тестирования на проникновение](3-The_OWASP_Testing_Framework/1-Penetration_Testing_Methodologies.md)
 
@@ -131,7 +131,7 @@ tags: WSTG
 
 #### 4.4.5 [Тестирование уязвимого запоминания пароля](4-Web_Application_Security_Testing/04-Authentication_Testing/05-Testing_for_Vulnerable_Remember_Password.md)
 
-#### 4.4.6 [Тестирование на уязвимости кэша браузера](4-Web_Application_Security_Testing/04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md)
+#### 4.4.6 [Тестирование уязвимостей кэша браузера](4-Web_Application_Security_Testing/04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md)
 
 #### 4.4.7 [Тестирование парольной политики](4-Web_Application_Security_Testing/04-Authentication_Testing/07-Testing_for_Weak_Password_Policy.md)
 
@@ -313,22 +313,22 @@ tags: WSTG
 
 ### 4.12 [Тестирование API](4-Web_Application_Security_Testing/12-API_Testing/README.md)
 
-#### 4.12.1 [Testing GraphQL](4-Web_Application_Security_Testing/12-API_Testing/01-Testing_GraphQL.md)
+#### 4.12.1 [Тестирование GraphQL](4-Web_Application_Security_Testing/12-API_Testing/01-Testing_GraphQL.md)
 
 ## 5. [Отчётность](5-Reporting/README.md)
 
-### 5.1 [Reporting Structure](5-Reporting/01-Reporting_Structure.md)
+### 5.1 [Структура отчёта](5-Reporting/01-Reporting_Structure.md)
 
-### 5.2 [Naming Schemes](5-Reporting/02-Naming_Schemes.md)
+### 5.2 [Схемы наименования уязвимостей](5-Reporting/02-Naming_Schemes.md)
 
-## Приложение A. [Testing Tools Resource](6-Appendix/A-Testing_Tools_Resource.md)
+## Приложение A. [Ресурсы по инструментам тестирования](6-Appendix/A-Testing_Tools_Resource.md)
 
-## Приложение B. [Suggested Reading](6-Appendix/B-Suggested_Reading.md)
+## Приложение B. [Рекомендуется к прочтению](6-Appendix/B-Suggested_Reading.md)
 
-## Приложение C. [Fuzz Vectors](6-Appendix/C-Fuzz_Vectors.md)
+## Приложение C. [Векторы для фаззинга](6-Appendix/C-Fuzz_Vectors.md)
 
-## Приложение D. [Encoded Injection](6-Appendix/D-Encoded_Injection.md)
+## Приложение D. [Закодированные инъекции](6-Appendix/D-Encoded_Injection.md)
 
-## Приложение E. [History](6-Appendix/E-History.md)
+## Приложение E. [История](6-Appendix/E-History.md)
 
-## Приложение F. [Leveraging Dev Tools](6-Appendix/F-Leveraging_Dev_Tools.md)
+## Приложение F. [Использование инструментов разработчика в браузере](6-Appendix/F-Leveraging_Dev_Tools.md)

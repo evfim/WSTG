@@ -7,87 +7,87 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Encoded Injection
+# Закодированные инъекции
 
-## Background
+## Предпосылки
 
-Character encoding is the process of mapping characters, numbers and other symbols to a standard format. Typically, this is done to create a message ready for transmission between sender and receiver. It is, in simple terms, the conversion of characters (belonging to different languages like English, Chinese, Greek or any other known language) into bytes. An example of a widely used character encoding scheme is the American Standard Code for Information Interchange (ASCII) that initially used 7-bit codes. More recent examples of encoding schemes would be the Unicode `UTF-8` and `UTF-16` computing industry standards.
+Кодирование символов — процесс приведения символов, чисел и других символов к стандартному формату. Как правило, это делается при создании сообщения для передачи от отправителя получателю. Проще говоря, это преобразование символов (принадлежащих различным языкам, таким как английский, китайский, русский или любой другой) в байты. Примером широко используемой схемы кодирования символов является Американский стандартный код для обмена информацией (англ.: American Standard Code for Information Interchange, ASCII), в котором раньше использовались 7-битные коды. Более свежими примерами схем кодирования могут быть отраслевые стандарты Unicode `UTF-8` и `UTF-16`.
 
-In the space of application security and due to the plethora of encoding schemes available, character encoding has a popular misuse. It is being used for encoding malicious injection strings in a way that obfuscates them. This can lead to the bypass of input validation filters, or take advantage of particular ways in which browsers render encoded text.
+В области безопасности приложений и из-за множества имеющихся схем кодирования кодировка символов широко используется не по назначению. Например, для кодирования вредоносных строк инъекций, таким образом, чтобы обфусцировать их. Это может привести к обходу фильтров проверки ввода или использованию определенных способов, которыми браузеры отображают закодированный текст.
 
-## Input Encoding – Filter Evasion
+## Кодирование входных данных — уклонение от фильтра
 
-Web applications usually employ different types of input filtering mechanisms to limit the input that can be submitted by the user. If these input filters are not implemented sufficiently well, it is possible to slip a character or two through these filters. For instance, a `/` can be represented as `2F` (hex) in ASCII, while the same character (`/`) is encoded as `C0` `AF` in Unicode (2 byte sequence). Therefore, it is important for the input filtering control to be aware of the encoding scheme used. If the filter is found to be detecting only `UTF-8` encoded injections, a different encoding scheme may be employed to bypass this filter.
+Web-приложения обычно применяют различные типы механизмов фильтрации входных данных, чтобы ограничить ввод от пользователя. Если эти входные фильтры реализованы недостаточно хорошо, можно пропустить один или два символа через эти фильтры. Например `/` может быть представлен как `2F` (hex) в ASCII, в то время как тот же символ (`/`) кодируется как `C0` `AF` в Unicode (2-байтовая последовательность). Поэтому фильтру входных данных важно знать о применяемой схеме кодирования. Если обнаружено, что фильтр обнаруживает только инъекции в кодировке `UTF-8`, для обхода этого фильтра можно использовать другую схему кодирования.
 
-## Output Encoding – Server & Browser Consensus
+## Кодирование вывода — консенсус между сервером и браузером
 
-Web browsers need to be aware of the encoding scheme used to coherently display a web page. Ideally, this information should be provided to the browser in the HTTP header (`Content-Type`) field, as shown below:
+Web-браузеры должны знать о схеме кодирования, используемой для согласованного отображения web-страницы. В идеале эта информация должна быть предоставлена браузеру в поле HTTP-заголовка (`Content-Type`), как показано ниже:
 
 ```http
 Content-Type: text/html; charset=UTF-8
 ```
 
-or through HTML META tag (`META HTTP-EQUIV`), as shown below:
+или через HTML META-тег (`META HTTP-EQUIV`), как показано ниже:
 
 ``` html
-<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-5">
 ```
 
-It is through these character encoding declarations that the browser understands which set of characters to use when converting bytes to characters. Note that the content type mentioned in the HTTP header has precedence over the META tag declaration.
+Именно благодаря этим объявлениям кодировки символов браузер понимает, какой набор символов применять при преобразовании байтов в символы. Обратите внимание, что `Content-Type`, указанный в HTTP-заголовке, имеет приоритет над объявлением МЕТА-тега.
 
-CERT describes it here as follows:
+CERT описывает это следующим образом:
 
-Many web pages leave the character encoding (`charset` parameter in HTTP) undefined. In earlier versions of HTML and HTTP, the character encoding was supposed to default to `ISO-8859-1` if it wasn't defined. In fact, many browsers had a different default, so it was not possible to rely on the default being `ISO-8859-1`. HTML version 4 legitimizes this - if the character encoding isn't specified, any character encoding can be used.
+На многих web-страницах кодировка символов (параметр `charset` в HTTP) не определена. В более ранних версиях HTML и HTTP предполагалось, что по умолчанию используется `ISO-8859-1`, если иная не указана явно. На самом деле у многих браузеров было другое значение по умолчанию, поэтому полагаться на него было нельзя. HTML версии 4 это узаконил — если кодировка символов не указана, можно использовать любую.
 
-If the web server doesn't specify which character encoding is in use, it can't tell which characters are special. Web pages with unspecified character encoding work most of the time because most character sets assign the same characters to byte values below 128. But which of the values above 128 are special? Some 16-bit `character-encoding` schemes have additional multi-byte representations for special characters such as `<`. Some browsers recognize this alternative encoding and act on it. This is "correct" behavior, but it makes attacks using malicious scripts much harder to prevent. The server simply doesn't know which byte sequences represent the special characters.
+Если web-сервер не указывает кодировку символов, то он не говорит, какие символы являются специальными. Web-страницы с неопределённой кодировкой символов работоспособны в большинстве случаев, потому что в большинстве наборов символов значениям байтов ниже 128 назначаются одни и те же символы. Но какие из значений выше 128 являются специальными? Некоторые 16-битные схемы кодирования символов имеют дополнительные многобайтовые представления для специальных символов, таких как `<`. Некоторые браузеры распознают эту альтернативную кодировку и действуют в соответствии с ней. Это «правильное» поведение, но оно значительно затрудняет предотвращение атак с использованием вредоносных скриптов. Сервер просто не знает, какие последовательности байтов представляют специальные символы.
 
-Therefore in the event of not receiving the character encoding information from the server, the browser either attempts to guess the encoding scheme or reverts to a default scheme. In some cases, the user explicitly sets the default encoding in the browser to a different scheme. Any such mismatch in the encoding scheme used by the web page (server) and the browser may cause the browser to interpret the page in a manner that is unintended or unexpected.
+Поэтому в случае неполучения информации о кодировке символов с сервера браузер либо пытается угадать её, либо возвращается к схеме по умолчанию. В некоторых случаях пользователь браузера явно устанавливает свою кодировку по умолчанию. Любое такое несоответствие в схеме кодирования, используемой web-страницей (сервером) и браузером, может привести к тому, что браузер интерпретирует страницу непредусмотренным или неожиданным образом.
 
-### Encoded Injections
+### Закодированные инъекции
 
-All the scenarios given below form only a subset of the various ways obfuscation can be achieved to bypass input filters. Also, the success of encoded injections depends on the browser in use. For example, `US-ASCII` encoded injections were previously successful only in IE browser but not in Firefox. Therefore, it may be noted that encoded injections, to a large extent, are browser dependent.
+Все приведённые ниже сценарии составляют небольшую часть различных способов обфускации для обхода входных фильтров. Кроме того, успех закодированных инъекций зависит от используемого браузера. Например, инъекции в кодировке `US-ASCII` ранее были успешными только в браузере IE, но не в Firefox. Следовательно, можно отметить, что успех закодированных инъекций в значительной степени зависит от браузера.
 
-### Basic Encoding
+### Базовая кодировка
 
-Consider a basic input validation filter that protects against injection of single quote character. In this case the following injection would easily bypass this filter:
+Рассмотрим простой фильтр для контроля входных данных, который защищает от инъекции символа одинарной кавычки. В этом случае следующая инъекция легко обошла бы этот фильтр:
 
 ``` html
 <script>alert(String.fromCharCode(88,83,83))</script>
 ```
 
-`String.fromCharCode` JavaScript function takes the given Unicode values and returns the corresponding string. This is one of the most basic forms of encoded injections. Another vector that can be used to bypass this filter is:
+Функция `String.fromCharCode` в JavaScript принимает значения, заданные в Unicode и возвращает соответствующую строку. Это одна из самых простых форм закодированных инъекций. Другой вектор, который можно использовать для обхода этого фильтра:
 
 ``` html
 <IMG src="" onerror=javascript:alert(&quot;XSS&quot;)>
 ```
 
-Or by using the respective [HTML character codes](https://www.rapidtables.com/code/text/unicode-characters.html):
+Или с помощью соответствующих [кодов символов в HTML](https://www.rapidtables.com/code/text/unicode-characters.html):
 
 ``` html
 <IMG src="" onerror="javascript:alert(&#34;XSS&#34;)">
 ```
 
-The above uses HTML Entities to construct the injection string. HTML Entities encoding is used to display characters that have a special meaning in HTML. For instance, `>` works as a closing bracket for a HTML tag. In order to actually display this character on the web page HTML character entities should be inserted in the page source. The injections mentioned above are one way of encoding. There are numerous other ways in which a string can be encoded (obfuscated) in order to bypass the above filter.
+В приведённом выше примере для построения строки ввода используются [HTML-сущности](https://developer.mozilla.org/ru/docs/Glossary/Entity). Кодировка HTML-сущностей используется для отображения символов, которые имеют особое значение в HTML. Например, `>` интерпретируется как закрывающая скобка для HTML-тега. Для того, чтобы действительно отобразить этот символ на web-странице, символы HTML-сущностей (или мнемоники) должны быть вставлены в исходный код страницы. Инъекции, упомянутые выше, являются одним из способов кодирования. Существует множество других способов кодирования (обфускации) строки для обхода вышеуказанного фильтра.
 
-### Hex Encoding
+### Шестнадцатеричная кодировка
 
-Hex, short for Hexadecimal, is a base 16 numbering system i.e it has 16 different values from `0` to `9` and `A` to `F` to represent various characters. Hex encoding is another form of obfuscation that is sometimes used to bypass input validation filters. For instance, hex encoded version of the string `<IMG SRC=javascript:alert('XSS')>` is
+Hex, сокращение от Hexadecimal, представляет собой систему счисления с основанием 16, то есть она имеет 16 различных значений от `0` до `9` и от `A` до `F` для представления различных символов. Шестнадцатеричное кодирование — это ещё одна форма обфускации, которая иногда используется для обхода фильтров входного контроля. Например, шестнадцатеричная версия строки `<IMG SRC=javascript:alert('XSS')>`:
 
 ``` html
 <IMG SRC=%6A%61%76%61%73%63%72%69%70%74%3A%61%6C%65%72%74%28%27%58%53%53%27%29>
 ```
 
-A variation of the above string is given below. Can be used in case ‘%’ is being filtered:
+Вариант приведенной выше строки приведен ниже. Может использоваться в случае фильтрации `%`:
 
 ``` html
 <IMG SRC=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>
 ```
 
-There are other encoding schemes, such as Base64 and Octal, that may be used for obfuscation. Although, every encoding scheme may not work every time, a bit of trial and error coupled with intelligent manipulations would definitely reveal the loophole in a weakly built input validation filter.
+Есть и другие схемы кодирования, такие как Base64 и восьмеричная, которые можно использовать для обфускации. И хотя не каждая схема всегда работает, немного проб и ошибок в сочетании с разумными манипуляциями определённо выявят лазейку в недостаточно продуманном фильтре входного контроля.
 
-### UTF-7 Encoding
+### Кодировка UTF-7
 
-UTF-7 encoding of
+В кодировке UTF-7
 
 ``` html
 <SCRIPT>
@@ -95,19 +95,19 @@ UTF-7 encoding of
 </SCRIPT>
 ```
 
-is as below
+выглядит так:
 
 `+ADw-SCRIPT+AD4-alert('XSS');+ADw-/SCRIPT+AD4-`
 
-For the above script to work, the browser has to interpret the web page as encoded in `UTF-7`.
+Чтобы приведенный выше сценарий работал, браузер должен интерпретировать web-страницу как закодированную в `UTF-7`.
 
-### Multi-byte Encoding
+### Многобайтовые кодировки
 
-Variable-width encoding is another type of character encoding scheme that uses codes of varying lengths to encode characters. Multi-Byte Encoding is a type of variable-width encoding that uses varying number of bytes to represent a character. Multi-byte encoding is primarily used to encode characters that belong to a large character set e.g. Chinese, Japanese and Korean.
+Кодировки переменной ширины — это ещё один тип схемы кодирования символов, в которой используются коды различного размера. [Многобайтовые кодировки](https://learn.microsoft.com/ru-ru/cpp/text/support-for-multibyte-character-sets-mbcss) — это тип кодирования с переменной шириной, в котором для представления символа используется различное количество байтов. Многобайтовые кодировки в основном используются для кодирования с большими наборами символов, например, для китайского, японского и корейского языков.
 
-Multibyte encoding has been used in the past to bypass standard input validation functions and carry out cross site scripting and SQL injection attacks.
+В прошлом многобайтовые кодировки использовались для обхода стандартных функций контроля ввода, выполнения межсайтовых скриптов и атак путём SQL-инъекций.
 
-## References
+## Ссылки
 
 - [Encoding (Semiotics)](https://en.wikipedia.org/wiki/Encoding_(semiotics))
 - [HTML Entities](https://www.w3schools.com/HTML/html_entities.asp)

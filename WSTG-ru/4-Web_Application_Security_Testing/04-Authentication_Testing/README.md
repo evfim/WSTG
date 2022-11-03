@@ -19,7 +19,7 @@ tags: WSTG
 
 4.4.5 [Тестирование уязвимого запоминания пароля](05-Testing_for_Vulnerable_Remember_Password.md)
 
-4.4.6 [Тестирование на уязвимости кэша браузера](06-Testing_for_Browser_Cache_Weaknesses.md)
+4.4.6 [Тестирование уязвимостей кэша браузера](06-Testing_for_Browser_Cache_Weaknesses.md)
 
 4.4.7 [Тестирование парольной политики](07-Testing_for_Weak_Password_Policy.md)
 

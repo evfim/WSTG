@@ -7,8 +7,8 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Reporting
+# Отчётность
 
-5.1 [Reporting Structure](01-Reporting_Structure.md)
+5.1 [Структура отчёта](01-Reporting_Structure.md)
 
-5.2 [Naming Schemes](02-Naming_Schemes.md)
+5.2 [Схемы наименования уязвимостей](02-Naming_Schemes.md)

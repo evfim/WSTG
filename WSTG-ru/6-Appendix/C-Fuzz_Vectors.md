@@ -7,13 +7,13 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Fuzz Vectors
+# Векторы для фаззинга
 
-The following are fuzzing vectors which can be used with [ZAP](https://www.zaproxy.org), [Burp Suite](https://portswigger.net/burp), or another testing tool. [Fuzzing](https://owasp.org/www-community/Fuzzing) is the "kitchen sink" approach to testing the responses of an application to parameter manipulation. Generally, an analyst looks for error conditions or abnormal behaviors that occur in an application as a result of fuzzing.
+Ниже приведены векторы для фаззинга, которые можно использовать с [ZAP](https://www.zaproxy.org), [Burp Suite](https://portswigger.net/burp), или другим инструментом тестирования. [Фаззинг](https://owasp.org/www-community/Fuzzing) — это подход «кухонной раковины» к тестированию ответов приложения на манипуляции с параметрами. Как правило, аналитик ищет состояния ошибок или аномальное поведение, возникающее в приложении в результате фаззинга.
 
-The following references are provided as input sources for fuzzing and related testing activities.
+По следующим ссылкам представлены входные источники для фаззинга и связанных с ним действий по тестированию.
 
-- [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
+- [Памятка PortSwigger по межсайтовому скриптингу (XSS)](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - [Payloads All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings)
 - [Big List of Naughty Strings](https://github.com/minimaxir/big-list-of-naughty-strings)

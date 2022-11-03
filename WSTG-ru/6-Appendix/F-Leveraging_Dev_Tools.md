@@ -7,283 +7,282 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Leveraging Dev Tools
+# Использование инструментов разработчика в браузере
 
-This appendix outlines various details for use of in browser Developer Tool functionality to aid in security testing activities.
+В этом приложении описаны различные сведения об использовании функций инструментов разработчика в браузере для помощи в тестировании безопасности.
 
-Obviously in browser functionality is not a substitute for: DAST (Dynamic Application Security Testing) tools, SAST (Static Application Security Testing) tools, or a tester's experience, however, it can be leveraged for some testing activities and report production related tasks.
+Очевидно, что встроенный функционал браузера не заменит инструментов DAST (динамическое тестирование безопасности приложений), SAST (статическое тестирование) или опыт тестировщика, однако его можно использовать для некоторых действий по тестированию и задач, связанных с созданием отчётов.
 
-## Accessing Dev Tools
+## Доступ к инструментам разработчика
 
-Opening Dev Tools can be accomplished in a number of ways.
+Открыть инструменты разработчика можно несколькими способами:
 
-1. Via the keyboard shortcut `F12`.
-2. Via the keyboard shortcut `ctrl` + `shift` + `i` on Windows.
-3. Via the keyboard short cut `cmd` + `option` + `i` on Mac.
-4. Via the web page right-click context menu and then selecting `Inspect` in Google Chrome.
-5. Via the web page right-click context menu and then selecting `Inspect Element` in Mozilla Firefox.
-6. Via the triple dot 'kabob' menu in Google Chrome then selecting `More Tools` and then `Developer Tools`.
-7. Via the triple line 'hamburger' (or 'pancake') menu in Mozilla Firefox then selecting `Web Developer` and then `Toggle Tools`.
-8. Via the gear icon settings menu in Edge/IE then selecting `Developer Tools`.
+1. С помощью клавиши `F12`.
+2. С помощью сочетания клавиш `ctrl` + `shift` + `i` в Windows.
+3. С помощью сочетания клавиш `cmd` + `option` + `i` на Mac.
+4. Щёлкнуть правой кнопкой мыши на web-странице, а затем выбрать в контекстном меню `Inspect` (`Просмотреть код`) в Google Chrome.
+5. Щёлкнуть правой кнопкой мыши на web-странице, а затем выбрать в контекстном меню `Inspect Element` (`Исследовать`) в Mozilla Firefox.
+6. Через меню с тремя вертикально расположенными точками («кебаб») в Google Chrome, выбрав `More Tools` (`Дополнительные инструменты`), а затем `Developer Tools` (`Инструменты разработчика`).
+7. Через меню с тремя линиями («гамбургер» или «блины») в Mozilla Firefox, выбрав пункт `Инструменты веб-разработчика` (`см`) в меню `Toggle Tools` (`Другие инструменты`).
+8. Через меню с тремя горизонтально расположенными точками в Edge/IE, выбрав `Другие инструменты`, а затем `Developer Tools` (`Средства разработчика`).
+9. На компьютере Mac выберите в меню `Safari` > `Settings` (`Настройки`), нажмите `Advanced` (`Дополнения`), затем установите флажок `Show Develop menu in menu bar` (`Показывать меню “Разработка”`).
 
-> NOTE: The majority of the instructions below assume that Dev Tools is already open or active.
+> ПРИМЕЧАНИЕ: в большинстве приведённых ниже инструкций предполагается, что Инструменты разработчика уже открыты или активны.
 
-## Capabilities
+## Возможности
 
-| Functionality         | Chrome* | Firefox | Edge/IE | Safari |
+| Функциональность         | Chrome* | Firefox | Edge/IE | Safari |
 |-----------------------|:-------:|:-------:|:-------:|:------:|
-| User-Agent Switching  | Y       | Y       | Y       | Y      |
-| Edit/Resend Requests  | Y       | Y       | N       | N      |
-| Cookie Editing        | Y       | Y       | Y       | N      |
-| Local Storage Editing | Y       | Y       | Y       | N      |
-| Disable CSS           | Y       | Y       | Y       | Y      |
-| Disable JavaScript    | Y       | Y       | N       | Y      |
-| View HTTP Headers     | Y       | Y       | Y       | Y      |
-| Screenshots           | Y       | Y       | Y       | N      |
-| Offline Mode          | Y       | Y       | N       | N      |
-| Encoding and Decoding | Y       | Y       | Y       | Y      |
-| Responsive Design Mode| Y       | Y       | Y       | Y      |
+| Переключение агента пользователя  | +      | +       | +     | +  |
+| Редактирование/переотправка запросов  | +    | +    | -   | -   |
+| Редактирование Cookie       | +       | +       | +       | -      |
+| Редактирование локального хранилища | +      | +   | +     | -      |
+| Отключение CSS              | +       | +       | +       | +      |
+| Отключение JavaScript       | +       | +       | -       | +      |
+| Просмотр HTTP-заголовков    | +       | +       | +       | +      |
+| Копия экрана                | +       | +       | +       | -      |
+| Автономный режим            | +       | +       | -       | -      |
+| Кодирование и декодирование | +       | +       | +       | +      |
+| Режим адаптивного дизайна   | +       | +       | +       | +      |
 
-`*` Anything that applies to Google Chrome should be applicable to all Chromium based applications. (Which includes Microsoft rebadging Edge around 2019/2020.)
+`*` Всё, что относится к Google Chrome, должно быть применимо ко всем приложениям на основе Chromium (включая перелицованный Microsoft Edge в 2019/2020 гг., а также Яндекс.Браузер и т.п.).
 
-## User-Agent Switching
+## Переключение агента пользователя
 
-### Related Testing
+### Связанный сценарий тестирования
 
-- [Testing for Browser Cache Weaknesses](../4-Web_Application_Security_Testing/04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md)
+- [Тестирование уязвимостей кэша браузера](../4-Web_Application_Security_Testing/04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md)
 
 ### Google Chrome
 
-1. Click on triple dot 'kabob' menu on the right side of the Developer Tools pane, select `More tools` then select `Network conditions`.
-2. Un-check the "Select automatically" checkbox.
-3. Select the user agent from dropdown menu or enter a custom user agent
+1. Щёлкнув по меню «кебаб» с тремя точками в правой части панели «Инструменты разработчика», выберите `More tools` (`Другие инструменты`), затем `Network conditions` (`Условия работы сети`).
+2. Снимите выбор с флажка `Select automatically` (`Использовать настройки браузера по умолчанию`).
+3. Выберите агента пользователя из выпадающего меню или укажите собственное значение.
 
 ![User-Agent selection dropdown menu in Google Chrome](images/f_chrome_devtools_ua_switch.png)\
-*Figure 6.F-1: Google Chrome Dev Tools User-Agent Switching Functionality*
+*Рисунок 6.F-1: Функциональность переключения агента пользователя в Google Chrome*
 
 ### Mozilla Firefox
 
-1. Navigate to Firefox’s `about:config` page and click `I accept the risk!`.
-2. Enter `general.useragent.override` into the search field.
-3. Look for `general.useragent.override`, if you can't see this preference, look for one that show a set of radio buttons `Boolean, Number, String` select `String` then click the plus sign `Add` button on the `about:config` page.
-4. Set the value of `general.useragent.override` to whatever [User-Agent](https://developers.whatismybrowser.com/useragents/explore/) you might need.
+1. Перейдите к странице `about:config` в Firefox и нажмите `I accept the risk!` (`Принять риск и продолжить`).
+2. Введите в строку поиска `general.useragent.override`.
+3. Найдите `general.useragent.override`, если вы не видите эту настройку, найдите ту, что показывает набор переключателей `Boolean, Number, String` (`Логическое, Число, Строка`), выберите `String`(`Строка`), затем нажмите на знак плюс кнопки `Add` (`Добавить`) на странице `about:config`.
+4. Установите значение `general.useragent.override` на [агент пользователя](https://developers.whatismybrowser.com/useragents/explore/), который вам нужен.
 
 ![User-Agent configuration preference in Mozilla Firefox](images/f_firefox_ua_switch.png)\
-*Figure 6.F-2: Mozilla Firefox User-Agent Switching Functionality*
+*Рисунок 6.F-2: Функциональность переключения агента пользователя в Mozilla Firefox*
 
-Later click on the garbage can `Delete` button to the right of the `general.useragent.override` preference to remove the override and switch back to the default user agent.
+Потом нажмите на кнопку `Delete` (`Удалить`) с корзиной для мусора справа от настройки `general.useragent.override` , чтобы отменить переопределение и вернуться к агенту пользователя по умолчанию.
 
-## Edit/Resend Requests
+## Редактирование/переотправка запросов
 
-### Related Testing
+### Связанные сценарии тестирования
 
-- [Authentication Testing](../4-Web_Application_Security_Testing/04-Authentication_Testing/README.md)
-- [Authorization Testing](../4-Web_Application_Security_Testing/05-Authorization_Testing/README.md)
-- [Session Management Testing](../4-Web_Application_Security_Testing/06-Session_Management_Testing/README.md)
-- [Input Validation Testing](../4-Web_Application_Security_Testing/07-Input_Validation_Testing/README.md)
-- [Business Logic Testing](../4-Web_Application_Security_Testing/10-Business_Logic_Testing/README.md)
-
-### Mozilla Firefox
-
-1. Select the `Network` tab.
-2. Perform any action in the web application.
-3. Right-click on the HTTP request from the list and select `Edit and Resend`.
-4. Make desired modifications and click on the `Send` button.
-5. Right-click on the modified request and select `Open in New Tab`.
-
-### Google Chrome
-
-1. Select the `Network` tab.
-2. Perform any action in the web application.
-3. Right-click on the HTTP request from the list and select `Copy > Copy as fetch`.
-4. Paste the provided JavaScript code into the `Console` tab.
-5. Make any required modifications, and then hit enter to send the request.
-
-## Cookie Editing
-
-### Related Testing
-
-- [Authentication Testing](../4-Web_Application_Security_Testing/04-Authentication_Testing/README.md)
-- [Authorization Testing](../4-Web_Application_Security_Testing/05-Authorization_Testing/README.md)
-- [Session Management Testing](../4-Web_Application_Security_Testing/06-Session_Management_Testing/README.md)
-- [Testing for Cookie Attributes](../4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md)
-
-### Google Chrome
-
-1. Click the `Application` tab.
-2. Expand `Cookies` under the `Storage` heading.
-3. Select the relevant domain name.
-4. Double click in the `Value` column to edit any cookie value.
-
-> Note: Cookies can be deleted once selected by pressing the `delete` key, or from the right-click context menu.
+- [Тестирование аутентификации](../4-Web_Application_Security_Testing/04-Authentication_Testing/README.md)
+- [Тестирование авторизации](../4-Web_Application_Security_Testing/05-Authorization_Testing/README.md)
+- [Тестирование управления сессиями](../4-Web_Application_Security_Testing/06-Session_Management_Testing/README.md)
+- [Контроль входных данных](../4-Web_Application_Security_Testing/07-Input_Validation_Testing/README.md)
+- [Тестирование бизнес-логики](../4-Web_Application_Security_Testing/10-Business_Logic_Testing/README.md)
 
 ### Mozilla Firefox
 
-1. Click the `Storage` tab.
-2. Expand the `Cookies` section.
-3. Select the relevant domain name.
-4. Double click in the `Value` column to edit any cookie value.
+1. Перейдите на вкладку `Network` (`Сеть`).
+2. Выполните какое-нибудь действие в web-приложении.
+3. Щёлкните правой кнопкой мыши на HTTP-запросе из списка и выберите `Edit and Resend` (`Изменить и снова отправить`).
+4. Внесите необходимые изменения и нажмите на кнопку `Send` (`Отправить`).
+5. Щёлкните правой кнопкой мыши на изменённом запросе и выберите `Open in New Tab` (`Открыть в новой вкладке`).
 
-> Note: Cookies can be deleted once selected by pressing the `delete` key, or with various options from the right-click context menu.
+### Google Chrome
+
+1. Перейдите на вкладку `Network` (`Сеть`).
+2. Выполните какое-нибудь действие в web-приложении.
+3. Щёлкните правой кнопкой мыши на HTTP-запросе из списка и выберите `Copy > Copy as fetch` (`Копировать > Копировать как fetch`).
+4. Вставьте полученный код JavaScript на вкладку `Console` (`Консоль`).
+5. Внесите необходимые изменения, а затем нажмите Enter, чтобы отправить запрос.
+
+## Редактирование Cookie
+
+### Связанные сценарии тестирования
+
+- [Тестирование аутентификации](../4-Web_Application_Security_Testing/04-Authentication_Testing/README.md)
+- [Тестирование авторизации](../4-Web_Application_Security_Testing/05-Authorization_Testing/README.md)
+- [Тестирование управления сессиями](../4-Web_Application_Security_Testing/06-Session_Management_Testing/README.md)
+- [Тестирование атрибутов Cookie](../4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md)
+
+### Google Chrome
+
+1. Перейдите на вкладку `Application` (`Приложение`).
+2. Раскройте пункт `Cookies` (`Файлы cookie`) в разделе `Storage` (`Хранилище`).
+3. Выберите соответствующее имя домена (`Domain`).
+4. Дважды щёлкните по выбранной строке в столбце `Value`, чтобы отредактировать значение cookie.
+
+> Примечание: Можно удалить выбранный cookie, нажав клавишу `Delete`, или в контекстном меню, вызываемом правой кнопкой мыши.
+
+### Mozilla Firefox
+
+1. Перейдите на вкладку `Storage` (`Хранилище`).
+2. Раскройте раздел `Cookies` (`Куки`).
+3. Выберите соответствующее имя домена (`Domain`).
+4. Дважды щёлкните по выбранной строке в столбце `Value`, чтобы отредактировать значение cookie.
+
+> Примечание: Можно удалить выбранный cookie, нажав клавишу `Delete`, или, или с помощью опций контекстного меню, вызываемого правой кнопкой мыши.
 
 ![Cookie Editing functionality in Mozilla Firefox](images/f_firefox_cookie_edit.png)\
-*Figure 6.F-3: Mozilla Firefox Cookie Editing Functionality*
+*Рисунок 6.F-3: Функциональность редактирования Cookie в Mozilla Firefox*
 
-## Local Storage Editing
+## Редактирование локального хранилища
 
-### Related Testing
+### Связанный сценарий тестирования
 
-- [Testing Browser Storage](../4-Web_Application_Security_Testing/11-Client-side_Testing/12-Testing_Browser_Storage.md)
+- [Тестирование хранилищ браузера](../4-Web_Application_Security_Testing/11-Client-side_Testing/12-Testing_Browser_Storage.md)
 
 ### Google Chrome
 
-1. Click the `Application` tab.
-2. Expand `Local Storage` under the `Storage` heading.
-3. Select the relevant domain name.
-4. Double click in the `Value` column to edit any cookie value.
-5. Double click in the applicable Cell to edit the `Key` or `Value`.
+1. Перейдите на вкладку `Application` (`Приложение`).
+2. Раскройте пункт `Local Storage` (`Локальное хранилище`) в разделе `Storage` (`Хранилище`).
+3. Выберите соответствующее имя домена (`Domain`).
+4. Дважды щёлкните по выбранной строке, чтобы отредактировать значения `Key` (`Ключ`) или `Value` (`Значение`).
 
-> Note: Editing `Session Storage` or `Index DB` follows essentially the same steps.
+> Примечание: редактирование `Session Storage` (`Хранилище сеанса`) или `IndexedDB` выполняется практически в той же последовательности.
 >
-> Note: Items can be added or deleted via the right-click context menu.
+> Примечание: можно добавлять или удалять элементы хранилища с помощью контекстного меню, вызываемого правой кнопкой мыши.
 
 ### Mozilla Firefox
 
-1. Click the `Storage` tab.
-2. Expand the `Local Storage` section.
-3. Select the relevant domain name.
-4. Double click in the applicable Cell to edit the `Key` or `Value`.
+1. Перейдите на вкладку `Storage` (`Хранилище`).
+2. Раскройте раздел `Local Storage` (`Локальное хранилище`).
+3. Выберите соответствующее имя домена (`Domain`).
+4. Дважды щёлкните по выбранной строке, чтобы отредактировать значения `Key` (`Ключ`) или `Value` (`Значение`).
 
-> Note: Editing `Session Storage` or `Index DB` follows essentially the same steps.
+> Примечание: редактирование `Session Storage` (`Хранилище сеанса`) или `Indexed DB` выполняется практически в той же последовательности.
 >
-> Note: Items can be added or deleted via the right-click context menu.
+> Примечание: можно добавлять или удалять элементы хранилища с помощью контекстного меню, вызываемого правой кнопкой мыши.
 
-## Disable CSS
+## Отключение CSS
 
-### Related Testing
+### Связанный сценарий тестирования
 
-- [Testing for Client-side Resource Manipulation](../4-Web_Application_Security_Testing/11-Client-side_Testing/06-Testing_for_Client-side_Resource_Manipulation.md)
+- [Тестирование манипулирования ресурсами на стороне клиента](../4-Web_Application_Security_Testing/11-Client-side_Testing/06-Testing_for_Client-side_Resource_Manipulation.md)
 
-### General
+### Общее
 
-All major browsers support manipulating CSS leveraging the Dev Tools Console and JavaScript functionality:
+Все основные браузеры поддерживают управление CSS с использованием консоли Инструментов разработчика и функциональности JavaScript:
 
-- To remove all external style-sheets: `$('style,link[rel="stylesheet"]').remove();`
-- To remove all internal style-sheets: `$('style').remove();`
-- To remove all in-line styles: `Array.prototype.forEach.call(document.querySelectorAll('*'),function(el){el.removeAttribute('style');});`
-- To remove everything from head tag: `$('head').remove();`
+- Чтобы удалить все внешние таблицы стилей: `$('style,link[rel="stylesheet"]').remove();`
+- Чтобы удалить все внутренние таблицы стилей: `$('style').remove();`
+- Чтобы удалить все встроенные стили: `Array.prototype.forEach.call(document.querySelectorAll('*'),function(el){el.removeAttribute('style');});`
+- Чтобы удалить всё из тега head: `$('head').remove();`
 
-## Disable JavaScript
+## Отключение JavaScript
 
 ### Google Chrome
 
-1. Click on triple dot 'kabob' menu on the right side of the web developer toolbar and click on `Settings`.
-2. On the `Preferences` tab, under the `Debugger` section, check the `Disable JavaScript` checkbox.
+1. В строке поиска введите `chrome://settings/content/javascript`.
+2. Установите переключатель в положение `Disable JavaScript` (`Запретить сайтам использовать JavaScript`).
 
 ### Mozilla Firefox
 
-1. On the dev tools `Debugger` tab, click on the settings gear button in the upper right corner of the developer toolbar.
-2. Select `Disable JavaScript` from the dropdown (this is an enable/disable menu item; when JavaScript is disabled, the menu item has a check mark).
+1. На вкладке `Debugger`(`Отладчик`) нажмите кнопку настроек с шестерёнкой в правом верхнем углу панели Инструментов разработчика.
+2. Отметьте `Disable JavaScript` (`Отключить JavaScript`) в выпадающем списке (если JavaScript отключен, этот пункт отмечен галочкой).
 
-## View HTTP Headers
+## Просмотр HTTP-заголовков
 
-### Related Testing
+### Связанный сценарий тестирования
 
-- [Information Gathering](../4-Web_Application_Security_Testing/01-Information_Gathering/README.md)
+- [Сбор информации](../4-Web_Application_Security_Testing/01-Information_Gathering/README.md)
 
 ### Google Chrome
 
-1. On the `Networking` tab in Dev Tools select any URL or request.
-2. In the lower right hand pane select the `Headers` tab.
+1. На вкладке `Networking` (`Сеть`) и выберите любой URL или запрос.
+2. В нижней правой панели выберите вкладку `Headers` (`Заголовки`).
 
 ![Headers View in Google Chrome](images/f_chrome_devtools_headers.png)\
-*Figure 6.F-4: Google Chrome Headers View*
+*Рисунок 6.F-4: Просмотр заголовков в Google Chrome*
 
 ### Mozilla Firefox
 
-1. On the `Networking` tab in Dev Tools select any URL or request.
-2. In the lower right hand pane select the `Headers` tab.
+1. На вкладке `Networking` (`Сеть`) и выберите любой URL или запрос.
+2. В нижней правой панели выберите вкладку `Headers` (`Заголовки`).
 
 ![Headers View in Mozilla Firefox](images/f_firefox_devtools_headers.png)\
-*Figure 6.F-5: Mozilla Firefox Headers View*
+*Рисунок 6.F-5: Просмотр заголовков в Mozilla Firefox*
 
-## Screenshots
+## Копии экрана
 
-### Related Testing
+### Связанный сценарий тестирования
 
-- [Reporting](../5-Reporting/README.md)
+- [Отчётность](../5-Reporting/README.md)
 
 ### Google Chrome
 
-1. Press on the `Toggle Device Toolbar` button or press `ctrl` + `shift` + `m`.
-2. Click the triple dot 'kabob' menu in the Device Toolbar.
-3. Select `Capture screenshot` or `Capture full size screenshot`.
+1. Нажмите на кнопку `Toggle Device Toolbar` (`Показать или скрыть панель инструментов устройства`) или сочетание клавиш `Ctrl` + `Shift` + `M`.
+2. Щёлкните по меню «кебаб» с тремя точками на Панели инструментов устройства.
+3. Выберите `Capture screenshot` (`Сделать скриншот`) или `Capture full size screenshot` (`Сделать полноразмерный скриншот`).
 
 ### Mozilla Firefox
 
-1. Press the triple dot `ellipsis` button in the address bar.
-2. Select `Take a Screenshot`.
-3. Select either the `Save full page` or `Save visible` option.
+1. Щёлкните правой кнопкой мыши на пустой части страницы и выберите `Take a Screenshot` (`Сделать скриншот`). 
+2. В качестве альтернативы есть сочетание клавиш `Ctrl` + `Shift` + `S`.
 
-## Offline Mode
+## Автономный режим
 
 ### Google Chrome
 
-1. Navigate to `Network` tab.
-2. In the `Throttle` dropdown select `Offline`.
+1. Перейдите на вкладку `Network` (`Сеть`).
+2. В раскрывающемся списке `Throttle` (`Ограничение`) выберите `Offline` (`Офлайн`).
 
 ![Offline Option in Google Chrome](images/f_chrome_devtools_offline.png)\
-*Figure 6.F-6: Google Chrome Offline Option*
+*Рисунок 6.F-6: Офлайн-режим в Google Chrome*
 
 ### Mozilla Firefox
 
-1. From the triple line 'hamburger' (or 'pancake') menu select `Web Developer` and then `Work Offline`.
+1. Пункт `Work Offline` (`Работать автономно`) в меню `File` (`Файл`). Чтобы временно отобразить скрытую строку меню можно нажать клавишу `Alt` или `F10`.
 
 ![Offline Option in Mozilla Firefox](images/f_firefox_devtools_offline.png)\
-*Figure 6.F-7: Mozilla Firefox Offline Option*
+*Рисунок 6.F-7: Автономный режим в Mozilla Firefox (теперь в меню `File`)*
 
-## Encoding and Decoding
+## Кодирование и декодирование
 
-### Related Testing
+### Связанные сценарии тестирования
 
-- Many (perhaps even most) types of [Web Application Security Testing](../4-Web_Application_Security_Testing/README.md) can benefit from various types of encoding.
+- Многие (возможно, даже большинство) видов [тестирования безопасности web-приложений](../4-Web_Application_Security_Testing/README.md) могут выиграть от различных типов кодирования.
 
-### General
+### Общее
 
-All major browsers support encoding and decoding strings in various ways leveraging the Dev Tools Console and JavaScript functionality:
+Все основные браузеры поддерживают кодирование и декодирование строк различными способами, используя консоль Инструментов разработчика и функции JavaScript:
 
-- Base64 encode: `btoa("string-to-encode")`
-- Base64 decode: `atob("string-to-decode")`
-- URL encode: `encodeURIComponent("string-to-encode")`
-- URL decode: `decodeURIComponent("string-to-decode")`
-- HTML encode: `escape("string-to-encode")`
-- HTML decode: `unescape("string-to-decode")`
+- Кодирование Base64: `btoa("string-to-encode")`
+- Декодирование Base64: `atob("string-to-decode")`
+- Кодирование URL: `encodeURIComponent("string-to-encode")`
+- Декодирование URL: `decodeURIComponent("string-to-decode")`
+- Кодирование HTML: `escape("string-to-encode")`
+- Декодирование HTML: `unescape("string-to-decode")`
 
-## Responsive Design Mode
+## Режим адаптивного дизайна
 
-### Related Testing
+### Связанные сценарии тестирования
 
-- [Testing for Browser Cache Weaknesses](../4-Web_Application_Security_Testing/04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md)
-- [Testing for Weaker Authentication in Alternative Channel](../4-Web_Application_Security_Testing/04-Authentication_Testing/10-Testing_for_Weaker_Authentication_in_Alternative_Channel.md)
-- [Testing for Clickjacking](../4-Web_Application_Security_Testing/11-Client-side_Testing/09-Testing_for_Clickjacking.md)
+- [Тестирование уязвимостей кэша браузера](../4-Web_Application_Security_Testing/04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md)
+- [Тестирование аутентификации в альтернативных каналах](../4-Web_Application_Security_Testing/04-Authentication_Testing/10-Testing_for_Weaker_Authentication_in_Alternative_Channel.md)
+- [Тестирование перехвата клика](../4-Web_Application_Security_Testing/11-Client-side_Testing/09-Testing_for_Clickjacking.md)
 
 ### Google Chrome
 
-1. Click the `Toggle device toolbar` button or press `ctrl` + `shift` + `m`.
+1. Нажмите на кнопку `Toggle Device Toolbar` (`Показать или скрыть панель инструментов устройства`) или сочетание клавиш `Ctrl` + `Shift` + `M`.
 
 ![Responsive Design Mode in Google Chrome](images/f_chrome_responsive_design_mode.png)\
-*Figure 6.F-8: Google Chrome Responsive Design Mode*
+*Рисунок 6.F-8: Режим `Отзывчивое устройство` в Google Chrome*
 
 ### Mozilla Firefox
 
-1. Click the `Responsive Design Mode` button or press `ctrl` + `shift` + `m`.
+1. Нажмите кнопку `Responsive Design Mode` (`Режим адаптивного дизайна`) или сочетание клавиш `Ctrl` + `Shift` + `M`.
 
 ![Responsive Design Mode in Mozilla Firefox](images/f_firefox_responsive_design_mode.png)\
-*Figure 6.F-9: Mozilla Firefox Responsive Design Mode*
+*Рисунок 6.F-9: Режим адаптивного дизайна в Mozilla Firefox*
 
-## References
+## Ссылки
 
 - [Web App Security Testing with Browsers](https://getmantra.com/web-app-security-testing-with-browsers/)
-- [Black Hills Information Security - Webcast: Free Tools! How to Use Developer Tools and JavaScript in Webapp Pentests](https://www.blackhillsinfosec.com/webcast-free-tools-how-to-use-developer-tools-and-javascript-in-webapp-pentests/)
+- [Black Hills Information Security - Webcast: Free Tools! How to Use Developer Tools and JavaScript in Webapp Pentests](https://youtu.be/3W65ji1gc8c)
 - [Greg Malcolm - Chrome Developer Tools: Raiding the Armory](https://github.com/gregmalcolm/wacky-wandas-wicked-weapons-frontend/blob/fix-it/README.md)
 - [List of UserAgent Strings](http://user-agent-string.info/list-of-ua)

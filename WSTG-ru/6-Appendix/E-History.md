@@ -7,25 +7,25 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# History
+# История
 
-The Testing Guide v4 was released in 2014. The Testing guide originated in 2003 with Dan Cuthbert as one of the original editors. It was handed over to Eoin Keary in 2005 and transformed into a wiki. From 2013 Andrew Muller co-lead the project with Matteo Meucci into 2018/2019. Point releases after v4 and the ramp toward v5 is being lead by Rick Mitchell and Elie Saad.
+Четвёртая версия Руководства по тестированию вышла в 2014 году. Оно было создано в 2003-м под руководством Dan Cuthbert — одного из первых редакторов. В 2005-м он передал эстафету Eoin Keary, который преобразовал Руководство в формат в wiki. С 2013 года  проектом руководил Andrew Muller, в 2018/2019 годах вместе с Matteo Meucci. Точечные релизы после четвёртой версии и переход к пятой возглавляют Rick Mitchell и Elie Saad.
 
-- April, 2020: OWASP Testing Guide, Version 4.1
-- September, 2014: OWASP Testing Guide, Version 4.0
-- September, 2008: OWASP Testing Guide, Version 3.0
-- December, 2006: OWASP Testing Guide, Version 2.0
-- July, 2004: OWASP Web Application Penetration Checklist, Version 1.1
-- December, 2004: The OWASP Testing Guide, Version 1.0
+- Апрель, 2020: OWASP Testing Guide, версия 4.1
+- Сентябрь 2014: OWASP Testing Guide, версия 4.0
+- Сентябрь 2008: OWASP Testing Guide, версия 3.0
+- Декабрь 2006: OWASP Testing Guide, версия 2.0
+- Июль 2004: OWASP Web Application Penetration Checklist, версия 1.1
+- Декабрь 2004: The OWASP Testing Guide, версия 1.0
 
-## Leaders
+## Руководители
 
-- Matteo Meucci: OWASP Testing Guide Lead 2007-2020.
-- Andrew Muller: OWASP Testing Guide Lead 2013-2019.
-- Eoin Keary: OWASP Testing Guide Lead 2005-2007.
-- Daniel Cuthbert: OWASP Testing Guide Lead 2003-2005.
+- Matteo Meucci руководил OWASP Testing Guide в период с 2007 по 2020 гг.
+- Andrew Muller руководил OWASP Testing Guide Lead в период с 2013 по 2019 гг.
+- Eoin Keary руководил OWASP Testing Guide в период с 2005 по 2007 гг.
+- Daniel Cuthbert: OWASP Testing Guide в период с 2003 по 2005 гг.
 
-## v4 Authors
+## Авторы четвёртой версии
 
 ```html
 - Matteo Meucci          - Thomas Ryan       - Mike Hryekewicz  - Eduardo Castellano - Babu Arokiadas
@@ -42,7 +42,7 @@ The Testing Guide v4 was released in 2014. The Testing guide originated in 2003 
 - Robert Smith           - Sumit Siddharth   - Rick Mitchell    - Christian Heinrich - Hugo Costa
 ```
 
-## v4 Reviewers
+## Рецензенты четвёртой версии
 
 ```html
 - Davide Danelon          - Andrea Rosignoli     - Irene Abezgauz
@@ -50,7 +50,7 @@ The Testing Guide v4 was released in 2014. The Testing guide originated in 2003 
 - Aditya Balapure
 ```
 
-## v3 Authors
+## Авторы третьей версии
 
 ```html
 - Anurag Agarwwal        - Giorgio Fedon        - Gianrico Ingrosso         - Mark Roxberry
@@ -60,14 +60,14 @@ The Testing Guide v4 was released in 2014. The Testing guide originated in 2003 
 - Matteo Meucci          - Stefano Di Paola     - Christian Heinrich        - Marco Morana
 ```
 
-## v3 Reviewers
+## Рецензенты третьей версии
 
 ```html
 - Marco Cova            - Matteo Meucci         - Rick Mitchell
 - Kevin Fuller          - Nam Nguyen
 ```
 
-## v2 Authors
+## Авторы второй версии
 
 ```html
 - Vicente Aguilera      - David Endler               - Matteo Meucci        - Anush Shetty
@@ -82,7 +82,7 @@ The Testing Guide v4 was released in 2014. The Testing guide originated in 2003 
 - Stephen DeVries       - Ralph M. Los               - Stefano Di Paola     - Mark Roxberry
 ```
 
-## v2 Reviewers
+## Рецензенты второй версии
 
 ```html
 - Vicente Aguilera      - Mauro Bregolin          - Daniel Cuthbert       - Stefano Di Paola

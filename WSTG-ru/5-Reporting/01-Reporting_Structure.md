@@ -7,129 +7,129 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Reporting
+# Структура отчёта
 
-Performing the technical side of the assessment is only half of the overall assessment process. The final product is the production of a well written and informative report. A report should be easy to understand and should highlight all the risks found during the assessment phase. The report should appeal to both executive management and technical staff.
+Выполнение технической стороны тестирования — только половина общего процесса. Конечным продуктом является создание хорошо написанного и информативного отчёта. Отчёт должен быть простым для понимания и должен освещать все риски, обнаруженные на этапе оценки. Отчёт предназначен как для руководства, так и для технического персонала.
 
-## About This Section
+## Об этом разделе
 
-This guide provides only suggestions about one possible approach to reporting, and should not be treated as as strict rules that must be followed. When considering any of the recommendations below, always ask yourself whether the recommendation would improve your report.
+В этом руководстве содержатся только рекомендации по одному из возможных подходов к составлению отчётов, и его не следует трактовать как строгие правила, которым необходимо следовать. При рассмотрении любой из приведённых ниже рекомендаций всегда спрашивайте себя, улучшит ли эта рекомендация ваш отчёт.
 
-This guide to reporting is a best fit for consultancy-based reports. It may be overkill for internal or bug bounty reports.
+Данное руководство по составлению отчётов лучше всего подходит для отчётов по результатам обсуждений и консультаций. Это может быть излишним для внутренних отчётов или отчётов об ошибках.
 
-Regardless of the audience, it's advisable to secure the report and encrypt it to ensure that only the receiving party is able to use it.
+Независимо от аудитории, рекомендуется защитить и зашифровать отчёт, чтобы быть уверенным, что только указанная в нём получающая сторона сможет им воспользоваться.
 
-A good report helps your client understand your findings and highlights the quality of your technical testing. The quality of the technical testing is completely irrelevant if the client can't understand your findings.
+Хороший отчёт помогает вашему клиенту понять ваши выводы и подчёркивает качество вашего технического тестирования. Но оно не будет играть абсолютно никакой роли, если клиент не сможет понять ваши выводы.
 
-## 1. Introduction
+## 1. Введение
 
-### 1.1 Version Control
+### 1.1 Контроль версий
 
-Sets report changes, mostly presented in a table format such as the below.
+Определяет изменения в отчёте, обычно представленные в виде таблицы, как показано ниже.
 
-| Version | Description | Date | Author |
+| Версия | Описание | Дата | Автор |
 |:-------:|-------------|------|--------|
-| 1.0 | Initial report | DD/MM/YYYY | J. Doe |
+| 1.0 | Первая редакция | ДД.ММ.ГГГГ | И. Иванов |
 
-### 1.2 Table of Contents
+### 1.2 Оглавление
 
-A table of contents page for the document.
+Страница оглавления документа.
 
-### 1.3 The Team
+### 1.3 Участники проекта
 
-A list of the team members detailing their expertise and qualifications.
+Состав участников проекта с подробным описанием их опыта и квалификации.
 
-### 1.4 Scope
+### 1.4 Область тестирования
 
-The boundaries and the needs of the engagement agreed upon with the organization.
+Границы и требования проекта согласовываются с организацией.
 
-### 1.5 Limitations
+### 1.5 Ограничения
 
-Limitations can be:
+Ограничения могут быть наложены на:
 
-- Out-of-bounds areas in relation to testing.
-- Broken functionality.
-- Lack of cooperation.
-- Lack of time.
-- Lack of access or credentials.
+- Области, запрещённые для тестирования.
+- Нарушение работоспособности систем.
+- Отказ от сотрудничества.
+- Дефицит времени.
+- Отсутствие доступа или учётных данных.
 
-### 1.6 Timeline
+### 1.6 План-график проекта
 
-The duration of the engagement.
+Продолжительность этапов проекта.
 
-### 1.7 Disclaimer
+### 1.7 Отказ от ответственности
 
-You may wish to provide a disclaimer for your service. Always consult a legal professional in order to create a legally-binding document.
+Возможно, вы захотите предусмотреть отказ от ответственности за свои услуги. Всегда консультируйтесь с юристом, чтобы создать юридически обязывающий документ.
 
-The following example is for illustrative purposes only. It should not be used as-is and does not constitute legal advice.
+Пример ниже приведён только в целях иллюстрации. Он не должен использоваться как есть и не является юридической консультацией.
 
-*This test is a "point in time" assessment and as such the environment could have changed since the test was run. There is no guarantee that all possible security issues have been identified, and that new vulnerabilities may have been discovered since the tests were run. As such, this report serves as a guiding document and not a warranty that the report provides a full representation of the risks threatening the systems at hand.*
+*Данное тестирование является оценкой «на момент времени», поэтому среда могла измениться с момента начала тестирования. Нет никакой гарантии, что были выявлены все возможные проблемы с безопасностью, а после проведения тестов могли быть обнаружены новые уязвимости. Таким образом, данный отчёт служит руководящим документом, а не гарантией того, что он даёт исчерпывающее представление о рисках, угрожающих рассматриваемым системам.*
 
-## 2. Executive Summary
+## 2. Резюме
 
-This is like the elevator pitch of the report, it aims at providing executives with:
+Похоже на краткую презентацию отчёта, и направлено на то, чтобы рассказать руководителям:
 
-- The objective of the test.
-    - Describe the business need behind the security test.
-    - Describe how the tests helped the organization understand their systems.
-- Key findings in a business context, such as possible compliance issues, reputation damage, etc. Focus on the business impact and leave out technical details for now.
-- The strategic recommendations on how the business can stop the issues from happening again. Describe these in a non-technical context and leave specific technical recommendations out for now.
+- Задачи тестирования:
+    - Опишите бизнес-потребности, стоящие за тестированием безопасности.
+    - Опишите, как тесты помогли организации лучше узнать свои системы.
+- Ключевые выводы в бизнес-контексте, такие как возможные проблемы с соблюдением нормативных требований, ущерб репутации и т.д. Сосредоточьтесь на влиянии на бизнес и пока опустите технические детали.
+- Стратегические рекомендации о том, как бизнес может предотвратить повторение проблем. Опишите их в нетехническом контексте и пока опустите конкретные технические рекомендации.
 
-The summary should be constructive and meaningful. Avoid jargon and negative speculation. If figures, graphs, or illustrations are used, ensure they help deliver a message in a clearer way than text would.
+Резюме должно быть конструктивным и содержательным. Избегайте жаргона и негативных умозаключений. Если приводятся рисунки, графики или иллюстрации, убедитесь, что они помогают донести мысль более понятным способом, чем текст.
 
-## 3. Findings
+## 3. Результаты
 
-This section is aimed at the technical team. It should include all the necessary information to understand the vulnerability, replicate it, and resolve it. Logical separation can help improve the readability of the report. For example, you might have separate sections titled "External Access" and "Internal Access".
+Этот раздел предназначен для технических специалистов. Он должен включать всю необходимую информацию для понимания уязвимости, её воспроизведения и устранения. Логическое разделение может помочь улучшить удобство чтения отчета. Например, у вас могут быть отдельные разделы под названием «Внешний доступ» и «Внутренний доступ».
 
-If this is a re-test, you might create a subsection that summarizes findings of the previous test, the updated status of previously identified vulnerabilities, and any cross-references with the current test.
+Если это повторное тестирование, вы можете создать подраздел, в котором обобщаются результаты предыдущего теста, обновленный статус ранее выявленных уязвимостей и перекрёстные ссылки на текущи1 тест.
 
-### 3.1 Findings Summary
+### 3.1 Сводный перечень результатов
 
-A list of the findings with their risk level. A table can be used for ease of use by both teams.
+Перечень результатов с указанием уровня риска по каждому. Для удобства обеих команд можно свести их в таблицу.
 
-| Ref. ID |  Title | Risk Level |
+| № |  Название | Уровень риска |
 |:------------:|--------|------------|
-| 1 | User Authentication Bypass | High |
+| 1 | Обход аутентификации пользователя | Высокий |
 
-### 3.2 Findings Details
+### 3.2 Подробное описание результатов
 
-Each finding should be detailed with the following information:
+Каждый вывод в результатах должен быть подробно описан и сопровождаться следующей информацией:
 
-- Reference ID, which can be used for communication between parties and for cross-references across the report.
-- The vulnerability title, such as "User Authentication Bypass".
-- The likelihood or exploitability of the issue, based on various factors such as:
-    - How easy it is to exploit.
-    - Whether there is working exploit code for it.
-    - The level of access required.
-    - Attacker motivation to exploit it.
-- The impact of the vulnerability on the system.
-- Risk of the vulnerability on the application.
-    - Some suggested values are: Informational, Low, Medium, High, and Critical. Ensure that you detail the values you decide to use in an appendix. This allows the reader to understand how each score is determined.
-    - On certain engagements it is required to have a [CVSS](https://www.first.org/cvss/) score. If not required, sometimes it is good to have, and other times it just adds complexity to the report.
-- Detailed description of what the vulnerability is, how to exploit it, and the damage that may result from its exploitation. Any possibly-sensitive data should be masked, for example, passwords, personal information, or credit card details.
-- Detailed steps on how to remediate the vulnerability, possible improvements that could help strengthen the security posture, and missing security practices.
-- Additional resources that could help the reader to understand the vulnerability, such as an image, a video, a CVE, an external guide, etc.
+- Идентификатор ссылки, который можно использовать при обмене информацией между сторонами и для перекрёстных ссылок в отчете.
+- Название уязвимости, например «Обход аутентификации пользователя».
+- Вероятность или возможность эксплуатации уязвимости, основанная на различных факторах, таких как:
+    - Насколько легко её эксплуатировать?
+    - Есть ли для неё работающий код эксплойта?
+    - Требуемый уровень доступа.
+    - Мотивация злоумышленника.
+- Воздействие уязвимости на систему.
+- Риск уязвимости в приложении:
+    - В качестве примера предлагаются такие значения: Для сведения, Низкий, Средний, Высокий и Критическиё. Убедитесь, что вы подробно описали значения, которые решили использовать, в приложении. Это позволяет читателю понять, как определяется каждый балл.
+    - Для некоторых проектов требуется оценка [CVSS](https://www.first.org/cvss/). Даже если не требуется, иногда её полезно знать, а иногда она усложняет отчёт.
+- Подробное описание того, что представляет собой уязвимость, как её эксплуатировать, и ущерб, который может произойти. Все потенциально конфиденциальные данные должны быть замаскированы, например, пароли, персональные данные или данные держателей карт.
+- Подробные действия по устранению уязвимости, возможные улучшения, которые могли бы помочь повысить уровень защиты, а также недостающие меры и средства защиты.
+- Дополнительные ресурсы, которые могут помочь читателю понять суть уязвимости, например, изображение, видео, CVE, сторонние технические руководства и т.д.
 
-Format this section in a way that best delivers your message.
+Оформляйте этот раздел таким образом, чтобы наилучшим образом донести ваши выводы.
 
-Always ensure that your descriptions provide enough information for the engineer reading this report to take action based on it. Explain the finding thoroughly and provide as much technical detail as might be necessary to remedy it.
+Всегда следите за тем, чтобы ваши описания содержали достаточно информации, чтобы инженер, прочитавший этот отчёт, смог на его основе принять меры. Подробно объясните каждый вывод и предоставьте столько технических подробностей, сколько может потребоваться для его исправления.
 
-## Appendices
+## Приложения
 
-Multiple appendices can be added, such as:
+Можно добавить несколько приложений, например, таких как:
 
-- Test methodology used.
-- Severity and risk rating explanations.
-- Relevant output from tools used.
-    - Make sure to clean the output and not just dump it.
-- A checklist of all the tests conducted, such as the [WSTG checklist](https://github.com/OWASP/wstg/tree/master/checklist). These can be provided as attachments to the report.
+- Используемая методология тестирования.
+- Пояснения к уровням воздействия и оценке риска.
+- Соответствующие результаты от использованных инструментов.
+    - Убедитесь, что вы привели только уместные данные, а не просто вывели их целиком.
+- Контрольный список всех проведённых тестов, например, [WSTG checklist](https://github.com/OWASP/wstg/tree/master/checklists).
 
-## References
+## Ссылки
 
-This section is not part of the suggested report format. The below links provide more guidance to writing your reports.
+Этот раздел не является частью предлагаемого формата отчёта. Ссылки ниже содержат дополнительные рекомендации по написанию отчётов.
 
-- [SANS: Tips for Creating a Strong Cybersecurity Assessment Report](https://www.sans.org/blog/tips-for-creating-a-strong-cybersecurity-assessment-report/)
-- [SANS: Writing a Penetration Testing Report](https://www.sans.org/reading-room/whitepapers/bestprac/paper/33343)
 - [Infosec Institute: The Art of Writing Penetration Test Reports](https://resources.infosecinstitute.com/topic/writing-penetration-testing-reports/)
 - [Dummies: How to Structure a Pen Test Report](https://www.dummies.com/computers/macs/security/how-to-structure-a-pen-test-report/)
 - [Rhino Security Labs: Four Things Every Penetration Test Report Should Have](https://rhinosecuritylabs.com/penetration-testing/four-things-every-penetration-test-report/)
+- [Hacker101: Writing Good Reports](https://www.hacker101.com/sessions/good_reports.html)
+- [SANS: Writing a Penetration Testing Report](https://www.sans.org/reading-room/whitepapers/bestprac/paper/33343)

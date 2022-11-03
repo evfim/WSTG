@@ -7,16 +7,16 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Appendix
+# Приложения
 
-Appendix A. [Testing Tools Resource](A-Testing_Tools_Resource.md)
+Приложение A. [Ресурсы по инструментам тестирования](A-Testing_Tools_Resource.md)
 
-Appendix B. [Suggested Reading](B-Suggested_Reading.md)
+Приложение B. [Рекомендуется к прочтению](B-Suggested_Reading.md)
 
-Appendix C. [Fuzz Vectors](C-Fuzz_Vectors.md)
+Приложение C. [Векторы для фаззинга](C-Fuzz_Vectors.md)
 
-Appendix D. [Encoded Injection](D-Encoded_Injection.md)
+Приложение D. [Закодированные инъекции](D-Encoded_Injection.md)
 
-Appendix E. [History](E-History.md)
+Приложение E. [История](E-History.md)
 
-Appendix F. [Leveraging Dev Tools](F-Leveraging_Dev_Tools.md)
+Приложение F. [Использование инструментов разработчика в браузере](F-Leveraging_Dev_Tools.md)
