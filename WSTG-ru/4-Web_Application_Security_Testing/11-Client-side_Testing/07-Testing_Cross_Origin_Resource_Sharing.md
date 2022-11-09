@@ -7,7 +7,7 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Тестирование Cross Origin Resource Sharing
+# Тестирование Cross Origin Resource Sharing (CORS)
 
 |ID          |
 |------------|

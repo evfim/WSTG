@@ -196,7 +196,7 @@ openssl s_client -connect example.org:443 | openssl x509 -pubkey -noout
 - [Тестирование атрибутов Cookie](../06-Session_Management_Testing/02-Testing_for_Cookies_Attributes.md).
 - [Тестирование хранилищ браузера](../11-Client-side_Testing/12-Testing_Browser_Storage.md).
 
-## Как исправить
+## Меры защиты
 
 - Используйте безопасную и актуальную библиотеку для обработки JWT.
 - Убедитесь, что подпись действительна и что она использует ожидаемый алгоритм.

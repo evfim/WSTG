@@ -36,7 +36,7 @@ tags: WSTG
     - Атаки [CSRF](../06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery.md).
 - Следует анализировать срок действия токенов, поскольку некоторые делают их вечными, чем подвергают опасности пользователей в случае, если такие токены будут украдены. Обязательно протестируйте сценарий [тайм-аута сессии](../06-Session_Management_Testing/07-Testing_Session_Timeout.md).
 
-## Как исправить
+## Меры защиты
 
 - Следуйте [рекомендациям по управлению сессиями](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html).
 - Убедитесь, что учётные данные никогда не хранятся в виде открытого текста и не могут быть легко извлечены в закодированной или зашифрованной форме из механизмов хранения браузера; они должны храниться на стороне сервера и следовать [рекомендациям по хранению паролей](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).

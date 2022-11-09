@@ -564,7 +564,7 @@ OR 'SQLi' = N'SQLi'
 
 Этот метод также можно использовать для определения значений промокодов с помощью уточняющих запросов (например, `a%`, `b%`, `ba%`, и т.д.).
 
-## Как исправить
+## Меры защиты
 
 - Чтобы защитить приложение от SQL-инъекций, обратитесь к [Памятке по предотвращению SQL-инъекций](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html).
 - Чтобы защитить сервер базы данных, обратитесь к [Памятке по защите баз данных](https://cheatsheetseries.owasp.org/cheatsheets/Database_Security_Cheat_Sheet.html).

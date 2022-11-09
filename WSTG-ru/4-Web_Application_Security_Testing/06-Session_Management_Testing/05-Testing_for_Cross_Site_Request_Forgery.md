@@ -174,9 +174,9 @@ Content-Type: text/plain
 
 Когда эти данные отправляются в виде POST-запроса, сервер с радостью примет поля имени и пароля и проигнорирует поле padding, поскольку оно ему не нужно.
 
-## Как исправить
+## Меры защиты
 
-- Меры защиты см. в [Памятке OWASP по предотвращению CSRF](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).
+- См. в [Памятке OWASP по предотвращению CSRF](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).
 
 ## Инструменты
 

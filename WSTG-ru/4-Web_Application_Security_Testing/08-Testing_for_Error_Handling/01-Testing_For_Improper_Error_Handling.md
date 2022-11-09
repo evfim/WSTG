@@ -74,7 +74,7 @@ tags: WSTG
 
 > Тестировщику необходимо внимательно следить за типом ответа. Иногда ошибки возвращаются как 200-е с телом ошибки, иногда скрывают ошибку в 302-й или просто имеют свой способ представления этой ошибки.
 
-## Как исправить
+## Меры защиты
 
 Для исправления ситуации ознакомьтесь с [мерой C10 из Top 10 мер проактивной защиты](https://owasp.org/www-project-proactive-controls/v3/en/c10-errors-exceptions) ([перевод](https://github.com/OWASP/www-project-proactive-controls/blob/master/v3/Owasp-top-10-proactive-controls-2018-russian.pdf)) и [Памяткой OWASP по обработке ошибок](https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html).
 
