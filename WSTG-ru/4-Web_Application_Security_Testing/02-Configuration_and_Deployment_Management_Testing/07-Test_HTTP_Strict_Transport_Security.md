@@ -7,7 +7,7 @@ tags: WSTG
 ---
 
 {% include breadcrumb.html %}
-# Тестирование HTTP Strict Transport Security
+# Тестирование HTTP Strict Transport Security (HSTS)
 
 |ID          |
 |------------|

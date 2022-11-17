@@ -9,7 +9,7 @@ tags: WSTG
 {% include breadcrumb.html %}
 # 4.3 Тестирование управления идентификацией
 
-4.3.1 [Тестирование определения ролей](01-Test_Role_Definitions.md)
+4.3.1 [Тестирование определения ролей (RBAC)](01-Test_Role_Definitions.md)
 
 4.3.2 [Тестирование процесса регистрации пользователя](02-Test_User_Registration_Process.md)
 

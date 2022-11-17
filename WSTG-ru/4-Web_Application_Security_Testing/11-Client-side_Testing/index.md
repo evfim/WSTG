@@ -9,9 +9,9 @@ tags: WSTG
 {% include breadcrumb.html %}
 # 4.11 Тестирование на стороне клиента
 
-4.11.1 [Тестирование межсайтового скриптинга на основе DOM](01-Testing_for_DOM-based_Cross_Site_Scripting.md)
+4.11.1 [Тестирование XSS на основе DOM](01-Testing_for_DOM-based_Cross_Site_Scripting.md)
 
-- 4.11.1.1 [Тестирование самостоятельного межсайтового скриптинга на основе DOM](01.1-Testing_for_Self_DOM_Based_Cross_Site_Scripting.md)
+- 4.11.1.1 [Тестирование «само-XSS» на основе DOM](01.1-Testing_for_Self_DOM_Based_Cross_Site_Scripting.md)
 
 4.11.2 [Тестирование выполнения JavaScript](02-Testing_for_JavaScript_Execution.md)
 
@@ -27,7 +27,7 @@ tags: WSTG
 
 4.11.8 [Тестирование межсайтовых Flash](08-Testing_for_Cross_Site_Flashing.md)
 
-4.11.9 [Тестирование перехвата клика](09-Testing_for_Clickjacking.md)
+4.11.9 [Тестирование перехвата клика (Clickjacking)](09-Testing_for_Clickjacking.md)
 
 4.11.10 [Тестирование WebSockets](10-Testing_WebSockets.md)
 

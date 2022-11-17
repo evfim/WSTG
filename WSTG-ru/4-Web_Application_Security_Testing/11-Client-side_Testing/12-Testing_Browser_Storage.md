@@ -25,7 +25,7 @@ tags: WSTG
 
 Эти механизмы хранения можно просматривать и редактировать с помощью инструментов разработчика браузера, таких как [DevTools в Google Chrome](https://developer.chrome.com/docs/devtools/), [Storage Inspector в Firefox](https://developer.mozilla.org/ru/docs/Tools/Storage_Inspector) или [Web Inspector в Safari](https://support.apple.com/ru-ru/guide/safari-developer/devdf5596c56/mac).
 
-Примечание: хотя кэш также является формой хранилища, он рассматривается в [отдельном разделе](../04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md), охватывающем его особенности и проблемы.
+Примечание: хотя кэш также является формой хранилища, он рассматривается в [другом разделе](../04-Authentication_Testing/06-Testing_for_Browser_Cache_Weaknesses.md), охватывающем его особенности и проблемы.
 
 ## Задачи тестирования
 

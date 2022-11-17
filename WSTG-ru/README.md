@@ -95,7 +95,7 @@ tags: WSTG
 
 #### 4.2.6 [Тестирование методов HTTP](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods.md)
 
-#### 4.2.7 [Тестирование HTTP Strict Transport Security](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security.md)
+#### 4.2.7 [Тестирование HTTP Strict Transport Security (HSTS)](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/07-Test_HTTP_Strict_Transport_Security.md)
 
 #### 4.2.8 [Тестирование междоменной политики для RIA](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/08-Test_RIA_Cross_Domain_Policy.md)
 
@@ -105,11 +105,11 @@ tags: WSTG
 
 #### 4.2.11 [Тестирование облачного хранилища](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/11-Test_Cloud_Storage.md)
 
-#### 4.2.12 [Тестирование Content Security Policy](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/12-Test_for_Content_Security_Policy.md)
+#### 4.2.12 [Тестирование Content Security Policy (CSP)](4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/12-Test_for_Content_Security_Policy.md)
 
 ### 4.3 [Тестирование управления идентификацией](4-Web_Application_Security_Testing/03-Identity_Management_Testing/README.md)
 
-#### 4.3.1 [Тестирование определения ролей](4-Web_Application_Security_Testing/03-Identity_Management_Testing/01-Test_Role_Definitions.md)
+#### 4.3.1 [Тестирование определения ролей (RBAC)](4-Web_Application_Security_Testing/03-Identity_Management_Testing/01-Test_Role_Definitions.md)
 
 #### 4.3.2 [Тестирование процесса регистрации пользователя](4-Web_Application_Security_Testing/03-Identity_Management_Testing/02-Test_User_Registration_Process.md)
 
@@ -173,7 +173,7 @@ tags: WSTG
 
 #### 4.6.7 [Тестирование тайм-аута сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/07-Testing_Session_Timeout.md)
 
-#### 4.6.8 [Тестирование "пазла" сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/08-Testing_for_Session_Puzzling.md)
+#### 4.6.8 [Тестирование «пазла» сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/08-Testing_for_Session_Puzzling.md)
 
 #### 4.6.9 [Тестирование перехвата сессии](4-Web_Application_Security_Testing/06-Session_Management_Testing/09-Testing_for_Session_Hijacking.md)
 
@@ -185,11 +185,11 @@ tags: WSTG
 
 #### 4.7.2 [Тестирование хранимых межсайтовых скриптов (Stored XSS)](4-Web_Application_Security_Testing/07-Input_Validation_Testing/02-Testing_for_Stored_Cross_Site_Scripting.md)
 
-#### 4.7.3 [Тестирование фальсификации методов HTTP](4-Web_Application_Security_Testing/07-Input_Validation_Testing/03-Testing_for_HTTP_Verb_Tampering.md)
+#### 4.7.3 [Тестирование подделки методов HTTP](4-Web_Application_Security_Testing/07-Input_Validation_Testing/03-Testing_for_HTTP_Verb_Tampering.md)
 
-#### 4.7.4 [Тестирование загрязнения HTTP-параметров (HPP)](4-Web_Application_Security_Testing/07-Input_Validation_Testing/04-Testing_for_HTTP_Parameter_Pollution.md)
+#### 4.7.4 [Тестирование «загрязнения» HTTP-параметров (HPP)](4-Web_Application_Security_Testing/07-Input_Validation_Testing/04-Testing_for_HTTP_Parameter_Pollution.md)
 
-#### 4.7.5 [Тестирование SQL-инъекций (SQLi)](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md)
+#### 4.7.5 [Тестирование SQL-инъекций](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md)
 
 ##### 4.7.5.1 [Тестирование Oracle](4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.1-Testing_for_Oracle.md)
 
@@ -219,7 +219,7 @@ tags: WSTG
 
 #### 4.7.11 [Тестирование инъекции кода](4-Web_Application_Security_Testing/07-Input_Validation_Testing/11-Testing_for_Code_Injection.md)
 
-##### 4.7.11.1 [Тестирование включения файлов](4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_File_Inclusion.md)
+##### 4.7.11.1 [Тестирование включения файлов (LFI/RFI)](4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_File_Inclusion.md)
 
 #### 4.7.12 [Тестирование инъекции команд ОС](4-Web_Application_Security_Testing/07-Input_Validation_Testing/12-Testing_for_Command_Injection.md)
 
@@ -227,15 +227,15 @@ tags: WSTG
 
 #### 4.7.14 [Тестирование инкубационных уязвимостей](4-Web_Application_Security_Testing/07-Input_Validation_Testing/14-Testing_for_Incubated_Vulnerability.md)
 
-#### 4.7.15 [Тестирование HTTP Splitting / Smuggling](4-Web_Application_Security_Testing/07-Input_Validation_Testing/15-Testing_for_HTTP_Splitting_Smuggling.md)
+#### 4.7.15 [Тестирование HTTP Splitting/Smuggling](4-Web_Application_Security_Testing/07-Input_Validation_Testing/15-Testing_for_HTTP_Splitting_Smuggling.md)
 
 #### 4.7.16 [Тестирование входящих HTTP-запросов](4-Web_Application_Security_Testing/07-Input_Validation_Testing/16-Testing_for_HTTP_Incoming_Requests.md)
 
 #### 4.7.17 [Тестирование инъекций в заголовке Host](4-Web_Application_Security_Testing/07-Input_Validation_Testing/17-Testing_for_Host_Header_Injection.md)
 
-#### 4.7.18 [Тестирование инъекции шаблона на стороне сервера](4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection.md)
+#### 4.7.18 [Тестирование инъекции шаблона на стороне сервера (SSTI)](4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection.md)
 
-#### 4.7.19 [Тестирование подделки запросов на стороне сервера](4-Web_Application_Security_Testing/07-Input_Validation_Testing/19-Testing_for_Server-Side_Request_Forgery.md)
+#### 4.7.19 [Тестирование подделки запросов на стороне сервера (SSRF)](4-Web_Application_Security_Testing/07-Input_Validation_Testing/19-Testing_for_Server-Side_Request_Forgery.md)
 
 #### 4.7.20 [Тестирование массового переназначения](4-Web_Application_Security_Testing/07-Input_Validation_Testing/20-Testing_for_Mass_Assignment.md)
 
@@ -247,11 +247,11 @@ tags: WSTG
 
 ### 4.9 [Криптография](4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/README.md)
 
-#### 4.9.1 [Тестирование безопасности транспортного уровня](4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/01-Testing_for_Weak_Transport_Layer_Security.md)
+#### 4.9.1 [Тестирование безопасности транспортного уровня (TLS)](4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/01-Testing_for_Weak_Transport_Layer_Security.md)
 
 #### 4.9.2 [Тестирование оракула дополнений](4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/02-Testing_for_Padding_Oracle.md)
 
-#### 4.9.3 [Тестирование на наличие конфиденциальной информации, передаваемой по незашифрованным каналам](4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/03-Testing_for_Sensitive_Information_Sent_via_Unencrypted_Channels.md)
+#### 4.9.3 [Тестирование передачи чувствительной информации по незашифрованным каналам](4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/03-Testing_for_Sensitive_Information_Sent_via_Unencrypted_Channels.md)
 
 #### 4.9.4 [Тестирование шифрования](4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.md)
 
@@ -281,9 +281,9 @@ tags: WSTG
 
 ### 4.11 [Тестирование на стороне клиента](4-Web_Application_Security_Testing/11-Client-side_Testing/README.md)
 
-#### 4.11.1 [Тестирование межсайтового скриптинга на основе DOM](4-Web_Application_Security_Testing/11-Client-side_Testing/01-Testing_for_DOM-based_Cross_Site_Scripting.md)
+#### 4.11.1 [Тестирование XSS на основе DOM](4-Web_Application_Security_Testing/11-Client-side_Testing/01-Testing_for_DOM-based_Cross_Site_Scripting.md)
 
-##### 4.11.1.1 [Тестирование самостоятельного межсайтового скриптинга на основе DOM](4-Web_Application_Security_Testing/11-Client-side_Testing/01.1-Testing_for_Self_DOM_Based_Cross_Site_Scripting.md)
+##### 4.11.1.1 [Тестирование «само-XSS» на основе DOM](4-Web_Application_Security_Testing/11-Client-side_Testing/01.1-Testing_for_Self_DOM_Based_Cross_Site_Scripting.md)
 
 #### 4.11.2 [Тестирование выполнения JavaScript](4-Web_Application_Security_Testing/11-Client-side_Testing/02-Testing_for_JavaScript_Execution.md)
 
@@ -299,7 +299,7 @@ tags: WSTG
 
 #### 4.11.8 [Тестирование межсайтовых Flash](4-Web_Application_Security_Testing/11-Client-side_Testing/08-Testing_for_Cross_Site_Flashing.md)
 
-#### 4.11.9 [Тестирование перехвата клика](4-Web_Application_Security_Testing/11-Client-side_Testing/09-Testing_for_Clickjacking.md)
+#### 4.11.9 [Тестирование перехвата клика (Clickjacking)](4-Web_Application_Security_Testing/11-Client-side_Testing/09-Testing_for_Clickjacking.md)
 
 #### 4.11.10 [Тестирование WebSockets](4-Web_Application_Security_Testing/11-Client-side_Testing/10-Testing_WebSockets.md)
 
@@ -329,6 +329,6 @@ tags: WSTG
 
 ## Приложение D. [Закодированные инъекции](6-Appendix/D-Encoded_Injection.md)
 
-## Приложение E. [История](6-Appendix/E-History.md)
+## Приложение E. [История WSTG](6-Appendix/E-History.md)
 
-## Приложение F. [Использование инструментов разработчика в браузере](6-Appendix/F-Leveraging_Dev_Tools.md)
+## Приложение F. [Использование Инструментов разработчика в браузерах](6-Appendix/F-Leveraging_Dev_Tools.md)

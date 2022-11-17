@@ -21,7 +21,7 @@ tags: WSTG
 
 4.2.6 [Тестирование методов HTTP](06-Test_HTTP_Methods.md)
 
-4.2.7 [Тестирование HTTP Strict Transport Security](07-Test_HTTP_Strict_Transport_Security.md)
+4.2.7 [Тестирование HTTP Strict Transport Security (HSTS)](07-Test_HTTP_Strict_Transport_Security.md)
 
 4.2.8 [Тестирование междоменной политики для RIA](08-Test_RIA_Cross_Domain_Policy.md)
 
@@ -31,4 +31,4 @@ tags: WSTG
 
 4.2.11 [Тестирование облачного хранилища](11-Test_Cloud_Storage.md)
 
-4.2.12 [Тестирование Content Security Policy](12-Test_for_Content_Security_Policy.md)
+4.2.12 [Тестирование Content Security Policy (CSP)](12-Test_for_Content_Security_Policy.md)

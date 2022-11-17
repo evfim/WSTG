@@ -9,13 +9,13 @@ tags: WSTG
 {% include breadcrumb.html %}
 # 4.7 Тестирование контроля входных данных
 
-4.7.1 [Тестирование отражённого межсайтового скриптинга](01-Testing_for_Reflected_Cross_Site_Scripting.md)
+4.7.1 [Тестирование отражённых межсайтовых скриптов (Reflected XSS)](01-Testing_for_Reflected_Cross_Site_Scripting.md)
 
 4.7.2 [Тестирование хранимых межсайтовых скриптов](02-Testing_for_Stored_Cross_Site_Scripting.md)
 
-4.7.3 [Тестирование фальсификации методов HTTP](03-Testing_for_HTTP_Verb_Tampering.md)
+4.7.3 [Тестирование подделки методов HTTP](03-Testing_for_HTTP_Verb_Tampering.md)
 
-4.7.4 [Тестирование загрязнения параметров HTTP](04-Testing_for_HTTP_Parameter_Pollution.md)
+4.7.4 [Тестирование «загрязнения» параметров HTTP (HPP)](04-Testing_for_HTTP_Parameter_Pollution.md)
 
 4.7.5 [Тестирование SQL-инъекций](05-Testing_for_SQL_Injection.md)
 
@@ -47,7 +47,7 @@ tags: WSTG
 
 4.7.11 [Тестирование инъекции кода](11-Testing_for_Code_Injection.md)
 
-- 4.7.11.1 [Тестирование включения файлов](11.1-Testing_for_File_Inclusion.md)
+- 4.7.11.1 [Тестирование включения файлов (LFI/RFI)](11.1-Testing_for_File_Inclusion.md)
 
 4.7.12 [Тестирование инъекции команд ОС](12-Testing_for_Command_Injection.md)
 
@@ -55,14 +55,14 @@ tags: WSTG
 
 4.7.14 [Тестирование инкубационных уязвимостей](14-Testing_for_Incubated_Vulnerability.md)
 
-4.7.15 [Тестирование HTTP Splitting / Smuggling](15-Testing_for_HTTP_Splitting_Smuggling.md)
+4.7.15 [Тестирование HTTP Splitting/Smuggling](15-Testing_for_HTTP_Splitting_Smuggling.md)
 
 4.7.16 [Тестирование входящих HTTP-запросов](16-Testing_for_HTTP_Incoming_Requests.md)
 
 4.7.17 [Тестирование инъекций в заголовке Host](17-Testing_for_Host_Header_Injection.md)
 
-4.7.18 [Тестирование инъекции шаблона на стороне сервера](18-Testing_for_Server-side_Template_Injection.md)
+4.7.18 [Тестирование инъекции шаблона на стороне сервера (SSTI)](18-Testing_for_Server-side_Template_Injection.md)
 
-4.7.19 [Тестирование подделки запроса на стороне сервера](19-Testing_for_Server-Side_Request_Forgery.md)
+4.7.19 [Тестирование подделки запроса на стороне сервера (SSRF)](19-Testing_for_Server-Side_Request_Forgery.md)
 
 4.7.20 [Тестирование массового переназначения](20-Testing_for_Mass_Assignment.md)
