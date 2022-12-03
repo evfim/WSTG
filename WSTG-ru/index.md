@@ -141,6 +141,8 @@ tags: WSTG
 
 #### 4.4.10 [Тестирование аутентификации в альтернативных каналах](4-Web_Application_Security_Testing/04-Authentication_Testing/10-Testing_for_Weaker_Authentication_in_Alternative_Channel.md)
 
+#### 4.4.11 [Тестирование мультифакторной аутентификации (MFA)](4-Web_Application_Security_Testing/04-Authentication_Testing/11-Testing_Multi-Factor_Authentication.md)
+
 ### 4.5 [Тестирование авторизации](4-Web_Application_Security_Testing/05-Authorization_Testing/README.md)
 
 #### 4.5.1 [Тестирование включения файлов при обходе каталогов](4-Web_Application_Security_Testing/05-Authorization_Testing/01-Testing_Directory_Traversal_File_Include.md)
